@@ -46,6 +46,54 @@
        },
        {
               "isActive": "yes",
+              "isFolder": "yes",
+              "name": "AbilitiesConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "GroupConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "AbilitiesConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "HelpConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "PlayersScrollBox",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "RoomAndInventoryConsoles",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "SessionConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "TrainingConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
               "isFolder": "no",
               "name": "Initialize",
               "script": ""
