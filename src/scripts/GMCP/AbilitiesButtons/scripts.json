@@ -11,7 +11,7 @@
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "CharAbilitiesMonitorAdd",
+              "name": "CharAbilitiesMonitorWarn",
               "eventHandlerList": [
                      "gmcp.Char.Abilities.Update"
               ],
@@ -20,7 +20,7 @@
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "CharAbilitiesMonitorWarn",
+              "name": "CharAbilitiesMonitorRemove",
               "eventHandlerList": [
                      "gmcp.Char.Abilities.Remove"
               ],
