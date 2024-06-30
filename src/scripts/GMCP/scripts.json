@@ -65,7 +65,7 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "HelpConsole",
+              "name": "HelpContainer",
               "script": ""
        },
        {
