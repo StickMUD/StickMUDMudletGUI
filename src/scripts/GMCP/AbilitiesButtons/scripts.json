@@ -1,0 +1,29 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharAbilitiesMonitorAdd",
+              "eventHandlerList": [
+                     "gmcp.Char.Abilities.Add"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharAbilitiesMonitorAdd",
+              "eventHandlerList": [
+                     "gmcp.Char.Abilities.Update"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharAbilitiesMonitorWarn",
+              "eventHandlerList": [
+                     "gmcp.Char.Abilities.Remove"
+              ],
+              "script": ""
+       }
+]

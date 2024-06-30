@@ -47,25 +47,7 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "AbilitiesConsole",
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "yes",
-              "name": "GroupConsole",
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "yes",
-              "name": "AbilitiesConsole",
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "yes",
-              "name": "HelpContainer",
+              "name": "AbilitiesButtons",
               "script": ""
        },
        {
@@ -77,7 +59,13 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "RoomAndInventoryConsoles",
+              "name": "AbilitiesConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "TrainingConsole",
               "script": ""
        },
        {
@@ -89,7 +77,19 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "TrainingConsole",
+              "name": "GroupConsole",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "RoomAndInventoryConsoles",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "HelpContainer",
               "script": ""
        },
        {
