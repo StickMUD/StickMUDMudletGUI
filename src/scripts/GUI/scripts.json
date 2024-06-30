@@ -34,5 +34,11 @@
               "isFolder": "no",
               "name": "Create Right",
               "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "RightInterfaces",
+              "script": ""
        }
 ]
