@@ -7,32 +7,5 @@
                      "gmcp.Char.Guild.Help.List"
               ],
               "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "no",
-              "name": "CharAbilitiesMonitorAdd",
-              "eventHandlerList": [
-                     "gmcp.Char.Abilities.Update"
-              ],
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "no",
-              "name": "CharAbilitiesMonitorWarn",
-              "eventHandlerList": [
-                     "gmcp.Char.Abilities.Update"
-              ],
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "no",
-              "name": "CharAbilitiesMonitorRemove",
-              "eventHandlerList": [
-                     "gmcp.Char.Abilities.Remove"
-              ],
-              "script": ""
        }
 ]
