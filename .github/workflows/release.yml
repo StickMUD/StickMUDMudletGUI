@@ -1,0 +1,54 @@
+name: Build project using muddler and upload artifact
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v3.3.0
+
+      - name: Download Updater.lua
+        run: |
+          mkdir -p src/scripts
+          curl -L -o src/scripts/Updater.lua https://github.com/gesslar/mupdate/releases/latest/download/Updater.lua
+
+      - name: Check and create scripts.json if it doesn't exist
+        run: |
+          if [ ! -f src/scripts/scripts.json ]; then
+            mkdir -p src/scripts
+            echo '[]' > src/scripts/scripts.json
+          fi
+
+      - name: Update scripts.json
+        run: |
+          jq '. += [{"isActive": "yes", "isFolder": "no", "name": "Updater", "script": ""}]' src/scripts/scripts.json > tmp.json && mv tmp.json src/scripts/scripts.json
+
+      - name: JSON to variables
+        uses: antifree/json-to-variables@v1.2.0
+        with:
+          filename: "./mfile"
+          prefix: "mfile"
+
+      - name: "create version file"
+        id: create_version_file
+        run: |
+          echo "filename=${{ env.mfile_package }}_version.txt" >> $GITHUB_ENV
+          echo "${{ env.mfile_version }}" > "${{ env.mfile_package }}_version.txt"
+
+      - name: Build With Muddler
+        uses: demonnic/build-with-muddler@main
+        with:
+          muddlerVersion: LATEST
+
+      - uses: ncipollo/release-action@v1
+        with:
+          artifacts: "build/${{ env.mfile_package }}.mpackage,${{ env.filename }}"
+          allowUpdates: true
+          bodyFile: "./README.md"
+          tag: ${{ env.mfile_version }}

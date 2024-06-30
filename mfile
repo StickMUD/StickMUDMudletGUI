@@ -5,6 +5,5 @@
        "version": "58",
        "author": "Tamarindo@StickMUD",
        "icon": "https://www.stickmud.com/wp-content/uploads/2020/12/stick-siteicon.png",
-       "dependencies": "",
-       "outputFile": false
+       "outputFile": true
 }
