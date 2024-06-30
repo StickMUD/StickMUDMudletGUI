@@ -2,25 +2,19 @@
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Globals",
+              "name": "UpdateRoomConsole",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "CSSman",
+              "name": "Items",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "GUI",
-              "script": ""
-       },
-       {
-              "isActive": "yes",
-              "isFolder": "yes",
-              "name": "GMCP",
+              "name": "Players",
               "script": ""
        }
 ]

@@ -10,5 +10,17 @@
               "isFolder": "no",
               "name": "PlayerHighlighting",
               "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "Inventory",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
+              "name": "Room",
+              "script": ""
        }
 ]
