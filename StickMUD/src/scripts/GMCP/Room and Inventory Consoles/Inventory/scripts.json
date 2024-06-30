@@ -1,0 +1,44 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsAddLocationInv",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.Add"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsListLocationInv",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.List"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsRemoveLocationInv",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.Remove"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsUpdateLocationInv",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.Update"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "UpdateInventoryConsole",
+              "script": ""
+       }
+]

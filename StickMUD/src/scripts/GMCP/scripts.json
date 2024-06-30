@@ -1,0 +1,53 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharVitals",
+              "eventHandlerList": [
+                     "gmcp.Char.Vitals"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharStatus",
+              "eventHandlerList": [
+                     "gmcp.Char.Status"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CommChannelText",
+              "eventHandlerList": [
+                     "gmcp.Comm.Channel.Text"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CoreGoodbye",
+              "eventHandlerList": [
+                     "gmcp.Core.Goodbye"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "RoomInfo",
+              "eventHandlerList": [
+                     "gmcp.Room.Info"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Initialize",
+              "script": ""
+       }
+]

@@ -1,0 +1,29 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "RoomAddPlayer",
+              "eventHandlerList": [
+                     "gmcp.Room.AddPlayer"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "RoomPlayers",
+              "eventHandlerList": [
+                     "gmcp.Room.Players"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "RoomRemovePlayer",
+              "eventHandlerList": [
+                     "gmcp.Room.RemovePlayer"
+              ],
+              "script": ""
+       }
+]

@@ -1,0 +1,11 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharHelpList",
+              "eventHandlerList": [
+                     "gmcp.Char.Help.List"
+              ],
+              "script": ""
+       }
+]

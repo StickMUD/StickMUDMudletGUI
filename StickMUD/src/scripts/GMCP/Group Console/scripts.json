@@ -1,0 +1,11 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Group",
+              "eventHandlerList": [
+                     "gmcp.Group"
+              ],
+              "script": ""
+       }
+]
