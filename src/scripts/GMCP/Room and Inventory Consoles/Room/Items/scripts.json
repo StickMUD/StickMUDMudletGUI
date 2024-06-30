@@ -1,0 +1,29 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsAddLocationRoom",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.Add"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsListLocationRoom",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.List"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharItemsRemoveLocationRoom",
+              "eventHandlerList": [
+                     "gmcp.Char.Items.Remove"
+              ],
+              "script": ""
+       }
+]

@@ -1,0 +1,5 @@
+local w,h = getMainWindowSize()
+setBorderLeft(0)
+setBorderTop(h/20)
+setBorderBottom(h/10)
+setBorderRight(w/2.5)

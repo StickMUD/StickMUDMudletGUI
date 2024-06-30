@@ -1,0 +1,14 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "ItemHighlighting",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "PlayerHighlighting",
+              "script": ""
+       }
+]

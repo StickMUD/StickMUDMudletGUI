@@ -1,0 +1,11 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharSessionTraining",
+              "eventHandlerList": [
+                     "gmcp.Char.Session.Training"
+              ],
+              "script": ""
+       }
+]
