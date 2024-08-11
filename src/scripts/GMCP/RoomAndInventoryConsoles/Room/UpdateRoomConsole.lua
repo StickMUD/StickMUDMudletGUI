@@ -1,6 +1,6 @@
-local roomInvTable = {}
-local roomNPCsTable = {}
-local roomPlayersTable = {}
+roomInvTable = {}
+roomNPCsTable = {}
+roomPlayersTable = {}
 
 local function setupRoomConsole()
     clearUserWindow("GUI.RoomConsole")
