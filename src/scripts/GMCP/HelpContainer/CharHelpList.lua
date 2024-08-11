@@ -88,7 +88,7 @@ function CharHelpList()
 			end
 
 			if gmcp.Game.Variables.FontSize ~= nil then
-				GUI.AbilitiesConsole:setFontSize(gmcp.Game.Variables.FontSize)
+				setMiniConsoleFontSize("GUI.HelpConsole", gmcp.Game.Variables.FontSize)
 			elseif getOS() == "mac" then
 				setMiniConsoleFontSize("GUI.HelpConsole", 10)
 			else
