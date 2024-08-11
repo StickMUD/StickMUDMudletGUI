@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "CharHelpList",
               "eventHandlerList": [
-                     "gmcp.Char.Help.List", "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+                     "gmcp.Char.Help.List", "gmcp.Game.Variables.Font", "gmcp.Game.Variables.FontSize"
               ],
               "script": ""
        }

@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "CharTrainingList",
               "eventHandlerList": [
-                     "gmcp.Char.Training.List", "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+                     "gmcp.Char.Training.List", "gmcp.Game.Variables.Font", "gmcp.Game.Variables.FontSize"
               ],
               "script": ""
        }

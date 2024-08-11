@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "Group",
               "eventHandlerList": [
-                     "gmcp.Group", "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+                     "gmcp.Group", "gmcp.Game.Variables.Font", "gmcp.Game.Variables.FontSize"
               ],
               "script": ""
        }
