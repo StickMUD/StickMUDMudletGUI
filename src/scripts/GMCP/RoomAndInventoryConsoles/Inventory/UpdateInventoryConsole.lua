@@ -2,52 +2,46 @@ wieldedWeapons = {}
 wornArmour = {}
 otherInventory = {}
 
+local function setupConsole(consoleName)
+    clearUserWindow(consoleName)
+
+    if gmcp.Game and gmcp.Game.Variables then
+        local font = gmcp.Game.Variables.font
+        if font and getAvailableFonts()[font] then
+            setFont(consoleName, font)
+        end
+
+        local fontSize = gmcp.Game.Variables.fontSize
+        if fontSize then
+            setMiniConsoleFontSize(consoleName, fontSize)
+        elseif getOS() == "mac" then
+            setMiniConsoleFontSize(consoleName, 10)
+        else
+            setMiniConsoleFontSize(consoleName, 8)
+        end
+    end
+
+    _G[consoleName]:resetAutoWrap() -- Use _G to access the global variable by name
+end
+
+local function updateConsole(consoleName, header, inventory)
+    cecho(consoleName, "\n<light_blue:black>" .. header .. ":\n\n")
+    for key, value in pairs(inventory) do
+        echo(consoleName, " ")
+        echoLink(consoleName, "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
+        echo(consoleName, " ( ")
+        echoLink(consoleName, "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
+        cecho(consoleName, " ) " .. value .. "\n")
+    end
+end
+
 function UpdateInventoryConsole()
-  clearUserWindow("GUI.WieldedWeaponsConsole")
-  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
-    if getAvailableFonts()[gmcp.Game.Variables.font] then
-      setFont("GUI.WieldedWeaponsConsole", gmcp.Game.Variables.font)
-    end
-  end
-  GUI.WieldedWeaponsConsole:resetAutoWrap()
-	cecho("GUI.WieldedWeaponsConsole", "\n<light_blue:black>Wielded Weapons:\n\n")
-  for key, value in pairs(wieldedWeapons) do
-    echo("GUI.WieldedWeaponsConsole", " ")
-    echoLink("GUI.WieldedWeaponsConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.WieldedWeaponsConsole", " ( ")
-    echoLink("GUI.WieldedWeaponsConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.WieldedWeaponsConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.WieldedWeaponsConsole")
+    updateConsole("GUI.WieldedWeaponsConsole", "Wielded Weapons", wieldedWeapons)
 
-  clearUserWindow("GUI.WornArmourConsole")
-  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
-    if getAvailableFonts()[gmcp.Game.Variables.font] then
-      setFont("GUI.WornArmourConsole", gmcp.Game.Variables.font)
-    end
-  end
-	GUI.WornArmourConsole:resetAutoWrap()	
-	cecho("GUI.WornArmourConsole", "\n<light_blue:black>Worn Armours:\n\n")
-  for key, value in pairs(wornArmour) do
-    echo("GUI.WornArmourConsole", " ")
-    echoLink("GUI.WornArmourConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.WornArmourConsole", " ( ")
-    echoLink("GUI.WornArmourConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.WornArmourConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.WornArmourConsole")
+    updateConsole("GUI.WornArmourConsole", "Worn Armours", wornArmour)
 
-  clearUserWindow("GUI.InventoryConsole")
-  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
-    if getAvailableFonts()[gmcp.Game.Variables.font] then
-      setFont("GUI.InventoryConsole", gmcp.Game.Variables.font)
-    end
-  end
-  GUI.InventoryConsole:resetAutoWrap()	
-	cecho("GUI.InventoryConsole", "\n<light_blue:black>Other Items:\n\n")
-  for key, value in pairs(otherInventory) do
-    echo("GUI.InventoryConsole", " ")
-    echoLink("GUI.InventoryConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.InventoryConsole", " ( ")
-    echoLink("GUI.InventoryConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.InventoryConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.InventoryConsole")
+    updateConsole("GUI.InventoryConsole", "Other Items", otherInventory)
 end
