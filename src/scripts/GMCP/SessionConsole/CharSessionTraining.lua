@@ -51,12 +51,14 @@ function CharSessionTraining()
 	
 	clearWindow("GUI.SessionConsole")
 
-	if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
-		setFont("GUI.SessionConsole", gmcp.Game.Variables.Font)
+	if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+		if getAvailableFonts()[gmcp.Game.Variables.font] then
+		  setFont("GUI.SessionConsole", gmcp.Game.Variables.font)
+		end
 	end
 
-	if gmcp.Game.Variables.FontSize ~= nil then
-		setMiniConsoleFontSize("GUI.SessionConsole", gmcp.Game.Variables.FontSize)
+	if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+		setMiniConsoleFontSize("GUI.SessionConsole", gmcp.Game.Variables.fontSize)
 	end
 
 	cecho("GUI.SessionConsole", table.concat(t2, "<reset>\n"))

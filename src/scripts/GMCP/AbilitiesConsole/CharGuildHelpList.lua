@@ -6,12 +6,14 @@ function CharGuildHelpList()
   local buffer = ""
   clearWindow("GUI.AbilitiesConsole")
 
-  if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
-    setFont("GUI.AbilitiesConsole", gmcp.Game.Variables.Font)
+  if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.AbilitiesConsole", gmcp.Game.Variables.font)
+    end
   end
 
-  if gmcp.Game.Variables.FontSize ~= nil then
-    GUI.AbilitiesConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+    GUI.AbilitiesConsole:setFontSize(gmcp.Game.Variables.fontSize)
   elseif getOS() == "mac" then
     GUI.AbilitiesConsole:setFontSize(10)
   else

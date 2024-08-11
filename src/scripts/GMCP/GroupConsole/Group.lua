@@ -90,12 +90,14 @@ function Group()
 	
 	clearWindow("GUI.GroupConsole")
 
-  if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
-    setFont("GUI.GroupConsole", gmcp.Game.Variables.Font)
+  if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.GroupConsole", gmcp.Game.Variables.font)
+    end
   end
 
-  if gmcp.Game.Variables.FontSize ~= nil then
-    GUI.GroupConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+    GUI.GroupConsole:setFontSize(gmcp.Game.Variables.fontSize)
   else
     GUI.GroupConsole:setFontSize(10)
   end

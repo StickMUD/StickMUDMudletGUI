@@ -49,12 +49,14 @@ function CharTrainingList()
 		end
 	end
 
-	if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
-		setFont("GUI.TrainingConsole", gmcp.Game.Variables.Font)
+	if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+		if getAvailableFonts()[gmcp.Game.Variables.font] then
+		  setFont("GUI.TrainingConsole", gmcp.Game.Variables.font)
+		end
 	end
 
-  	if gmcp.Game.Variables.FontSize ~= nil then
-		GUI.TrainingConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  	if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+		GUI.TrainingConsole:setFontSize(gmcp.Game.Variables.fontSize)
   	elseif getOS() == "mac" then
     	GUI.TrainingConsole:setFontSize(10)
   	else

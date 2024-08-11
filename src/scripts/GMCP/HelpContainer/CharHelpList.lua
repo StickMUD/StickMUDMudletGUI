@@ -83,12 +83,14 @@ function CharHelpList()
     			{name = "GUI.HelpConsole", x = 0, y = (current_y .. "%"), height = (console_height.."%"), width = GUI.HelpContainer:get_width()}, GUI.HelpContainer)
 			setBackgroundColor("GUI.HelpConsole", 0, 0, 0, 0)
 
-			if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
-				setFont("GUI.HelpConsole", gmcp.Game.Variables.Font)
+			if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+				if getAvailableFonts()[gmcp.Game.Variables.font] then
+				  setFont("GUI.HelpConsole", gmcp.Game.Variables.font)
+				end
 			end
 
-			if gmcp.Game.Variables.FontSize ~= nil then
-				setMiniConsoleFontSize("GUI.HelpConsole", gmcp.Game.Variables.FontSize)
+			if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+				setMiniConsoleFontSize("GUI.HelpConsole", gmcp.Game.Variables.fontSize)
 			elseif getOS() == "mac" then
 				setMiniConsoleFontSize("GUI.HelpConsole", 10)
 			else
