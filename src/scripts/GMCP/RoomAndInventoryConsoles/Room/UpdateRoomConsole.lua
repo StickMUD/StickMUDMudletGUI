@@ -4,7 +4,12 @@ roomPlayersTable = {}
 
 function UpdateRoomConsole()
   clearUserWindow("GUI.RoomConsole")
-	GUI.RoomConsole:resetAutoWrap()
+  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.RoomConsole", gmcp.Game.Variables.font)
+    end
+  end
+  GUI.RoomConsole:resetAutoWrap()
 	cecho("GUI.RoomConsole", "\n<light_blue:black>Your Location: <green_yellow:black>"..gmcp.Room.Info.name.."\n\n")
   for key, value in pairs(roomInvTable) do
     echo("GUI.RoomConsole", " ")

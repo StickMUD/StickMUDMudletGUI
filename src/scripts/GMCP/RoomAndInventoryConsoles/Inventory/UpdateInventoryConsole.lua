@@ -4,7 +4,12 @@ otherInventory = {}
 
 function UpdateInventoryConsole()
   clearUserWindow("GUI.WieldedWeaponsConsole")
-	GUI.WieldedWeaponsConsole:resetAutoWrap()
+  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.WieldedWeaponsConsole", gmcp.Game.Variables.font)
+    end
+  end
+  GUI.WieldedWeaponsConsole:resetAutoWrap()
 	cecho("GUI.WieldedWeaponsConsole", "\n<light_blue:black>Wielded Weapons:\n\n")
   for key, value in pairs(wieldedWeapons) do
     echo("GUI.WieldedWeaponsConsole", " ")
@@ -15,6 +20,11 @@ function UpdateInventoryConsole()
   end
 
   clearUserWindow("GUI.WornArmourConsole")
+  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.WornArmourConsole", gmcp.Game.Variables.font)
+    end
+  end
 	GUI.WornArmourConsole:resetAutoWrap()	
 	cecho("GUI.WornArmourConsole", "\n<light_blue:black>Worn Armours:\n\n")
   for key, value in pairs(wornArmour) do
@@ -26,7 +36,12 @@ function UpdateInventoryConsole()
   end
 
   clearUserWindow("GUI.InventoryConsole")
-	GUI.InventoryConsole:resetAutoWrap()	
+  if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if getAvailableFonts()[gmcp.Game.Variables.font] then
+      setFont("GUI.InventoryConsole", gmcp.Game.Variables.font)
+    end
+  end
+  GUI.InventoryConsole:resetAutoWrap()	
 	cecho("GUI.InventoryConsole", "\n<light_blue:black>Other Items:\n\n")
   for key, value in pairs(otherInventory) do
     echo("GUI.InventoryConsole", " ")
