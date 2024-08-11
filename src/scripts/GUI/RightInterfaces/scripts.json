@@ -3,12 +3,18 @@
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Chat",
+              "eventHandlerList": [
+                     "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+              ],
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Content",
+              "eventHandlerList": [
+                     "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+              ],
               "script": ""
        },
        {
@@ -21,6 +27,9 @@
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Menu",
+              "eventHandlerList": [
+                     "gmcp.Char.Variables.Font", "gmcp.Char.Variables.FontSize"
+              ],
               "script": ""
        },
        {

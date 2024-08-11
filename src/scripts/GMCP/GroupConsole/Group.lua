@@ -89,6 +89,16 @@ function Group()
   end
 	
 	clearWindow("GUI.GroupConsole")
-	GUI.GroupConsole:setFontSize(10)
-	cecho("GUI.GroupConsole", table.concat(t2, "<reset>\n"))
+
+  if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+    setFont("GUI.GroupConsole", gmcp.Game.Variables.Font)
+  end
+
+  if gmcp.Game.Variables.FontSize ~= nil then
+    GUI.GroupConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  else
+    GUI.GroupConsole:setFontSize(10)
+  end
+
+  cecho("GUI.GroupConsole", table.concat(t2, "<reset>\n"))
 end

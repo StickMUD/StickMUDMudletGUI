@@ -82,11 +82,19 @@ function CharHelpList()
   			Geyser.MiniConsole:new(
     			{name = "GUI.HelpConsole", x = 0, y = (current_y .. "%"), height = (console_height.."%"), width = GUI.HelpContainer:get_width()}, GUI.HelpContainer)
 			setBackgroundColor("GUI.HelpConsole", 0, 0, 0, 0)
-      if getOS() == "mac" then
-        setMiniConsoleFontSize("GUI.HelpConsole", 10)
-      else
-        setMiniConsoleFontSize("GUI.HelpConsole", 8)
-      end
+
+			if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+				setFont("GUI.HelpConsole", gmcp.Game.Variables.Font)
+			end
+
+			if gmcp.Game.Variables.FontSize ~= nil then
+				GUI.AbilitiesConsole:setFontSize(gmcp.Game.Variables.FontSize)
+			elseif getOS() == "mac" then
+				setMiniConsoleFontSize("GUI.HelpConsole", 10)
+			else
+				setMiniConsoleFontSize("GUI.HelpConsole", 8)
+			end
+
 			setFgColor("GUI.HelpConsole", 192, 192, 192)
 			setBgColor("GUI.HelpConsole", 0, 0, 0)
 			GUI.HelpConsole:enableAutoWrap()

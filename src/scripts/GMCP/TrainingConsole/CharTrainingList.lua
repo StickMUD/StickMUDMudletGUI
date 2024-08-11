@@ -48,13 +48,20 @@ function CharTrainingList()
 			table.insert(t2, "<gray>"..string.rep(" ", count)..v.name..string.rep(" ", (skill_max_length + max_count - count - string.len(v.name))).." "..v.rank.." <cyan>"..v.percent)
 		end
 	end
-	
-	if getOS() == "mac" then
-    GUI.TrainingConsole:setFontSize(10)
-  else
-    GUI.TrainingConsole:setFontSize(8)
-  end
-	GUI.TrainingConsole:resetAutoWrap()
+
+	if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+		setFont("GUI.TrainingConsole", gmcp.Game.Variables.Font)
+	end
+
+  	if gmcp.Game.Variables.FontSize ~= nil then
+		GUI.TrainingConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  	elseif getOS() == "mac" then
+    	GUI.TrainingConsole:setFontSize(10)
+  	else
+    	GUI.TrainingConsole:setFontSize(8)
+  	end
+
+    GUI.TrainingConsole:resetAutoWrap()
 	clearWindow("GUI.TrainingConsole")
 	cecho("GUI.TrainingConsole", table.concat(t2, "<reset>\n"))
 end

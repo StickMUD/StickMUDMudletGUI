@@ -95,11 +95,19 @@ for index = 1, #menu_consoles do
         }
       )
     setBackgroundColor("GUI." .. console_value, 0, 0, 0)
-    if getOS() == "mac" then
+
+    if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+      setFont("GUI." .. console_value, gmcp.Game.Variables.Font)
+    end
+  
+    if gmcp.Game.Variables.FontSize ~= nil then
+      setMiniConsoleFontSize("GUI." .. console_value, gmcp.Game.Variables.FontSize)
+    elseif getOS() == "mac" then
       setMiniConsoleFontSize("GUI." .. console_value, 10)
     else
       setMiniConsoleFontSize("GUI." .. console_value, 8)
     end
+
     setFgColor("GUI." .. console_value, 192, 192, 192)
     setBgColor("GUI." .. console_value, 0, 0, 0)
     GUI[console_value]:enableAutoWrap()

@@ -50,6 +50,14 @@ function CharSessionTraining()
 	end
 	
 	clearWindow("GUI.SessionConsole")
-	--GUI.SessionConsole:setFontSize(14)
+
+	if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+		setFont("GUI.SessionConsole", gmcp.Game.Variables.Font)
+	end
+
+	if gmcp.Game.Variables.FontSize ~= nil then
+		GUI.SessionConsole:setFontSize(gmcp.Game.Variables.FontSize)
+	end
+
 	cecho("GUI.SessionConsole", table.concat(t2, "<reset>\n"))
 end

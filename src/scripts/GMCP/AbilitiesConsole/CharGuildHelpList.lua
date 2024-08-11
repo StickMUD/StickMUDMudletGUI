@@ -5,11 +5,19 @@ function CharGuildHelpList()
   local count = 0
   local buffer = ""
   clearWindow("GUI.AbilitiesConsole")
-  if getOS() == "mac" then
+
+  if gmcp.Game.Variables.Font ~= nil and getAvailableFonts()[gmcp.Game.Variables.Font] then
+    setFont("GUI.AbilitiesConsole", gmcp.Game.Variables.Font)
+  end
+
+  if gmcp.Game.Variables.FontSize ~= nil then
+    GUI.AbilitiesConsole:setFontSize(gmcp.Game.Variables.FontSize)
+  elseif getOS() == "mac" then
     GUI.AbilitiesConsole:setFontSize(10)
   else
     GUI.AbilitiesConsole:setFontSize(8)
   end
+
   GUI.AbilitiesConsole:resetAutoWrap()
   -- populate the table that holds the keys
   for k in pairs(guild_help_list) do
@@ -26,11 +34,13 @@ function CharGuildHelpList()
         return v1 < v2
       end
     )
+
     if count > 0 then
       cecho("GUI.AbilitiesConsole", "\n<yellow>" .. firstToUpper(k) .. ":\n")
     else
       cecho("GUI.AbilitiesConsole", "<yellow>" .. firstToUpper(k) .. ":\n")
     end
+
     for k2, v2 in pairs(guild_help_list[k]) do
       count = count + 1
       cecho("GUI.AbilitiesConsole", "  ")
@@ -43,6 +53,7 @@ function CharGuildHelpList()
         true
       )
       echo("GUI.AbilitiesConsole", string.rep(" ", 15 - string.len(v2)))
+
       if count % 2 == 0 then
         echo("GUI.AbilitiesConsole", "\n")
       end
