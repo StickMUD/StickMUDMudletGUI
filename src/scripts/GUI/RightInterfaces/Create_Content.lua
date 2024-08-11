@@ -87,13 +87,13 @@ for index = 1, #content_sections do
       )
     setBackgroundColor("GUI." .. console_value, 0, 0, 0, 0)
 
-    if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
+    if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
       if getAvailableFonts()[gmcp.Game.Variables.font] then
         setFont("GUI." .. console_value, gmcp.Game.Variables.font)
       end
     end
 
-    if gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+    if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
       setMiniConsoleFontSize("GUI." .. console_value, gmcp.Game.Variables.fontSize)
     elseif getOS() == "mac" then
       setMiniConsoleFontSize("GUI." .. console_value, 10)
