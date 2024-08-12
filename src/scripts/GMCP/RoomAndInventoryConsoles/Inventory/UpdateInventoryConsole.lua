@@ -21,7 +21,9 @@ local function setupConsole(consoleName)
         end
     end
 
-    -- _G[consoleName]:resetAutoWrap() -- Use _G to access the global variable by name
+    -- Use string.match to split the string
+    local prefix, suffix = string.match(consoleName, "^(%w+)%.(%w+)$")
+    _G[prefix][suffix]:resetAutoWrap() -- Use _G to access the global variable by name
 end
 
 local function updateConsole(consoleName, header, inventory)
