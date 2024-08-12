@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "CharItemsAddLocationRoom",
               "eventHandlerList": [
-                     "gmcp.Char.Items.Add", "gmcp.Game.Variables"
+                     "gmcp.Char.Items.Add"
               ],
               "script": ""
        },
@@ -13,7 +13,7 @@
               "isFolder": "no",
               "name": "CharItemsListLocationRoom",
               "eventHandlerList": [
-                     "gmcp.Char.Items.List", "gmcp.Game.Variables"
+                     "gmcp.Char.Items.List"
               ],
               "script": ""
        },
@@ -22,7 +22,7 @@
               "isFolder": "no",
               "name": "CharItemsRemoveLocationRoom",
               "eventHandlerList": [
-                     "gmcp.Char.Items.Remove", "gmcp.Game.Variables"
+                     "gmcp.Char.Items.Remove"
               ],
               "script": ""
        }

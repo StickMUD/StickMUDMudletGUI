@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "RoomAddPlayer",
               "eventHandlerList": [
-                     "gmcp.Room.AddPlayer", "gmcp.Game.Variables"
+                     "gmcp.Room.AddPlayer"
               ],
               "script": ""
        },
@@ -13,7 +13,7 @@
               "isFolder": "no",
               "name": "RoomPlayers",
               "eventHandlerList": [
-                     "gmcp.Room.Players", "gmcp.Game.Variables"
+                     "gmcp.Room.Players"
               ],
               "script": ""
        },
@@ -22,7 +22,7 @@
               "isFolder": "no",
               "name": "RoomRemovePlayer",
               "eventHandlerList": [
-                     "gmcp.Room.RemovePlayer", "gmcp.Game.Variables"
+                     "gmcp.Room.RemovePlayer"
               ],
               "script": ""
        }

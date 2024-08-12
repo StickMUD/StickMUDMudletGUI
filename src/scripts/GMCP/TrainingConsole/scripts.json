@@ -4,7 +4,7 @@
               "isFolder": "no",
               "name": "CharTrainingList",
               "eventHandlerList": [
-                     "gmcp.Char.Training.List", "gmcp.Game.Variables"
+                     "gmcp.Char.Training.List"
               ],
               "script": ""
        }
