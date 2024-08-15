@@ -33,9 +33,7 @@ function CharTrainingList()
     end
 
     trainingList = trainingList ..
-                       "<tr><td colspan=\"2\"><font size=\"3\" color=\"red\">Training" ..
-                       string.rep("&nbsp;", (skill_max_length + max_count - 8)) ..
-                       " Rank</font></td></tr>"
+                       "<tr><td><font size=\"3\" color=\"red\">Training</font></td><td><font size=\"3\" color=\"red\">Rank</font></td></tr>"
 
     -- Construct the training list
     for k, v in pairs(training_total) do
@@ -58,9 +56,10 @@ function CharTrainingList()
                            string.rep("&nbsp;", count) .. v.name ..
                            string.rep("&nbsp;",
                                       (skill_max_length + max_count - count -
-                                          string.len(v.name))) .. "</td>"
-        trainingList = trainingList .. "<td>" .. v.rank .. " <font color=\"cyan\">" ..
-                           v.percent .. "</font></td></tr>"
+                                          string.len(v.name))) .. "</font></td>"
+        trainingList = trainingList .. "<td>" ..color .. v.rank ..
+                           "</font> <font color=\"cyan\">" .. v.percent ..
+                           "</font></td></tr>"
     end
 
     trainingList = trainingList .. "</table>"
