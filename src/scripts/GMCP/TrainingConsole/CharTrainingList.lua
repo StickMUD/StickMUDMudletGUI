@@ -45,11 +45,11 @@ function CharTrainingList()
             end
         end
 
-        local color = "<font color=\"gray\">"
+        local color = "<font size=\"3\" color=\"gray\">"
         if count == 0 then
-            color = "<font color=\"magenta\">"
+            color = "<font size=\"3\" color=\"magenta\">"
         elseif count == 1 then
-            color = "<font color=\"yellow\">"
+            color = "<font size=\"3\" color=\"yellow\">"
         end
 
         trainingList = trainingList .. "<tr><td>" .. color ..
@@ -58,7 +58,7 @@ function CharTrainingList()
                                       (skill_max_length + max_count - count -
                                           string.len(v.name))) .. "</font></td>"
         trainingList = trainingList .. "<td>" ..color .. v.rank ..
-                           "</font> <font color=\"cyan\">" .. v.percent ..
+                           "</font> <font size=\"3\" color=\"cyan\">" .. v.percent ..
                            "</font></td></tr>"
     end
 
