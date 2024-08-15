@@ -1,3 +1,7 @@
+function on_trainniglabel_press(category)
+    CharTrainingList()
+end
+
 function CharTrainingList()
 	local training_total = gmcp.Char.Training.List
 	local skill_max_length = 0
@@ -55,13 +59,9 @@ function CharTrainingList()
 		end
 	end
 
-  	if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
-		GUI.TrainingConsole:setFontSize(gmcp.Game.Variables.fontSize)
-  	elseif getOS() == "mac" then
-    	GUI.TrainingConsole:setFontSize(10)
-  	else
-    	GUI.TrainingConsole:setFontSize(8)
-  	end
+	if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
+		setMiniConsoleFontSize("GUI.TrainingConsole", gmcp.Game.Variables.fontSize)
+	end
 
     GUI.TrainingConsole:resetAutoWrap()
 	clearWindow("GUI.TrainingConsole")
