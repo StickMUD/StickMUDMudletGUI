@@ -117,14 +117,14 @@ function CharHelpList()
                           [[send("help ]] .. v2 .. [[", false)]],
                           ("Help on " .. v2), true)
 
-                if count % 2 == 0 then
+                if count % 3 == 0 then
                     echo("GUI.HelpConsole", "\n")
                 else
-                    echo("GUI.HelpConsole", string.rep(" ", 20 - string.len(v2)))
+                    echo("GUI.HelpConsole", string.rep(" ", 15 - string.len(v2)))
                 end
             end
 
-            if count % 2 ~= 0 then cecho("GUI.HelpConsole", "\n") end
+            if count % 3 ~= 0 then cecho("GUI.HelpConsole", "\n") end
 
             count = 0
         end
