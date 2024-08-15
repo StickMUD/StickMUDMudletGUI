@@ -45,11 +45,11 @@ function CharTrainingList()
             end
         end
 
-        local color = "<font color=\"gray>\">"
+        local color = "<font color=\"gray\">"
         if count == 0 then
-            color = "<font color=\"magenta>\">"
+            color = "<font color=\"magenta\">"
         elseif count == 1 then
-            color = "<font color=\"yellow>\">"
+            color = "<font color=\"yellow\">"
         end
 
         trainingList = trainingList .. "<tr><td>" .. color ..
