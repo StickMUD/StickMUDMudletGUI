@@ -1,69 +1,79 @@
-function on_trainniglabel_press(category)
-    CharTrainingList()
-end
+-- Define the CSS for the training list display
+GUI.CharTrainingListCSS = CSSMan.new([[
+	qproperty-wordWrap: true;
+    qproperty-alignment: 'AlignTop';
+]])
+
+function on_trainniglabel_press(category) CharTrainingList() end
 
 function CharTrainingList()
-	local training_total = gmcp.Char.Training.List
-	local skill_max_length = 0
-	local max_count = 0
+    local training_total = gmcp.Char.Training.List
+    local skill_max_length = 0
+    local max_count = 0
 
-	table.sort (training_total, 
-           function (v1, v2)
-             return v1.skill < v2.skill
-           end -- function
-           )
-	
-	local t2 = {}
+    table.sort(training_total, function(v1, v2) return v1.skill < v2.skill end)
 
-	for k,v in pairs(training_total) do
-		local count = 0
-		
-		if string.len(v.name) > skill_max_length then
-			skill_max_length = string.len(v.name)
-		end
+    local trainingList = "<table>"
 
-		for i = 0, string.len(v.skill) do
-			if string.sub(v.skill, i, i) == "." then
-				count = count + 1
-			end
-		end
-		
-		if count > max_count then
-			max_count = count
-		end
-	end
-	
-	table.insert(t2, "<red>Training"..string.rep(" ", (skill_max_length + max_count - 8)).." Rank")	
+    -- Calculate maximum lengths and counts
+    for k, v in pairs(training_total) do
+        local count = 0
 
-	for k,v in pairs(training_total) do
-	  local count = 0
-				
-		for i = 0, string.len(v.skill) do
-			if string.sub(v.skill, i, i) == "." then
-				count = count + 1
-			end
-		end
+        if string.len(v.name) > skill_max_length then
+            skill_max_length = string.len(v.name)
+        end
 
-		if count == 0 then
-			table.insert(t2, "<magenta>"..string.rep(" ", count)..v.name..string.rep(" ", (skill_max_length + max_count - count - string.len(v.name))).." "..v.rank.." <cyan>"..v.percent)
-		elseif count == 1 then 
-			table.insert(t2, "<yellow>"..string.rep(" ", count)..v.name..string.rep(" ", (skill_max_length + max_count - count - string.len(v.name))).." "..v.rank.." <cyan>"..v.percent)
-		else
-			table.insert(t2, "<gray>"..string.rep(" ", count)..v.name..string.rep(" ", (skill_max_length + max_count - count - string.len(v.name))).." "..v.rank.." <cyan>"..v.percent)
-		end
-	end
+        for i = 0, string.len(v.skill) do
+            if string.sub(v.skill, i, i) == "." then
+                count = count + 1
+            end
+        end
 
-	if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.font ~= nil then
-		if getAvailableFonts()[gmcp.Game.Variables.font] then
-		  setFont("GUI.TrainingConsole", gmcp.Game.Variables.font)
-		end
-	end
+        if count > max_count then max_count = count end
+    end
 
-	if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and gmcp.Game.Variables.fontSize ~= nil then
-		setMiniConsoleFontSize("GUI.TrainingConsole", gmcp.Game.Variables.fontSize)
-	end
+    trainingList = trainingList ..
+                       "<tr><td colspan=\"2\"><font size=\"3\" color=\"red\">Training" ..
+                       string.rep("&nbsp;", (skill_max_length + max_count - 8)) ..
+                       " Rank</font></td></tr>"
 
-    GUI.TrainingConsole:resetAutoWrap()
-	clearWindow("GUI.TrainingConsole")
-	cecho("GUI.TrainingConsole", table.concat(t2, "<reset>\n"))
+    -- Construct the training list
+    for k, v in pairs(training_total) do
+        local count = 0
+
+        for i = 0, string.len(v.skill) do
+            if string.sub(v.skill, i, i) == "." then
+                count = count + 1
+            end
+        end
+
+        local color = "<font color=\"gray>\">"
+        if count == 0 then
+            color = "<font color=\"magenta>\">"
+        elseif count == 1 then
+            color = "<font color=\"yellow>\">"
+        end
+
+        trainingList = trainingList .. "<tr><td>" .. color ..
+                           string.rep("&nbsp;", count) .. v.name ..
+                           string.rep("&nbsp;",
+                                      (skill_max_length + max_count - count -
+                                          string.len(v.name))) .. "</td>"
+        trainingList = trainingList .. "<td>" .. v.rank .. " <font color=\"cyan\">" ..
+                           v.percent .. "</font></td></tr>"
+    end
+
+    trainingList = trainingList .. "</table>"
+
+    -- Create the ScrollBox and populate it with the training list
+    GUI.CharTrainingListLabel = Geyser.Label:new({
+        name = "GUI.CharTrainingListLabel",
+        x = 0,
+        y = 0,
+        width = "100%",
+        height = "200%"
+    }, GUI.TrainingScrollBox)
+    GUI.CharTrainingListLabel:setStyleSheet(GUI.CharTrainingListCSS:getCSS())
+    setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
+    GUI.CharTrainingListLabel:echo(trainingList)
 end

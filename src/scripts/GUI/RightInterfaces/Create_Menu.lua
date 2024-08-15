@@ -5,7 +5,7 @@ menu_consoles =
   {
     "PlayersScrollBox",
     "AbilitiesConsole",
-    "TrainingConsole",
+    "TrainingScrollBox",
     "SessionConsole",
     "GroupConsole",
     "HelpContainer",
