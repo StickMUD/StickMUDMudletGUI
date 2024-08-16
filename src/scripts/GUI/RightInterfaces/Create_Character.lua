@@ -59,7 +59,7 @@ GUI.LabelCharacter =
 -- The icons will be contained here
 GUI.HBoxCharacter =
   Geyser.HBox:new(
-    {name = "GUI.HBoxCharacter", x = 0, y = "94%", width = "100%", height = "6%"}, GUI.LabelCharacter
+    {name = "GUI.HBoxCharacter", x = 0, y = "94%", width = "100%", height = "6%"}, GUI.Right
   )
 	
 -- Add the icons and events
