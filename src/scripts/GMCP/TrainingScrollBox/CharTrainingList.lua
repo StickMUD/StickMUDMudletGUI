@@ -4,7 +4,7 @@ GUI.CharTrainingListCSS = CSSMan.new([[
     qproperty-alignment: 'AlignTop';
 ]])
 
-function on_trainniglabel_press(category) CharTrainingList() end
+function on_traininglabel_press(category) CharTrainingList() end
 
 function CharTrainingList()
     local training_total = gmcp.Char.Training.List
@@ -22,7 +22,7 @@ function CharTrainingList()
     local sessionSkills = {}
     if session_training then
         for _, v in pairs(session_training) do
-            sessionSkills[v.name] = true
+            sessionSkills[v.skill] = true
         end
     end
 
