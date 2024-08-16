@@ -1,10 +1,3 @@
-wieldedWeapons = {}
-wornArmour = {}
-otherInventory = {}
-roomInvTable = {}
-roomNPCsTable = {}
-roomPlayersTable = {}
-
 content_sections = {
     "BoxWieldedWeapons", "BoxWornArmour", "BoxInventory", "BoxRoomInv",
     "BoxMap", "BoxInfo"
@@ -22,6 +15,15 @@ function on_content_box_press(section)
         local console_value = content_consoles[index]
         if section_value == section then
             GUI[console_value]:show()
+            if section == "BoxWieldedWeapons" then
+                sendGMCP("Char.Items.Inv")
+            elseif section == "BoxWornArmour" then
+                sendGMCP("Char.Items.Inv")
+            elseif section == "BoxInventory" then
+                sendGMCP("Char.Items.Inv")
+            elseif section == "BoxRoomInv" then
+                sendGMCP("Char.Items.Room")
+            end
         else
             GUI[console_value]:hide()
         end

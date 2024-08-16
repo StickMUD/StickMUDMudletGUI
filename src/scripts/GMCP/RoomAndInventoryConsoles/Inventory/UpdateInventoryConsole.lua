@@ -1,3 +1,7 @@
+wieldedWeapons = {}
+wornArmour = {}
+otherInventory = {}
+
 local function setupConsole(consoleName)
     clearUserWindow(consoleName)
     setFont(consoleName, getFont())
