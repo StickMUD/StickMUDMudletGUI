@@ -38,31 +38,31 @@
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Create Chat",
+              "name": "Create RightChat",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Create Content",
+              "name": "Create RightContent",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Create Money",
+              "name": "Create RightMoney",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Create Menu",
+              "name": "Create RightMenu",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
-              "name": "Create Character",
+              "name": "Create RightCharacter",
               "script": ""
        }
 ]
