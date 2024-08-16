@@ -48,7 +48,7 @@ function CharTrainingList()
     end
 
     trainingList = trainingList ..
-                       "<tr><td><font size=\"3\" color=\"red\">Training</font></td><td><font size=\"3\" color=\"red\">Rank</font></td></tr>"
+                       "<tr><td><font size=\"3\" color=\"red\">TRAINING</font></td><td><font size=\"3\" color=\"red\">RANK</font></td></tr>"
 
     -- Construct the training list
     for k, v in pairs(training_total) do

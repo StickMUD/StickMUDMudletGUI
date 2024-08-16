@@ -37,7 +37,7 @@ function CharSessionTraining()
     end
 
     sessionList = sessionList ..
-                      "<tr><td><font size=\"3\" color=\"red\">Training Session</font></td></tr>"
+                      "<tr><td><font size=\"3\" color=\"red\">TRAINING</td><td><font size=\"3\" color=\"red\">SESSION</font></td></tr>"
 
     -- Construct the session training list
     for k, v in pairs(training_session) do
