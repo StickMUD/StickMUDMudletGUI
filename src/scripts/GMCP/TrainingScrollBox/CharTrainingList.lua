@@ -62,7 +62,7 @@ function CharTrainingList()
 
         local color = "<font size=\"3\" color=\"gray\">"
 
-        if sessionSkills[v.name] then
+        if sessionSkills[v.skill] then
             color = "<font size=\"3\" color=\"orange\">"
         elseif count == 0 then
             color = "<font size=\"3\" color=\"magenta\">"
