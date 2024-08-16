@@ -1,5 +1,5 @@
 GUI.BoxRightCSS = CSSMan.new([[
-  background-color: rgba(0,0,0,0);
+  background-color: rgba(0,0,0,100);
 	qproperty-wordWrap: true;
 ]])
 

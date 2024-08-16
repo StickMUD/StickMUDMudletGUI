@@ -54,33 +54,33 @@ function CharStatus()
         if char_status[i] == "rest" then
             if state == "Yes" then
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,255,0)")
+                                                          "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,0)")
+                                                          "rgba(0,0,0,100)")
             end
         elseif char_status[i] == "invis" then
             if state == "Yes" then
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,255,0)")
+                                                          "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,0)")
+                                                          "rgba(0,0,0,100)")
             end
         elseif char_status[i] == "frog" then
             if state == "Yes" then
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,255,0)")
+                                                          "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,0)")
+                                                          "rgba(0,0,0,100)")
             end
         elseif state == "Yes" then
             GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                      "rgba(255,0,0,0)")
+                                                      "rgba(255,0,0,100)")
         else
             GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                      "rgba(0,0,0,0)")
+                                                      "rgba(0,0,0,100)")
         end
 
         GUI["Box" .. firstToUpper(char_status[i])]:setStyleSheet(GUI["Box" ..
