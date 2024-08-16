@@ -4,22 +4,8 @@ otherInventory = {}
 
 local function setupConsole(consoleName)
     clearUserWindow(consoleName)
-
-    if gmcp.Game and gmcp.Game.Variables then
-        local font = gmcp.Game.Variables.font
-        if font and getAvailableFonts()[font] then
-            setFont(consoleName, font)
-        end
-
-        local fontSize = gmcp.Game.Variables.fontSize
-        if fontSize then
-            setMiniConsoleFontSize(consoleName, fontSize)
-        elseif getOS() == "mac" then
-            setMiniConsoleFontSize(consoleName, 10)
-        else
-            setMiniConsoleFontSize(consoleName, 8)
-        end
-    end
+    setFont(consoleName, getFont())
+    setMiniConsoleFontSize(consoleName, getFontSize())
 
     -- Use string.match to split the string
     local prefix, suffix = string.match(consoleName, "^(%w+)%.(%w+)$")

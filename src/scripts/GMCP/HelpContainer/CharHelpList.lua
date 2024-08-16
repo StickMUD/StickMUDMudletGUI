@@ -83,24 +83,8 @@ function CharHelpList()
                 width = GUI.HelpContainer:get_width()
             }, GUI.HelpContainer)
             setBackgroundColor("GUI.HelpConsole", 0, 0, 0, 0)
-
-            if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and
-                gmcp.Game.Variables.font ~= nil then
-                if getAvailableFonts()[gmcp.Game.Variables.font] then
-                    setFont("GUI.HelpConsole", gmcp.Game.Variables.font)
-                end
-            end
-
-            if gmcp.Game ~= nil and gmcp.Game.Variables ~= nil and
-                gmcp.Game.Variables.fontSize ~= nil then
-                setMiniConsoleFontSize("GUI.HelpConsole",
-                                       gmcp.Game.Variables.fontSize)
-            elseif getOS() == "mac" then
-                setMiniConsoleFontSize("GUI.HelpConsole", 10)
-            else
-                setMiniConsoleFontSize("GUI.HelpConsole", 8)
-            end
-
+            setFont("GUI.HelpConsole", getFont())
+            setMiniConsoleFontSize("GUI.HelpConsole", getFontSize())
             setFgColor("GUI.HelpConsole", 192, 192, 192)
             setBgColor("GUI.HelpConsole", 0, 0, 0)
             GUI.HelpConsole:enableAutoWrap()

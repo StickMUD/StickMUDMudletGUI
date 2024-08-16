@@ -3,18 +3,12 @@
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Chat",
-              "eventHandlerList": [
-                     "gmcp.Game.Variables.font", "gmcp.Game.Variables.fontSize"
-              ],
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Content",
-              "eventHandlerList": [
-                     "gmcp.Game.Variables.font", "gmcp.Game.Variables.fontSize"
-              ],
               "script": ""
        },
        {
@@ -27,9 +21,6 @@
               "isActive": "yes",
               "isFolder": "no",
               "name": "Create Menu",
-              "eventHandlerList": [
-                     "gmcp.Game.Variables.font", "gmcp.Game.Variables.fontSize"
-              ],
               "script": ""
        },
        {
