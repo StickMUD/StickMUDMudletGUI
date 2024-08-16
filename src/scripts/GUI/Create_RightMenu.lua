@@ -22,6 +22,8 @@ function on_menu_box_press(section)
                 sendGMCP("Char.Guild.Help.List")
             elseif section == "BoxTraining" then
                 sendGMCP("Char.Training.List")
+            elseif section == "BoxSession" then
+                sendGMCP("Char.Session.Training")
             elseif section == "BoxHelp" then
                 sendGMCP("Char.Help.List")
             end
