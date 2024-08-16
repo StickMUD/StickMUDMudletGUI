@@ -8,7 +8,7 @@ function on_trainniglabel_press(category) CharTrainingList() end
 
 function CharTrainingList()
     local training_total = gmcp.Char.Training.List
-    local session_training = gmcp.Char.Session.Training
+    local session_training = gmcp.Char.Session.Training or {}
     local skill_max_length = 0
     local max_count = 0
 
