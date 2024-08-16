@@ -8,13 +8,23 @@ function on_trainniglabel_press(category) CharTrainingList() end
 
 function CharTrainingList()
     local training_total = gmcp.Char.Training.List
-    local session_training = gmcp.Char.Session.Training or {}
+    local session_training = nil
+
+    -- Check if gmcp.Char.Session and gmcp.Char.Session.Training exist
+    if gmcp.Char.Session and gmcp.Char.Session.Training then
+        session_training = gmcp.Char.Session.Training
+    end
+
     local skill_max_length = 0
     local max_count = 0
 
-    -- Convert session_training into a set for quick lookup
+    -- Convert session_training into a set for quick lookup, if it exists
     local sessionSkills = {}
-    for _, v in pairs(session_training) do sessionSkills[v.name] = true end
+    if session_training then
+        for _, v in pairs(session_training) do
+            sessionSkills[v.name] = true
+        end
+    end
 
     table.sort(training_total, function(v1, v2) return v1.skill < v2.skill end)
 
