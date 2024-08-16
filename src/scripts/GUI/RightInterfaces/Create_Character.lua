@@ -46,9 +46,20 @@ character_tooltips =
 character_stretch = {1, 1, 1, 1, 1.1, 1, 1, 1, 1, 1, 1.1, 1}
 
 -- The icons will be contained here
+GUI.LabelCharacter =
+  Geyser.Label:new(
+    {name = "GUI.LabelCharacter", x = 0, y = "94%", width = "100%", height = "6%"}, GUI.Right
+  )
+  GUI.LabelCharacter:setStyleSheet([[
+  	QLabel{
+			background-color: rgba(0,0,0,255);
+		}
+		]])
+
+-- The icons will be contained here
 GUI.HBoxCharacter =
   Geyser.HBox:new(
-    {name = "GUI.HBoxCharacter", x = 0, y = "94%", width = "100%", height = "6%"}, GUI.Right
+    {name = "GUI.HBoxCharacter", x = 0, y = "94%", width = "100%", height = "6%"}, GUI.LabelCharacter
   )
 	
 -- Add the icons and events
