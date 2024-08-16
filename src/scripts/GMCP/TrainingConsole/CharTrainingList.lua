@@ -13,7 +13,7 @@ function CharTrainingList()
 
     table.sort(training_total, function(v1, v2) return v1.skill < v2.skill end)
 
-    local trainingList = "<table>"
+    local trainingList = "<table width=\"100%\">"
 
     -- Calculate maximum lengths and counts
     for k, v in pairs(training_total) do
