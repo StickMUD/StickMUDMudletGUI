@@ -10,8 +10,8 @@ function CharTrainingList()
     local training_total = gmcp.Char.Training.List
     local session_training = nil
 
-    -- Check if gmcp.Char.Session and gmcp.Char.Session.Training exist
-    if gmcp.Char.Session and gmcp.Char.Session.Training then
+    -- Check if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training exist
+    if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
         session_training = gmcp.Char.Session.Training
     end
 

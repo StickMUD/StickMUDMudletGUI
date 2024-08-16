@@ -49,7 +49,13 @@ local function readableNumber(num, places)
 end
 
 function GamePlayersList()
-  local game_players_list = gmcp.Game.Players.List
+  local game_players_list = nil
+
+  -- Check if gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List exist
+  if gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List then
+      training_session = gmcp.Char.Session.Training
+  end
+
   local gamePlayersList = "<table>"
   local coders = table.n_filter(game_players_list, filterByCoder)
   if #coders > 0 then

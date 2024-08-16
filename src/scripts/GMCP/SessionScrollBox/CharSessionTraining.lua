@@ -5,7 +5,13 @@ GUI.CharSessionTrainingCSS = CSSMan.new([[
 ]])
 
 function CharSessionTraining()
-    local training_session = gmcp.Char.Session.Training
+    local training_session = nil
+
+    -- Check if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training exist
+    if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
+        training_session = gmcp.Char.Session.Training
+    end
+
     local skill_max_length = 0
     local max_count = 0
 
