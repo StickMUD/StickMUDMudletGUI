@@ -1,3 +1,10 @@
+wieldedWeapons = {}
+wornArmour = {}
+otherInventory = {}
+roomInvTable = {}
+roomNPCsTable = {}
+roomPlayersTable = {}
+
 content_sections = {
     "BoxWieldedWeapons", "BoxWornArmour", "BoxInventory", "BoxRoomInv",
     "BoxMap", "BoxInfo"

@@ -1,7 +1,3 @@
-roomInvTable = {}
-roomNPCsTable = {}
-roomPlayersTable = {}
-
 local function setupRoomConsole()
     clearUserWindow("GUI.RoomConsole")
     setFont(consoleName, getFont())
