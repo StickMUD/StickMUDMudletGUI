@@ -6,7 +6,7 @@ menu_icons = {"🤺", "🤹", "🏆", "📈", "🐉", "📚"}
 menu_tooltips = {"Players", "Abilities", "Training", "Session", "Party", "Help"}
 menu_consoles = {
     "PlayersScrollBox", "AbilitiesConsole", "TrainingScrollBox",
-    "SessionConsole", "GroupConsole", "HelpContainer"
+    "SessionScrollBox", "GroupConsole", "HelpContainer"
 }
 selected_console = "PlayersScrollBox"
 

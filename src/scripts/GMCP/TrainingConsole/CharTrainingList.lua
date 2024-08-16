@@ -8,8 +8,13 @@ function on_trainniglabel_press(category) CharTrainingList() end
 
 function CharTrainingList()
     local training_total = gmcp.Char.Training.List
+    local session_training = gmcp.Char.Session.Training
     local skill_max_length = 0
     local max_count = 0
+
+    -- Convert session_training into a set for quick lookup
+    local sessionSkills = {}
+    for _, v in pairs(session_training) do sessionSkills[v.name] = true end
 
     table.sort(training_total, function(v1, v2) return v1.skill < v2.skill end)
 
@@ -46,7 +51,10 @@ function CharTrainingList()
         end
 
         local color = "<font size=\"3\" color=\"gray\">"
-        if count == 0 then
+
+        if sessionSkills[v.name] then
+            color = "<font size=\"3\" color=\"orange\">"
+        elseif count == 0 then
             color = "<font size=\"3\" color=\"magenta\">"
         elseif count == 1 then
             color = "<font size=\"3\" color=\"yellow\">"
@@ -57,9 +65,9 @@ function CharTrainingList()
                            string.rep("&nbsp;",
                                       (skill_max_length + max_count - count -
                                           string.len(v.name))) .. "</font></td>"
-        trainingList = trainingList .. "<td>" ..color .. v.rank ..
-                           "</font> <font size=\"3\" color=\"cyan\">" .. v.percent ..
-                           "</font></td></tr>"
+        trainingList = trainingList .. "<td>" .. color .. v.rank ..
+                           "</font> <font size=\"3\" color=\"cyan\">" ..
+                           v.percent .. "</font></td></tr>"
     end
 
     trainingList = trainingList .. "</table>"
