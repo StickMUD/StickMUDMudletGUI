@@ -87,7 +87,7 @@ for index = 1, #menu_consoles do
             height = GUI.MenuBox:get_height(),
             width = GUI.MenuBox:get_width()
         })
-        setBackgroundColor("GUI." .. console_value, 0, 0, 0)
+        setBackgroundColor("GUI." .. console_value, 0, 0, 0, 255)
         setFont("GUI." .. console_value, getFont())
         setMiniConsoleFontSize("GUI." .. console_value, getFontSize())
         setFgColor("GUI." .. console_value, 192, 192, 192)
@@ -102,7 +102,7 @@ for index = 1, #menu_consoles do
             height = GUI.MenuBox:get_height(),
             width = GUI.MenuBox:get_width()
         })
-        setBackgroundColor("GUI." .. console_value, 0, 0, 0)
+        setBackgroundColor("GUI." .. console_value, 0, 0, 0, 255)
         GUI[console_value]:hide()
     else
         GUI[console_value] = Geyser.ScrollBox:new({
@@ -112,7 +112,7 @@ for index = 1, #menu_consoles do
             height = GUI.MenuBox:get_height() * 4,
             width = GUI.MenuBox:get_width()
         })
-        setBackgroundColor("GUI." .. console_value, 0, 0, 0)
+        setBackgroundColor("GUI." .. console_value, 0, 0, 0, 255)
         GUI[console_value]:hide()
     end
 end
