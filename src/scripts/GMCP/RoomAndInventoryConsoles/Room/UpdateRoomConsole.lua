@@ -2,31 +2,35 @@ roomInvTable = {}
 roomNPCsTable = {}
 roomPlayersTable = {}
 
+local function setupRoomConsole()
+    clearUserWindow("GUI.RoomConsole")
+    setFont(consoleName, getFont())
+    setMiniConsoleFontSize(consoleName, getFontSize())
+
+    GUI.RoomConsole:resetAutoWrap()
+    cecho("GUI.RoomConsole",
+          "\n<light_blue:black>Your Location: <green_yellow:black>" ..
+              gmcp.Room.Info.name .. "\n\n")
+end
+
+local function updateRoomSection(consoleName, header, dataTable, getAction)
+    cecho(consoleName, "\n<light_blue:black>" .. header .. ":\n\n")
+    for key, value in pairs(dataTable) do
+        echo(consoleName, " ")
+        echoLink(consoleName, getAction,
+                 [[send("]] .. getAction .. [[ ]] .. key .. [[", false)]],
+                 getAction, false)
+        echo(consoleName, " ( ")
+        echoLink(consoleName, "L", [[send("look at ]] .. key .. [[", false)]],
+                 "Look at", false)
+        cecho(consoleName, " ) " .. value .. "\n")
+    end
+end
+
 function UpdateRoomConsole()
-  clearUserWindow("GUI.RoomConsole")
-	GUI.RoomConsole:resetAutoWrap()
-	cecho("GUI.RoomConsole", "\n<light_blue:black>Your Location: <green_yellow:black>"..gmcp.Room.Info.name.."\n\n")
-  for key, value in pairs(roomInvTable) do
-    echo("GUI.RoomConsole", " ")
-    echoLink("GUI.RoomConsole", "+", [[send("get ]] .. key .. [[", false)]], "Get", false)
-    echo("GUI.RoomConsole", " ( ")
-    echoLink("GUI.RoomConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.RoomConsole", " ) " .. value .. "\n")
-  end
-	cecho("GUI.RoomConsole", "\n<light_blue:black>Non-Player Characters here:\n\n")
-  for key, value in pairs(roomNPCsTable) do
-    echo("GUI.RoomConsole", " ")
-    echoLink("GUI.RoomConsole", "i", [[send("i ]] .. key .. [[", false)]], "Inventory", false)
-    echo("GUI.RoomConsole", " ( ")
-    echoLink("GUI.RoomConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.RoomConsole", " ) " .. value .. "\n")
-  end
-	cecho("GUI.RoomConsole", "\n<light_blue:black>Players here:\n\n")
-	for key, value in pairs(roomPlayersTable) do
-    echo("GUI.RoomConsole", " ")
-    echoLink("GUI.RoomConsole", "i", [[send("i ]] .. key .. [[", false)]], "Inventory", false)
-    echo("GUI.RoomConsole", " ( ")
-    echoLink("GUI.RoomConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.RoomConsole", " ) " .. value .. "\n")
-  end
+    setupRoomConsole()
+    updateRoomSection("GUI.RoomConsole", "Room Inventory", roomInvTable, "+")
+    updateRoomSection("GUI.RoomConsole", "Non-Player Characters here",
+                      roomNPCsTable, "i")
+    updateRoomSection("GUI.RoomConsole", "Players here", roomPlayersTable, "i")
 end

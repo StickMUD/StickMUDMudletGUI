@@ -37,8 +37,32 @@
        },
        {
               "isActive": "yes",
-              "isFolder": "yes",
-              "name": "RightInterfaces",
+              "isFolder": "no",
+              "name": "Create RightChat",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Create RightContent",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Create RightMoney",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Create RightMenu",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "Create RightCharacter",
               "script": ""
        }
 ]

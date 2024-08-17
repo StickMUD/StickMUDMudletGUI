@@ -2,37 +2,34 @@ wieldedWeapons = {}
 wornArmour = {}
 otherInventory = {}
 
+local function setupConsole(consoleName)
+    clearUserWindow(consoleName)
+    setFont(consoleName, getFont())
+    setMiniConsoleFontSize(consoleName, getFontSize())
+
+    -- Use string.match to split the string
+    local prefix, suffix = string.match(consoleName, "^(%w+)%.(%w+)$")
+    _G[prefix][suffix]:resetAutoWrap() -- Use _G to access the global variable by name
+end
+
+local function updateConsole(consoleName, header, inventory)
+    cecho(consoleName, "\n<light_blue:black>" .. header .. ":\n\n")
+    for key, value in pairs(inventory) do
+        echo(consoleName, " ")
+        echoLink(consoleName, "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
+        echo(consoleName, " ( ")
+        echoLink(consoleName, "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
+        cecho(consoleName, " ) " .. value .. "\n")
+    end
+end
+
 function UpdateInventoryConsole()
-  clearUserWindow("GUI.WieldedWeaponsConsole")
-	GUI.WieldedWeaponsConsole:resetAutoWrap()
-	cecho("GUI.WieldedWeaponsConsole", "\n<light_blue:black>Wielded Weapons:\n\n")
-  for key, value in pairs(wieldedWeapons) do
-    echo("GUI.WieldedWeaponsConsole", " ")
-    echoLink("GUI.WieldedWeaponsConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.WieldedWeaponsConsole", " ( ")
-    echoLink("GUI.WieldedWeaponsConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.WieldedWeaponsConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.WieldedWeaponsConsole")
+    updateConsole("GUI.WieldedWeaponsConsole", "Wielded Weapons", wieldedWeapons)
 
-  clearUserWindow("GUI.WornArmourConsole")
-	GUI.WornArmourConsole:resetAutoWrap()	
-	cecho("GUI.WornArmourConsole", "\n<light_blue:black>Worn Armours:\n\n")
-  for key, value in pairs(wornArmour) do
-    echo("GUI.WornArmourConsole", " ")
-    echoLink("GUI.WornArmourConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.WornArmourConsole", " ( ")
-    echoLink("GUI.WornArmourConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.WornArmourConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.WornArmourConsole")
+    updateConsole("GUI.WornArmourConsole", "Worn Armours", wornArmour)
 
-  clearUserWindow("GUI.InventoryConsole")
-	GUI.InventoryConsole:resetAutoWrap()	
-	cecho("GUI.InventoryConsole", "\n<light_blue:black>Other Items:\n\n")
-  for key, value in pairs(otherInventory) do
-    echo("GUI.InventoryConsole", " ")
-    echoLink("GUI.InventoryConsole", "-", [[send("drop ]] .. key .. [[", false)]], "Drop", false)
-    echo("GUI.InventoryConsole", " ( ")
-    echoLink("GUI.InventoryConsole", "L", [[send("look at ]] .. key .. [[", false)]], "Look at", false)
-    cecho("GUI.InventoryConsole", " ) " .. value .. "\n")
-  end
+    setupConsole("GUI.InventoryConsole")
+    updateConsole("GUI.InventoryConsole", "Other Items", otherInventory)
 end

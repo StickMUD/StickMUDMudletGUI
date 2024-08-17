@@ -65,13 +65,13 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "TrainingConsole",
+              "name": "TrainingScrollBox",
               "script": ""
        },
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "SessionConsole",
+              "name": "SessionScrollBox",
               "script": ""
        },
        {
