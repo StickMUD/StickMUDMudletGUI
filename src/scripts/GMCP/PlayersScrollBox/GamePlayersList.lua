@@ -150,3 +150,5 @@ function GamePlayersList()
     setBackgroundColor("GUI.GamePlayersListLabel", 0, 0, 0)
     GUI.GamePlayersListLabel:echo(gamePlayersList)
 end
+
+on_menu_box_press("PlayersScrollBox")
