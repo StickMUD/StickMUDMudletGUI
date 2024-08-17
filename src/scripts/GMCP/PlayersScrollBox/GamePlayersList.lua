@@ -48,86 +48,96 @@ function GamePlayersList()
     end
 
     local gamePlayersList = "<table>"
-    local coders = table.n_filter(game_players_list, filterByCoder)
-    if #coders > 0 then
-        table.sort(coders, function(v1, v2) return v1.coder > v2.coder end)
-        gamePlayersList = gamePlayersList ..
-                              "<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">IMMORTALS - "
-        gamePlayersList = gamePlayersList .. #coders .. "</font></td></tr>"
-        for k, v in pairs(coders) do
+
+    if game_players_list then
+
+        local coders = table.n_filter(game_players_list, filterByCoder)
+        if #coders > 0 then
+            table.sort(coders, function(v1, v2)
+                return v1.coder > v2.coder
+            end)
             gamePlayersList = gamePlayersList ..
-                                  "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
-            if v.guild == "bard" then
-                gamePlayersList = gamePlayersList .. "🪕"
-            elseif v.guild == "fighter" then
-                gamePlayersList = gamePlayersList .. "⚔️"
-            elseif v.guild == "healer" then
-                gamePlayersList = gamePlayersList .. "💝"
-            elseif v.guild == "mage" then
-                gamePlayersList = gamePlayersList .. "🧙"
-            elseif v.guild == "necromancer" then
-                gamePlayersList = gamePlayersList .. "🧟"
-            elseif v.guild == "ninja" then
-                gamePlayersList = gamePlayersList .. "🥷"
-            elseif v.guild == "priest" then
-                gamePlayersList = gamePlayersList .. "📿"
-            elseif v.guild == "thief" then
-                gamePlayersList = gamePlayersList .. "😈"
-            else
-                gamePlayersList = gamePlayersList .. "🤩"
-            end
-            gamePlayersList = gamePlayersList .. "</font></td>"
-            gamePlayersList = gamePlayersList ..
-                                  "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
-                                  firstToUpper(v.name) .. "</font></td></tr>"
-        end
-        gamePlayersList = gamePlayersList .. "<tr><td colspan=\"2\"></td></tr>"
-    end
-    local players = table.n_filter(game_players_list, filterByPlayer)
-    if #players > 0 then
-        table.sort(players, function(v1, v2) return v1.level > v2.level end)
-        gamePlayersList = gamePlayersList ..
-                              "<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">PLAYERS - "
-        gamePlayersList = gamePlayersList .. #players .. "</font></td></tr>"
-        for k, v in pairs(players) do
-            gamePlayersList = gamePlayersList ..
-                                  "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
-            if v.guild == "bard" then
-                gamePlayersList = gamePlayersList .. "🪕"
-            elseif v.guild == "fighter" then
-                gamePlayersList = gamePlayersList .. "⚔️"
-            elseif v.guild == "healer" then
-                gamePlayersList = gamePlayersList .. "💝"
-            elseif v.guild == "mage" then
-                gamePlayersList = gamePlayersList .. "🧙"
-            elseif v.guild == "necromancer" then
-                gamePlayersList = gamePlayersList .. "🧟"
-            elseif v.guild == "ninja" then
-                gamePlayersList = gamePlayersList .. "🥷"
-            elseif v.guild == "priest" then
-                gamePlayersList = gamePlayersList .. "📿"
-            elseif v.guild == "thief" then
-                gamePlayersList = gamePlayersList .. "😈"
-            else
-                gamePlayersList = gamePlayersList .. "🤩"
-            end
-            gamePlayersList = gamePlayersList .. "</font></td>"
-            gamePlayersList = gamePlayersList ..
-                                  "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
-                                  firstToUpper(v.name) .. "</font>"
-            gamePlayersList = gamePlayersList ..
-                                  "<br><font size=\"3\" color=\"silver\">" ..
-                                  firstToUpper(v.race)
-            gamePlayersList = gamePlayersList .. " " .. v.guild
-            gamePlayersList = gamePlayersList .. " - Level " .. v.level
-            gamePlayersList = gamePlayersList .. "</font>"
-            if v.exprate_hour > 0 then
+                                  "<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">IMMORTALS - "
+            gamePlayersList = gamePlayersList .. #coders .. "</font></td></tr>"
+            for k, v in pairs(coders) do
                 gamePlayersList = gamePlayersList ..
-                                      "<br><font size=\"3\" color=\"orange\"><i>" ..
-                                      readableNumber(v.exprate_hour) ..
-                                      "/h exp</i></font>"
+                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
+                if v.guild == "bard" then
+                    gamePlayersList = gamePlayersList .. "🪕"
+                elseif v.guild == "fighter" then
+                    gamePlayersList = gamePlayersList .. "⚔️"
+                elseif v.guild == "healer" then
+                    gamePlayersList = gamePlayersList .. "💝"
+                elseif v.guild == "mage" then
+                    gamePlayersList = gamePlayersList .. "🧙"
+                elseif v.guild == "necromancer" then
+                    gamePlayersList = gamePlayersList .. "🧟"
+                elseif v.guild == "ninja" then
+                    gamePlayersList = gamePlayersList .. "🥷"
+                elseif v.guild == "priest" then
+                    gamePlayersList = gamePlayersList .. "📿"
+                elseif v.guild == "thief" then
+                    gamePlayersList = gamePlayersList .. "😈"
+                else
+                    gamePlayersList = gamePlayersList .. "🤩"
+                end
+                gamePlayersList = gamePlayersList .. "</font></td>"
+                gamePlayersList = gamePlayersList ..
+                                      "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
+                                      firstToUpper(v.name) ..
+                                      "</font></td></tr>"
             end
-            gamePlayersList = gamePlayersList .. "</td></tr>"
+            gamePlayersList = gamePlayersList ..
+                                  "<tr><td colspan=\"2\"></td></tr>"
+        end
+        local players = table.n_filter(game_players_list, filterByPlayer)
+        if #players > 0 then
+            table.sort(players, function(v1, v2)
+                return v1.level > v2.level
+            end)
+            gamePlayersList = gamePlayersList ..
+                                  "<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">PLAYERS - "
+            gamePlayersList = gamePlayersList .. #players .. "</font></td></tr>"
+            for k, v in pairs(players) do
+                gamePlayersList = gamePlayersList ..
+                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
+                if v.guild == "bard" then
+                    gamePlayersList = gamePlayersList .. "🪕"
+                elseif v.guild == "fighter" then
+                    gamePlayersList = gamePlayersList .. "⚔️"
+                elseif v.guild == "healer" then
+                    gamePlayersList = gamePlayersList .. "💝"
+                elseif v.guild == "mage" then
+                    gamePlayersList = gamePlayersList .. "🧙"
+                elseif v.guild == "necromancer" then
+                    gamePlayersList = gamePlayersList .. "🧟"
+                elseif v.guild == "ninja" then
+                    gamePlayersList = gamePlayersList .. "🥷"
+                elseif v.guild == "priest" then
+                    gamePlayersList = gamePlayersList .. "📿"
+                elseif v.guild == "thief" then
+                    gamePlayersList = gamePlayersList .. "😈"
+                else
+                    gamePlayersList = gamePlayersList .. "🤩"
+                end
+                gamePlayersList = gamePlayersList .. "</font></td>"
+                gamePlayersList = gamePlayersList ..
+                                      "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
+                                      firstToUpper(v.name) .. "</font>"
+                gamePlayersList = gamePlayersList ..
+                                      "<br><font size=\"3\" color=\"silver\">" ..
+                                      firstToUpper(v.race)
+                gamePlayersList = gamePlayersList .. " " .. v.guild
+                gamePlayersList = gamePlayersList .. " - Level " .. v.level
+                gamePlayersList = gamePlayersList .. "</font>"
+                if v.exprate_hour > 0 then
+                    gamePlayersList = gamePlayersList ..
+                                          "<br><font size=\"3\" color=\"orange\"><i>" ..
+                                          readableNumber(v.exprate_hour) ..
+                                          "/h exp</i></font>"
+                end
+                gamePlayersList = gamePlayersList .. "</td></tr>"
+            end
         end
     end
     gamePlayersList = gamePlayersList .. "</table>"
