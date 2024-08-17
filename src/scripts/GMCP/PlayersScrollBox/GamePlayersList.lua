@@ -73,7 +73,7 @@ function GamePlayersList()
                 elseif v.guild == "ninja" then
                     gamePlayersList = gamePlayersList .. "🥷"
                 elseif v.guild == "priest" then
-                    gamePlayersList = gamePlayersList .. "📿"
+                    gamePlayersList = gamePlayersList .. "⛪"
                 elseif v.guild == "thief" then
                     gamePlayersList = gamePlayersList .. "😈"
                 else
@@ -112,7 +112,7 @@ function GamePlayersList()
                 elseif v.guild == "ninja" then
                     gamePlayersList = gamePlayersList .. "🥷"
                 elseif v.guild == "priest" then
-                    gamePlayersList = gamePlayersList .. "📿"
+                    gamePlayersList = gamePlayersList .. "⛪"
                 elseif v.guild == "thief" then
                     gamePlayersList = gamePlayersList .. "😈"
                 else
