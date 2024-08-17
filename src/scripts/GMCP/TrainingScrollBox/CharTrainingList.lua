@@ -75,11 +75,11 @@ function CharTrainingList()
         end
 
         trainingList = trainingList .. "<tr><td>" .. color ..
-                           string.rep("&nbsp;", count) .. v.name ..
+                           string.rep("&nbsp;", count) .. v.name .. session ..
                            string.rep("&nbsp;",
                                       (skill_max_length + max_count - count -
                                           string.len(v.name))) .. "</font></td>"
-        trainingList = trainingList .. "<td>" .. color .. v.rank .. session ..
+        trainingList = trainingList .. "<td>" .. color .. v.rank ..
                            "</font> <font size=\"3\" color=\"cyan\">" ..
                            v.percent .. "</font></td></tr>"
     end
