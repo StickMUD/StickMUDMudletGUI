@@ -90,7 +90,7 @@ for index = 1, #menu_consoles do
         })
         setBackgroundColor("GUI." .. console_value, 0, 0, 0, 255)
         setFont("GUI." .. console_value, getFont())
-        setMiniConsoleFontSize("GUI." .. console_value, getFontSize())
+        setMiniConsoleFontSize("GUI." .. console_value, getFontSize() - 2)
         setFgColor("GUI." .. console_value, 192, 192, 192)
         setBgColor("GUI." .. console_value, 0, 0, 0)
         GUI[console_value]:enableAutoWrap()

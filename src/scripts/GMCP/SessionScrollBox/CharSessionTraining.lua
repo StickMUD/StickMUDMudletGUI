@@ -40,7 +40,7 @@ function CharSessionTraining()
     end
 
     sessionList = sessionList ..
-                      "<tr><td><font size=\"3\" color=\"red\">TRAINING</td><td><font size=\"3\" color=\"red\">SESSION</font></td></tr>"
+                      "<tr><td><font size=\"4\" color=\"red\">TRAINING</td><td><font size=\"4\" color=\"red\">SESSION</font></td></tr>"
 
     -- Construct the session training list
     for k, v in pairs(training_session) do
@@ -52,11 +52,11 @@ function CharSessionTraining()
             end
         end
 
-        local color = "<font size=\"3\" color=\"gray\">"
+        local color = "<font size=\"4\" color=\"gray\">"
         if count == 0 then
-            color = "<font size=\"3\" color=\"magenta\">"
+            color = "<font size=\"4\" color=\"magenta\">"
         elseif count == 1 then
-            color = "<font size=\"3\" color=\"yellow\">"
+            color = "<font size=\"4\" color=\"yellow\">"
         end
 
         sessionList = sessionList .. "<tr><td>" .. color ..
@@ -65,7 +65,7 @@ function CharSessionTraining()
                                      (skill_max_length + max_count - count -
                                          string.len(v.name))) .. "</font></td>"
         sessionList = sessionList .. "<td>" .. color ..
-                          "<font size=\"3\" color=\"cyan\">" .. v.percent ..
+                          "<font size=\"4\" color=\"cyan\">" .. v.percent ..
                           "</font></td></tr>"
     end
 

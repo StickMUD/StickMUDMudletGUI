@@ -4,8 +4,6 @@ GUI.CharTrainingListCSS = CSSMan.new([[
     qproperty-alignment: 'AlignTop';
 ]])
 
-function on_traininglabel_press(category) CharTrainingList() end
-
 function CharTrainingList()
     local training_total = gmcp.Char.Training.List
     local session_training = nil
@@ -48,7 +46,7 @@ function CharTrainingList()
     end
 
     trainingList = trainingList ..
-                       "<tr><td><font size=\"3\" color=\"red\">TRAINING</font></td><td><font size=\"3\" color=\"red\">RANK</font></td></tr>"
+                       "<tr><td><font size=\"4\" color=\"red\">TRAINING</font></td><td><font size=\"4\" color=\"red\">RANK</font></td></tr>"
 
     -- Construct the training list
     for k, v in pairs(training_total) do
@@ -63,15 +61,15 @@ function CharTrainingList()
         local session = ""
 
         if sessionSkills[v.skill] then
-            session = "<font size=\"3\" color=\"white\">*</font>"
+            session = "<font size=\"4\" color=\"white\">*</font>"
         end
 
-        local color = "<font size=\"3\" color=\"gray\">"
+        local color = "<font size=\"4\" color=\"gray\">"
 
         if count == 0 then
-            color = "<font size=\"3\" color=\"magenta\">"
+            color = "<font size=\"4\" color=\"magenta\">"
         elseif count == 1 then
-            color = "<font size=\"3\" color=\"yellow\">"
+            color = "<font size=\"4\" color=\"yellow\">"
         end
 
         trainingList = trainingList .. "<tr><td>" .. color ..
@@ -80,11 +78,11 @@ function CharTrainingList()
                                       (skill_max_length + max_count - count -
                                           string.len(v.name))) .. "</font></td>"
         trainingList = trainingList .. "<td>" .. color .. v.rank ..
-                           "</font> <font size=\"3\" color=\"cyan\">" ..
+                           "</font> <font size=\"4\" color=\"cyan\">" ..
                            v.percent .. "</font></td></tr>"
     end
 
-    trainingList = trainingList .. "</table><p><font size=\"3\" color=\"white\">*Trained this session</font></p>"
+    trainingList = trainingList .. "</table><p><font size=\"4\" color=\"white\">*Trained this session</font></p>"
 
     -- Create the ScrollBox and populate it with the training list
     GUI.CharTrainingListLabel = Geyser.Label:new({
