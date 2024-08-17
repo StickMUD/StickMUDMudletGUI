@@ -1,25 +1,54 @@
 function CommChannelText()
-	local channel = gmcp.Comm.Channel.Text.channel
-	local talker = gmcp.Comm.Channel.Text.talker
-	local text = gmcp.Comm.Channel.Text.text
-	
-	cecho("GUI.ChatAllConsole", "<cyan:black>"..os.date("%I:%M ")..text.."\n\n")
-	
-	local start, finish = string.find(channel, "&")
+    local channel = gmcp.Comm.Channel.Text.channel
+    local text = gmcp.Comm.Channel.Text.text
+    local timeStamp = os.date("%I:%M ")
 
-	if start then --it does start with an ampersand
-		cecho("GUI.ChatClanConsole", "<cyan:black>"..os.date("%I:%M ")..text.."\n\n")
-	elseif channel == "Tell" then
-  	cecho("GUI.ChatTellsConsole", "<cyan:black>"..os.date("%I:%M ")..text.."\n\n")
-	elseif channel == "Local" then
-  	cecho("GUI.ChatLocalConsole", "<cyan:black>"..os.date("%I:%M ")..text.."\n\n")
-	else  	
-  	local guild_channels = {"bard", "bardleaders", "fighter", "fighterofc", "healer", "healerchief", "mage", "magecouncil", "necro", "necrocouncil", "ninja", "ninjakanbu", "priest", "priestofc", "thief", "thiefarc", "thiefdmn", "thiefgec"}
-  	
-  	for i=1,18 do
-  		if channel == guild_channels[i] then
-  			cecho("GUI.ChatGuildConsole", "<cyan:black>"..os.date("%I:%M ")..text.."\n\n")
-  		end
-  	end
-	end
+    -- Function to handle the output to a specific console
+    local function outputToConsole(consoleName)
+        setFont(consoleName, getFont())
+        setMiniConsoleFontSize(consoleName, getFontSize() - 2)
+        cecho(consoleName, "<cyan:black>" .. timeStamp .. text .. "\n\n")
+    end
+
+    -- Output to the general chat console
+    outputToConsole("GUI.ChatAllConsole")
+
+    -- Define the channel to console mapping
+    local channelConsoleMap = {
+        ["Tell"] = "GUI.ChatTellsConsole",
+        ["Local"] = "GUI.ChatLocalConsole"
+    }
+
+    -- Check for specific channels
+    if string.find(channel, "^&") then
+        outputToConsole("GUI.ChatClanConsole")
+    elseif channelConsoleMap[channel] then
+        outputToConsole(channelConsoleMap[channel])
+    else
+        -- Guild channels
+        local guildChannels = {
+            bard = true,
+            bardleaders = true,
+            fighter = true,
+            fighterofc = true,
+            healer = true,
+            healerchief = true,
+            mage = true,
+            magecouncil = true,
+            necro = true,
+            necrocouncil = true,
+            ninja = true,
+            ninjakanbu = true,
+            priest = true,
+            priestofc = true,
+            thief = true,
+            thiefarc = true,
+            thiefdmn = true,
+            thiefgec = true
+        }
+
+        if guildChannels[channel] then
+            outputToConsole("GUI.ChatGuildConsole")
+        end
+    end
 end

@@ -69,7 +69,7 @@ function Group()
 
     clearWindow("GUI.GroupConsole")
     setFont("GUI.GroupConsole", getFont())
-    setMiniConsoleFontSize("GUI.GroupConsole", getFontSize())
+    setMiniConsoleFontSize("GUI.GroupConsole", getFontSize() - 2)
 
     cecho("GUI.GroupConsole", table.concat(t2, "<reset>\n"))
 end
