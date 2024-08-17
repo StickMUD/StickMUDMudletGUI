@@ -84,7 +84,7 @@ function CharTrainingList()
                            v.percent .. "</font></td></tr>"
     end
 
-    trainingList = trainingList .. "</table>"
+    trainingList = trainingList .. "</table><p><font size=\"3\" color=\"white\">*Trained this session</font></p>"
 
     -- Create the ScrollBox and populate it with the training list
     GUI.CharTrainingListLabel = Geyser.Label:new({
