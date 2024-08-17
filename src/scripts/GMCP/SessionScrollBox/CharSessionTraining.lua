@@ -15,7 +15,10 @@ function CharSessionTraining()
     local skill_max_length = 0
     local max_count = 0
 
-    table.sort(training_session, function(v1, v2) return v1.skill < v2.skill end)
+    if training_session then
+        table.sort(training_session,
+                   function(v1, v2) return v1.skill < v2.skill end)
+    end
 
     local sessionList = "<table width=\"100%\">"
 
