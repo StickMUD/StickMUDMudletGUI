@@ -41,16 +41,14 @@ end
 
 function GamePlayersList()
     local game_players_list = nil
+    local gamePlayersList = "<table>"
 
     -- Check if gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List exist
     if gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List then
         game_players_list = gmcp.Game.Players.List
     end
 
-    local gamePlayersList = "<table>"
-
     if game_players_list then
-
         local coders = table.n_filter(game_players_list, filterByCoder)
         if #coders > 0 then
             table.sort(coders, function(v1, v2)
