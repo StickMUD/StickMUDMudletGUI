@@ -60,11 +60,15 @@ function CharTrainingList()
             end
         end
 
-        local color = "<font size=\"3\" color=\"gray\">"
+        local session = ""
 
         if sessionSkills[v.skill] then
-            color = "<font size=\"3\" color=\"orange\">"
-        elseif count == 0 then
+            session = "<font size=\"3\" color=\"white\">*</font>"
+        end
+
+        local color = "<font size=\"3\" color=\"gray\">"
+
+        if count == 0 then
             color = "<font size=\"3\" color=\"magenta\">"
         elseif count == 1 then
             color = "<font size=\"3\" color=\"yellow\">"
@@ -75,7 +79,7 @@ function CharTrainingList()
                            string.rep("&nbsp;",
                                       (skill_max_length + max_count - count -
                                           string.len(v.name))) .. "</font></td>"
-        trainingList = trainingList .. "<td>" .. color .. v.rank ..
+        trainingList = trainingList .. "<td>" .. color .. v.rank .. session ..
                            "</font> <font size=\"3\" color=\"cyan\">" ..
                            v.percent .. "</font></td></tr>"
     end
