@@ -29,7 +29,8 @@ function CharTrainingList()
         end
     end
 
-    local trainingList = "<table width=\"100%\">"
+    local trainingList =
+        "<table width=\"100%\"><tr><td><font size=\"4\" color=\"red\">TRAINING</font></td><td><font size=\"4\" color=\"red\">RANK</font></td></tr>"
 
     if training_total then
         table.sort(training_total,
@@ -51,9 +52,6 @@ function CharTrainingList()
 
             if count > max_count then max_count = count end
         end
-
-        trainingList = trainingList ..
-                           "<tr><td><font size=\"4\" color=\"red\">TRAINING</font></td><td><font size=\"4\" color=\"red\">RANK</font></td></tr>"
 
         -- Construct the training list
         for k, v in pairs(training_total) do
