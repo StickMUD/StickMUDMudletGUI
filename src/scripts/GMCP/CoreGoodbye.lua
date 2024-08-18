@@ -1,5 +1,5 @@
 function CoreGoodbye()
-  on_chat_box_press("ChatClearConsole")
+  on_chat_box_press("BoxChatClear")
   -- Clear the content consoles
   for index = 1, #content_consoles - 1 do
     local console_value = content_consoles[index]
