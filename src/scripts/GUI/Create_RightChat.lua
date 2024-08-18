@@ -22,6 +22,12 @@ function on_chat_box_press(section)
             GUI[console_value]:hide()
         end
     end
+
+    -- If we're clearing the Chat windows, let's go back to the main window after
+    if section == "BoxChatClear" then
+        GUI["ChatClearConsole"]:hide()
+        GUI["ChatAllConsole"]:show()
+    end
 end
 
 GUI.BoxChatButtonCSS = CSSMan.new([[
