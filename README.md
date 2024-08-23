@@ -13,4 +13,4 @@ Self-hosted GitHub Actions use [Muddler](https://github.com/demonnic/muddler) to
 * Update the version in the [mfile](https://github.com/StickMUD/StickMUDMudletGUI/blob/master/mfile) configuration.
 * On [StickMUD](https://www.stickmud.com), update the `GMCP_VALUE_CLIENT_GUI_VERSION` in `/include/gmcp_defs.h` to pickup the new version.
 
-See also [this guidance](https://docs.google.com/document/d/1EOwgCWK9ijpSYyb33KFonsHACRoQvYQumGCca8SjvcQ/edit) from [@gesslar](https://github.com/gesslar).
+See also [this guidance](https://mud.gesslar.dev/muddler.html) from [@gesslar](https://github.com/gesslar).
