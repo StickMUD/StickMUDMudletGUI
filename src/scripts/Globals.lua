@@ -1,23 +1,28 @@
 GUI = GUI or {}
 
--- Helper function to get default font size
-local function getDefaultFontSize() return getFontSize() - 2 end
+-- Helper function to get default console font size
+local function getDefaultConsoleFontSize() return getFontSize() - 2 end
+
+-- Helper function to get default console font size
+local function getDefaultScrollBoxFontSize() return 6 end
 
 -- Initialize default content preferences using a helper function
 default_content_preferences = {
-    ["GUI.ChatAllConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.ChatGuildConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.ChatClanConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.ChatTellsConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.ChatLocalConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.WieldedWeaponsConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.WornArmourConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.InventoryConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.RoomConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.InfoConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.AbilitiesConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.GroupConsole"] = {fontSize = getDefaultFontSize()},
-    ["GUI.HelpConsole"] = {fontSize = getDefaultFontSize()}
+    ["GUI.ChatAllConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.ChatGuildConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.ChatClanConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.ChatTellsConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.ChatLocalConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.WieldedWeaponsConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.WornArmourConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.InventoryConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.RoomConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.InfoConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.AbilitiesConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.TrainingScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
+    ["GUI.SessionScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
+    ["GUI.GroupConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.HelpConsole"] = {fontSize = getDefaultConsoleFontSize()}
 }
 
 -- Path to content preferences file
@@ -73,7 +78,11 @@ function increaseFontSize(contentConsole) adjustFontSize(contentConsole, 1) end
 function decreaseFontSize(contentConsole) adjustFontSize(contentConsole, -1) end
 
 -- Helper function to create and style labels
-function createControlLabel(console_value, labelType, xPos, message)
+function createControlLabel(console_value, labelType, xPos, icon)
+    local color = "green"
+
+    if icon == "-" then color = "red" end
+
     local labelName = console_value .. labelType .. "Label"
     GUI[labelName] = GUI[labelName] or Geyser.Label:new({
         name = "GUI." .. labelName,
@@ -81,7 +90,8 @@ function createControlLabel(console_value, labelType, xPos, message)
         y = "0px",
         width = "25px",
         height = "25px",
-        message = "<center>" .. message .. "</center>"
+        message = "<center><font size=\"4\" color=\"" .. color .. "\">" .. icon ..
+            "</font></center>"
     }, GUI[console_value])
     GUI[labelName]:setStyleSheet([[
         background-color: #transparent;
