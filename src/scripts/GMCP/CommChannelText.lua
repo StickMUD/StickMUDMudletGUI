@@ -5,8 +5,6 @@ function CommChannelText()
 
     -- Function to handle the output to a specific console
     local function outputToConsole(consoleName)
-        setFont(consoleName, getFont())
-        setMiniConsoleFontSize(consoleName, getFontSize() - 2)
         cecho(consoleName, "<cyan:black>" .. timeStamp .. text .. "\n\n")
     end
 
