@@ -74,9 +74,9 @@ function decreaseFontSize(contentConsole) adjustFontSize(contentConsole, -1) end
 
 -- Helper function to create and style labels
 function createControlLabel(console_value, labelType, xPos, message)
-    local labelName = "GUI." .. console_value .. labelType .. "Label"
+    local labelName = console_value .. labelType .. "Label"
     GUI[labelName] = GUI[labelName] or Geyser.Label:new({
-        name = labelName,
+        name = "GUI." .. labelName,
         x = xPos,
         y = "0px",
         width = "25px",

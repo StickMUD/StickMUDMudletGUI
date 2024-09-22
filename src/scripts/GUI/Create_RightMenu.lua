@@ -112,9 +112,9 @@ local function initializeConsole(console_value, console_type)
         createControlLabel(console_value, "Minus", "-25px", "-")
 
         -- Connect labels to font adjustment functions
-        GUI["GUI." .. console_value .. "PlusLabel"]:setClickCallback(
+        GUI[console_value .. "PlusLabel"]:setClickCallback(
             increaseFontSize, GUI[console_value])
-        GUI["GUI." .. console_value .. "MinusLabel"]:setClickCallback(
+        GUI[console_value .. "MinusLabel"]:setClickCallback(
             decreaseFontSize, GUI[console_value])
     end
     GUI[console_value]:hide()

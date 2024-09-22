@@ -96,9 +96,9 @@ function CharHelpList()
             createControlLabel("HelpConsole", "Minus", "-25px", "-")
         
             -- Connect labels to font adjustment functions
-            GUI["GUI." .. "HelpConsole" .. "PlusLabel"]:setClickCallback(
+            GUI["HelpConsole" .. "PlusLabel"]:setClickCallback(
                 increaseFontSize, GUI["HelpConsole"])
-            GUI["GUI." .. "HelpConsole" .. "MinusLabel"]:setClickCallback(
+            GUI["HelpConsole" .. "MinusLabel"]:setClickCallback(
                 decreaseFontSize, GUI["HelpConsole"])
 
             current_y = current_y + console_height
