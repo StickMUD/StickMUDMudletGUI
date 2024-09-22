@@ -5,8 +5,6 @@ function CharGuildHelpList()
     local count = 0
     local buffer = ""
     clearWindow("GUI.AbilitiesConsole")
-    setFont("GUI.AbilitiesConsole", getFont())
-    setMiniConsoleFontSize("GUI.AbilitiesConsole", getFontSize() - 2)
     GUI.AbilitiesConsole:resetAutoWrap()
 
     -- populate the table that holds the keys

@@ -84,7 +84,9 @@ function CharHelpList()
             }, GUI.HelpContainer)
             setBackgroundColor("GUI.HelpConsole", 0, 0, 0, 0)
             setFont("GUI.HelpConsole", getFont())
-            setMiniConsoleFontSize("GUI.HelpConsole", getFontSize() - 2)
+            setMiniConsoleFontSize("GUI.HelpConsole",
+                                   content_preferences["GUI.HelpConsole"]
+                                       .fontSize)
             setFgColor("GUI.HelpConsole", 192, 192, 192)
             setBgColor("GUI.HelpConsole", 0, 0, 0)
             GUI.HelpConsole:enableAutoWrap()
