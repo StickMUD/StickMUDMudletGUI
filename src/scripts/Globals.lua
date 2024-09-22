@@ -8,11 +8,31 @@ local function getDefaultScrollBoxFontSize() return 6 end
 
 -- Initialize default content preferences using a helper function
 default_content_preferences = {
-    ["GUI.ChatAllConsole"] = {fontSize = getDefaultConsoleFontSize()},
-    ["GUI.ChatGuildConsole"] = {fontSize = getDefaultConsoleFontSize()},
-    ["GUI.ChatClanConsole"] = {fontSize = getDefaultConsoleFontSize()},
-    ["GUI.ChatTellsConsole"] = {fontSize = getDefaultConsoleFontSize()},
-    ["GUI.ChatLocalConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.ChatAllConsole"] = {
+        fontSize = getDefaultConsoleFontSize(),
+        timestamp = true,
+        doublespace = true
+    },
+    ["GUI.ChatGuildConsole"] = {
+        fontSize = getDefaultConsoleFontSize(),
+        timestamp = true,
+        doublespace = true
+    },
+    ["GUI.ChatClanConsole"] = {
+        fontSize = getDefaultConsoleFontSize(),
+        timestamp = true,
+        doublespace = true
+    },
+    ["GUI.ChatTellsConsole"] = {
+        fontSize = getDefaultConsoleFontSize(),
+        timestamp = true,
+        doublespace = true
+    },
+    ["GUI.ChatLocalConsole"] = {
+        fontSize = getDefaultConsoleFontSize(),
+        timestamp = true,
+        doublespace = true
+    },
     ["GUI.WieldedWeaponsConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.WornArmourConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.InventoryConsole"] = {fontSize = getDefaultConsoleFontSize()},
@@ -37,6 +57,12 @@ if io.exists(content_preferences_file) then
     for key, value in pairs(default_content_preferences) do
         if not content_preferences[key] then
             content_preferences[key] = value
+        else
+            for key2, value2 in pairs(default_content_preferences[key]) do
+                if not content_preferences[key][key2] then
+                    content_preferences[key][key2] = value2
+                end
+            end
         end
     end
 
@@ -93,6 +119,13 @@ function createControlLabel(console_value, labelType, xPos, icon)
         message = "<center><font size=\"4\" color=\"" .. color .. "\">" .. icon ..
             "</font></center>"
     }, GUI[console_value])
+
+    if icon == "-" then
+        GUI[labelName]:setToolTip("Click to increase font size", "10")
+    elseif icon == "+" then
+        GUI[labelName]:setToolTip("Click to decrease font size", "10")
+    end
+
     GUI[labelName]:setStyleSheet([[
         background-color: #transparent;
         color: white;

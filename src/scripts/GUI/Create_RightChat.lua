@@ -57,6 +57,26 @@ local function createChatLabel(index)
                                       "</font></b>")
 end
 
+-- Function to toggle doublespace
+local function toggleDoublespace(consoleName, value)
+    if content_preferences[consoleName] then
+        content_preferences[consoleName].doublespace = value
+
+        -- Save the updated content_preferences if any keys were added
+        table.save(content_preferences_file, content_preferences)
+    end
+end
+
+-- Function to toggle timestamp
+local function toggleTimestamp(consoleName, value)
+    if content_preferences[consoleName] then
+        content_preferences[consoleName].timestamp = value
+
+        -- Save the updated content_preferences if any keys were added
+        table.save(content_preferences_file, content_preferences)
+    end
+end
+
 -- Helper function to initialize consoles
 local function initializeConsole(index)
     local console_value = chat_consoles[index]
@@ -76,14 +96,94 @@ local function initializeConsole(index)
     GUI[console_value]:enableAutoWrap()
 
     -- Create and style '+' and '-' labels
-    createControlLabel(console_value, "Plus", "-50px", "+")
-    createControlLabel(console_value, "Minus", "-25px", "-")
+    createControlLabel(console_value, "Plus", "-100px", "+")
+    createControlLabel(console_value, "Minus", "-75px", "-")
 
     -- Connect labels to font adjustment functions
-    GUI[console_value .. "PlusLabel"]:setClickCallback(
-        increaseFontSize, GUI[console_value])
-    GUI[console_value .. "MinusLabel"]:setClickCallback(
-        decreaseFontSize, GUI[console_value])
+    GUI[console_value .. "PlusLabel"]:setClickCallback(increaseFontSize,
+                                                       GUI[console_value])
+    GUI[console_value .. "MinusLabel"]:setClickCallback(decreaseFontSize,
+                                                        GUI[console_value])
+
+    GUI[console_value .. "DoublespaceButton"] = Geyser.Button:new({
+        name = "GUI." .. console_value .. "DoublespaceButton",
+        x = "-50px",
+        y = "0px",
+        width = "25px",
+        height = "25px",
+        clickFunction = function()
+            toggleDoublespace("GUI." .. console_value, false)
+        end,
+        downFunction = function()
+            toggleDoublespace("GUI." .. console_value, true)
+        end,
+        msg = "<center><font size=\"4\" color=\"blue\">2</font></center>",
+        downMsg = "<center><font size=\"4\" color=\"blue\">1</font></center>",
+        tooltip = "Click for single spacing",
+        downTooltip = "Click for double spacing",
+        twoState = true,
+        style = [[
+          background-color: #transparent;
+          color: white;
+          font-size: 16px;
+          text-align: center;
+          border: 0px solid #000000;
+        ]],
+        downStyle = [[
+          background-color: #transparent;
+          color: white;
+          font-size: 16px;
+          text-align: center;
+          border: 0px solid #000000;
+        ]]
+    }, GUI[console_value])
+
+    if content_preferences["GUI." .. console_value] and
+        content_preferences["GUI." .. console_value].doublespace then
+        GUI[console_value .. "DoublespaceButton"]:setState("up")
+    else
+        GUI[console_value .. "DoublespaceButton"]:setState("down")
+    end
+
+    GUI[console_value .. "TimestampButton"] = Geyser.Button:new({
+        name = "GUI." .. console_value .. "TimestampButton",
+        x = "-25px",
+        y = "0px",
+        width = "25px",
+        height = "25px",
+        clickFunction = function()
+            toggleTimestamp("GUI." .. console_value, false)
+        end,
+        downFunction = function()
+            toggleTimestamp("GUI." .. console_value, true)
+        end,
+        msg = "<center><font size=\"4\">🕰️</font></center>",
+        downMsg = "<center><font size=\"4\" color=\"yellow\">X</font></center>",
+        tooltip = "Click for no timestamp",
+        downTooltip = "Click for timestamp",
+        twoState = true,
+        style = [[
+          background-color: #transparent;
+          color: white;
+          font-size: 16px;
+          text-align: center;
+          border: 0px solid #000000;
+        ]],
+        downStyle = [[
+          background-color: #transparent;
+          color: white;
+          font-size: 16px;
+          text-align: center;
+          border: 0px solid #000000;
+        ]]
+    }, GUI[console_value])
+
+    if content_preferences["GUI." .. console_value] and
+        content_preferences["GUI." .. console_value].timestamp then
+        GUI[console_value .. "TimestampButton"]:setState("up")
+    else
+        GUI[console_value .. "TimestampButton"]:setState("down")
+    end
 
     GUI[console_value]:hide() -- Initially hide all consoles
 end
