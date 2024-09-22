@@ -91,6 +91,16 @@ function CharHelpList()
             setBgColor("GUI.HelpConsole", 0, 0, 0)
             GUI.HelpConsole:enableAutoWrap()
 
+            -- Create and style '+' and '-' labels
+            createControlLabel("HelpConsole", "Plus", "-50px", "+")
+            createControlLabel("HelpConsole", "Minus", "-25px", "-")
+        
+            -- Connect labels to font adjustment functions
+            GUI["GUI." .. "HelpConsole" .. "PlusLabel"]:setClickCallback(
+                increaseFontSize, GUI["HelpConsole"])
+            GUI["GUI." .. "HelpConsole" .. "MinusLabel"]:setClickCallback(
+                decreaseFontSize, GUI["HelpConsole"])
+
             current_y = current_y + console_height
 
             for k2, v2 in pairs(help_list[k]) do

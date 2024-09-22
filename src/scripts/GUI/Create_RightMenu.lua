@@ -152,4 +152,5 @@ for index, console_value in ipairs(menu_consoles) do
 end
 
 -- Initial state: Show the players' scroll box
+GUI["HelpContainer"]:hide()
 GUI["PlayersScrollBox"]:show()
