@@ -5,7 +5,7 @@ roomPlayersTable = {}
 local function setupRoomConsole()
     clearUserWindow("GUI.RoomConsole")
     setFont("GUI.RoomConsole", getFont())
-    setMiniConsoleFontSize("GUI.RoomConsole", getFontSize() - 2)
+    setMiniConsoleFontSize("GUI.RoomConsole", content_preferences["GUI.RoomConsole"].fontSize)
 
     GUI.RoomConsole:resetAutoWrap()
     cecho("GUI.RoomConsole",
