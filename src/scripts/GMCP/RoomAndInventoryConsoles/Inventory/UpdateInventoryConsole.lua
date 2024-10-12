@@ -5,7 +5,7 @@ otherInventory = {}
 local function setupConsole(consoleName)
     clearUserWindow(consoleName)
     setFont(consoleName, getFont())
-    setMiniConsoleFontSize(consoleName, getFontSize() - 2)
+    setMiniConsoleFontSize(consoleName, content_preferences[consoleName].fontSize)
 
     -- Use string.match to split the string
     local prefix, suffix = string.match(consoleName, "^(%w+)%.(%w+)$")
