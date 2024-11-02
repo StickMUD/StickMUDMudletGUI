@@ -3,7 +3,7 @@ menu_sections = {
     "BoxHelp"
 }
 menu_icons = {
-    "020-videoconference.png", "021-sel-improvement.png", "022-skill.png",
+    "020-videoconference.png", "021-self-improvement.png", "022-skill.png",
     "023-hourglass.png", "024-drakkar.png", "025-pen-and-ink.png"
 }
 menu_tooltips = {"Players", "Abilities", "Training", "Session", "Party", "Help"}
