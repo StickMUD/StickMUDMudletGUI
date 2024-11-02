@@ -3,7 +3,7 @@ chat_sections = {
     "BoxChatClear"
 }
 chat_icons = {
-    "015-union.png", "015-union.png", "016-clan.png", "017-telepathy.png",
+    "055-chat.png", "015-union.png", "016-clan.png", "017-telepathy.png",
     "018-qa.png", "019-can.png"
 }
 chat_tooltips = {"All", "Guild", "Clan", "Tells", "Local", "Clear"}
