@@ -88,7 +88,9 @@ for index = 1, #header_sections do
     GUI[section_value]:setBackgroundImage(getMudletHomeDir() .. "/StickMUD/" .. icon_value)
     GUI[section_value]:setStyleSheet([[
       background-color: rgba(0,0,0,100);
-      background-repeat: no-repeat; background-position: center center;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-position: center center;
     ]])
   else
     GUI[section_value] =
