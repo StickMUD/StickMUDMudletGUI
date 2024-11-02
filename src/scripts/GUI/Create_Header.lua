@@ -110,7 +110,7 @@ for index = 1, #header_sections do
     GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
     GUI[section_value]:setStyleSheet([[
       background-color: rgba(0,0,0,100);
-      background-image: url("]] + getMudletHomeDir() + icon_value + [[");
+      background-image: url("]] .. getMudletHomeDir() .. "/" .. icon_value .. [[");
       background-repeat: no-repeat; background-position: center middle;
     ]])
     GUI[section_value]:setOnEnter(
