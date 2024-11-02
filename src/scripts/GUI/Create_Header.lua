@@ -84,7 +84,6 @@ for index = 1, #header_sections do
         },
         GUI.HBoxEquipment
       )
-    GUI[section_value]:setBackgroundImage(getMudletHomeDir() .. "/StickMUD/" .. icon_value)
     GUI[section_value]:setStyleSheet([[
       background-color: rgba(0,0,0,100);
       background-attachment: fixed;
@@ -92,6 +91,7 @@ for index = 1, #header_sections do
       background-position: center;
       background-origin: margin;
     ]])
+    GUI[section_value]:setBackgroundImage(getMudletHomeDir() .. "/StickMUD/" .. icon_value)
   else
     GUI[section_value] =
       GUI[section_value] or
