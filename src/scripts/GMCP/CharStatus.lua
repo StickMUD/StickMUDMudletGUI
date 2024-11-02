@@ -5,14 +5,12 @@ function CharStatus()
     local current_enemy_health = gmcp.Char.Status.enemy_health
     local percent_enemy_health
 
-    GUI.BoxGold:echo("<center><font size=\"3\"><img src=\"" ..
-                         getMudletHomeDir() ..
-                         "/StickMUD/038-coin.png\" height=\"16px\" width = \"16px\"></font> <b><font size=\"4\">" ..
-                         gold .. "</font></b></center>")
-    GUI.BoxBank:echo("<center><font size=\"3\"><img src=\"" ..
-                         getMudletHomeDir() ..
-                         "/StickMUD/039-bank.png\" height=\"16px\" width = \"16px\"></font> <b><font size=\"4\">" ..
-                         bank .. "</font></b></center>")
+    GUI.BoxGold:echo(
+        "<center><font size=\"3\">💰</font> <b><font size=\"4\">" .. gold ..
+            "</font></b></center>")
+    GUI.BoxBank:echo(
+        "<center><font size=\"3\">🏦</font> <b><font size=\"4\">" .. bank ..
+            "</font></b></center>")
 
     if enemy == "None" then
         GUI.EnemyHealth:setValue(0, 100,
