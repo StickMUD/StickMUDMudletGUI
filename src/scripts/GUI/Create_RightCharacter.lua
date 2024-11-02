@@ -65,7 +65,7 @@ GUI.HBoxCharacter =
 -- Add the icons and events
 for index = 1, #character_sections do
   local section_value = character_sections[index]
-  local icon_value = character_icons[index]
+  local icon_value = getMudletHomeDir() .. "/StickMUD/" .. character_icons[index]
   local tooltip_value = character_tooltips[index]
   local stretch_value = character_stretch[index]
   GUI[section_value] =
