@@ -2,6 +2,7 @@
 # in the repo
 build/
 .output
+.DS_Store
 
 # Ignore any file starting with "muddle" in the project root directory
 # This utility file is specific to individual developers and should not be
