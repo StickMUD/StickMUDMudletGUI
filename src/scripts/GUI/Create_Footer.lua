@@ -169,6 +169,6 @@ GUI.BoxArea:echo("<center><font size=\"4\"><img src=\"" .. getMudletHomeDir() ..
 
 GUI.BoxExits = Geyser.Label:new({name = "GUI.BoxExits"}, GUI.FooterBottom)
 GUI.BoxExits:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxExits:echo("<center><font size=\"4\">🚪<img src=\"" ..
-                      getMudletHomeDir() ..
-                      "/StickMUD/046-exit.png\"></font> <b><font size=\"3\">Exits</font></b></center>")
+GUI.BoxExits:echo(
+    "<center><font size=\"4\"><img src=\"" .. getMudletHomeDir() ..
+        "/StickMUD/046-exit.png\"></font> <b><font size=\"3\">Exits</font></b></center>")
