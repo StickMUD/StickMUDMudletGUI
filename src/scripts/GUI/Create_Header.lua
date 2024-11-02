@@ -43,9 +43,8 @@ for index = 1, #header_sections do
                                  Geyser.Label:new(
                                      {name = "GUI." .. section_value},
                                      GUI.HBoxEquipment)
-        GUI[section_value]:setBackgroundImage(
-            getMudletHomeDir() .. "/StickMUD/" .. icon_value)
         GUI[section_value]:setStyleSheet([[
+          background-image: url(]] .. getMudletHomeDir() .. "/StickMUD/" .. icon_value ..[[);
           background-color: rgba(0,0,0,100);
           background-repeat: no-repeat;
           background-origin: margin;
