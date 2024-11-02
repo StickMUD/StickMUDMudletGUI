@@ -1,7 +1,7 @@
 GUI.BoxFooterCSS = CSSMan.new([[
   background-color: rgba(0,0,0,100);
 	qproperty-wordWrap: true;
-  qproperty-alignment: 'AlignCenter | AlignMiddle';
+  qproperty-alignment: 'AlignCenter | AlignVCenter';
 ]])
 
 GUI.Footer = Geyser.VBox:new({
