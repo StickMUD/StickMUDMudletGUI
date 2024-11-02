@@ -112,13 +112,6 @@ function CharStatus()
         local icon_value = header_icons[i]
 
         GUI["Box" .. icons[i] .. "CSS"] = CSSMan.new(GUI.BoxHeaderCSS:getCSS())
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-image", [[url(]] ..
-                                                getMudletHomeDir() ..
-                                                "/StickMUD/" .. icon_value ..
-                                                [[)]])
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-repeat", "no-repeat")
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-origin", "margin")
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-position", "center")
 
         if item == "Yes" then
             GUI["Box" .. icons[i] .. "CSS"]:set("background-color",

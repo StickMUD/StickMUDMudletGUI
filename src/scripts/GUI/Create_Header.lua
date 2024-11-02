@@ -39,18 +39,23 @@ for index = 1, #header_sections do
     local stretch_value = header_stretch[index]
 
     if section_value ~= "BoxStickMUD" then
-        GUI[section_value] = GUI[section_value] or
-                                 Geyser.Label:new(
-                                     {name = "GUI." .. section_value},
-                                     GUI.HBoxEquipment)
-        GUI[section_value]:setStyleSheet([[
-          background-image: url(]] .. getMudletHomeDir() .. "/StickMUD/" ..
-                                             icon_value .. [[);
-          background-color: rgba(0,0,0,100);
-          background-repeat: no-repeat;
-          background-origin: margin;
-          background-position: center;
-        ]])
+        GUI[section_value] = GUI[section_value] or Geyser.Label:new({
+            name = "GUI." .. section_value,
+            message = "<center><b><font size=\"6\"><img src=\"" ..
+                getMudletHomeDir() .. "/StickMUD/" .. icon_value ..
+                "\"></font></b>",
+            h_stretch_factor = stretch_value
+        }, GUI.HBoxEquipment)
+        GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+        GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
+                                      "<center><b><font size=\"3\"><img src=\"" ..
+                                          getMudletHomeDir() .. "/StickMUD/" ..
+                                          icon_value .. "\"></font></b><br>" ..
+                                          tooltip_value)
+        GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
+                                      "<center><b><font size=\"6\"><img src=\"" ..
+                                          getMudletHomeDir() .. "/StickMUD/" ..
+                                          icon_value .. "\"></font></b>")
     else
         GUI[section_value] = GUI[section_value] or Geyser.Label:new({
             name = "GUI." .. section_value,
