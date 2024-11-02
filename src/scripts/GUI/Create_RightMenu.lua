@@ -2,7 +2,10 @@ menu_sections = {
     "BoxPlayers", "BoxAbilities", "BoxTraining", "BoxSession", "BoxGroup",
     "BoxHelp"
 }
-menu_icons = {"🤺", "🤹", "🏆", "📈", "🐉", "📚"}
+menu_icons = {
+    "020-videoconference.png", "021-sel-improvement.png", "022-skill.png",
+    "023-hourglass.png", "024-drakkar.png", "025-pen-and-ink.png"
+}
 menu_tooltips = {"Players", "Abilities", "Training", "Session", "Party", "Help"}
 menu_consoles = {
     "PlayersScrollBox", "AbilitiesConsole", "TrainingScrollBox",
@@ -49,13 +52,13 @@ GUI.BoxMenuButtonCSS = CSSMan.new([[
 -- Helper function to create a menu label with icon and tooltip
 local function createMenuLabel(index)
     local section_value = menu_sections[index]
-    local icon_value = menu_icons[index]
+    local icon_value = getMudletHomeDir() .. "/StickMUD/" .. menu_icons[index]
     local tooltip_value = menu_tooltips[index]
 
     GUI[section_value] = Geyser.Label:new({
         name = "GUI." .. section_value,
-        message = "<center><font size=\"6\">" .. icon_value ..
-            "</font></center>"
+        message = "<center><font size=\"6\"><img src=\"" .. icon_value ..
+            "\"></font></center>"
     }, GUI.HBoxMenu)
 
     GUI[section_value]:setStyleSheet(GUI.BoxMenuButtonCSS:getCSS())
@@ -63,11 +66,12 @@ local function createMenuLabel(index)
 
     -- Set tooltips for hover behavior
     GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"3\">" .. icon_value ..
-                                      "</font></b><br>" .. tooltip_value)
+                                  "<center><b><font size=\"3\"><img src=\"" ..
+                                      icon_value .. "\"></font></b><br>" ..
+                                      tooltip_value)
     GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"6\">" .. icon_value ..
-                                      "</font></b>")
+                                  "<center><b><font size=\"6\"><img src=\"" ..
+                                      icon_value .. "\"></font></b>")
 end
 
 -- Helper function to initialize consoles
@@ -102,7 +106,8 @@ local function initializeConsole(console_value, console_type)
     if console_type == "MiniConsole" then
         setFont("GUI." .. console_value, getFont())
         setMiniConsoleFontSize("GUI." .. console_value,
-                           content_preferences["GUI." .. console_value].fontSize)
+                               content_preferences["GUI." .. console_value]
+                                   .fontSize)
         setFgColor("GUI." .. console_value, 192, 192, 192)
         setBgColor("GUI." .. console_value, 0, 0, 0)
         GUI[console_value]:enableAutoWrap()
@@ -112,10 +117,10 @@ local function initializeConsole(console_value, console_type)
         createControlLabel(console_value, "Minus", "-25px", "-")
 
         -- Connect labels to font adjustment functions
-        GUI[console_value .. "PlusLabel"]:setClickCallback(
-            increaseFontSize, GUI[console_value])
-        GUI[console_value .. "MinusLabel"]:setClickCallback(
-            decreaseFontSize, GUI[console_value])
+        GUI[console_value .. "PlusLabel"]:setClickCallback(increaseFontSize,
+                                                           GUI[console_value])
+        GUI[console_value .. "MinusLabel"]:setClickCallback(decreaseFontSize,
+                                                            GUI[console_value])
     end
     GUI[console_value]:hide()
 end

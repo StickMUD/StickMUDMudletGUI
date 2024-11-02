@@ -53,11 +53,12 @@ local function createChatLabel(index)
 
     -- Set tooltips for hover behavior
     GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"3\">" .. icon_value ..
-                                      "</font></b><br>" .. tooltip_value)
+                                  "<center><b><font size=\"3\"><img src=\"" ..
+                                      icon_value .. "\"></font></b><br>" ..
+                                      tooltip_value)
     GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"6\">" .. icon_value ..
-                                      "</font></b>")
+                                  "<center><b><font size=\"6\"><img src=\"" ..
+                                      icon_value .. "\"></font></b>")
 end
 
 -- Function to toggle doublespace
