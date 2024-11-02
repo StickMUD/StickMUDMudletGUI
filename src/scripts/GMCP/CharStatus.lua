@@ -5,12 +5,14 @@ function CharStatus()
     local current_enemy_health = gmcp.Char.Status.enemy_health
     local percent_enemy_health
 
-    GUI.BoxGold:echo(
-        "<center><font size=\"3\">💰</font> <b><font size=\"4\">" .. gold ..
-            "</font></b></center>")
-    GUI.BoxBank:echo(
-        "<center><font size=\"3\">🏦</font> <b><font size=\"4\">" .. bank ..
-            "</font></b></center>")
+    GUI.BoxGold:echo("<center><font size=\"3\"><img src=\"" ..
+                         getMudletHomeDir() ..
+                         "/StickMUD/038-coin.png\" height=\"16px\" width = \"16px\"></font> <b><font size=\"4\">" ..
+                         gold .. "</font></b></center>")
+    GUI.BoxBank:echo("<center><font size=\"3\"><img src=\"" ..
+                         getMudletHomeDir() ..
+                         "/StickMUD/039-bank.png\" height=\"16px\" width = \"16px\"></font> <b><font size=\"4\">" ..
+                         bank .. "</font></b></center>")
 
     if enemy == "None" then
         GUI.EnemyHealth:setValue(0, 100,
@@ -99,8 +101,8 @@ function CharStatus()
         "shoulders"
     }
     local header_icons = {
-        "001-amulet.png", "006-armour.png", "005-belt.png",
-        "007-boots.png", "002-gauntlet.png", "008-cloak.png", "004-gauntlet-2.png",
+        "001-amulet.png", "006-armour.png", "005-belt.png", "007-boots.png",
+        "002-gauntlet.png", "008-cloak.png", "004-gauntlet-2.png",
         "009-helmet.png", "053-armor.png", "054-mask.png", "010-necklace.png",
         "012-magic-ring-1.png", "011-magic-ring.png", "013-knight.png",
         "014-body-armor.png"
