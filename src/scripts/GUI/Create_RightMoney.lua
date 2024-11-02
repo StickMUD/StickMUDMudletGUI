@@ -8,7 +8,8 @@ GUI.BoxGold =
     {
       name = "GUI.BoxGold",
       message =
-        "<center><b><font size=\"6\">💰</font></b> <b><font size=\"5\">?</font></b></center>",
+        "<center><b><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
+                              "/StickMUD/038-coin.png"\" height=\"16px\" width = \"16px\"></font></b> <b><font size=\"5\">?</font></b></center>",
     },
     GUI.HBoxMoney
   )
@@ -24,7 +25,8 @@ GUI.BoxBank =
     {
       name = "GUI.BoxBank",
       message =
-        "<center><b><font size=\"6\">🏦</font></b> <b><font size=\"5\">?</font></b></center>",
+        "<center><b><font size=\"6\">img src=\"" .. getMudletHomeDir() ..
+                              "/StickMUD/039-bank.png"\" height=\"16px\" width = \"16px\"></font></b> <b><font size=\"5\">?</font></b></center>",
     },
     GUI.HBoxMoney
   )
