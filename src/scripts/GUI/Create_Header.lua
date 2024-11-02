@@ -107,7 +107,6 @@ for index = 1, #header_sections do
         },
         GUI.HBoxEquipment
       )
-    GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
     GUI[section_value]:setStyleSheet([[
       background-color: rgba(0,0,0,100);
       background-image: url("]] .. getMudletHomeDir() .. [[/StickMUD/]] .. icon_value .. [[");
