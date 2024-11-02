@@ -90,6 +90,7 @@ for index = 1, #header_sections do
       background-attachment: fixed;
       background-repeat: no-repeat;
       background-position: center;
+      background-origin: margin;
     ]])
   else
     GUI[section_value] =
