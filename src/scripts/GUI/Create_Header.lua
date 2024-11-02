@@ -108,10 +108,6 @@ for index = 1, #header_sections do
         GUI.HBoxEquipment
       )
     GUI[section_value]:setBackgroundImage(getMudletHomeDir() .. "/StickMUD/" .. icon_value)
-    GUI[section_value]:setStyleSheet([[
-      background-color: rgba(0,0,0,100);
-      background-repeat: no-repeat; background-position: center middle;
-    ]])
     GUI[section_value]:setOnEnter(
       "enable_tooltip",
       GUI[section_value],
