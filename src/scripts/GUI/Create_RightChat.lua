@@ -2,7 +2,10 @@ chat_sections = {
     "BoxChatAll", "BoxChatGuild", "BoxChatClan", "BoxChatTells", "BoxChatLocal",
     "BoxChatClear"
 }
-chat_icons = {"📜", "🧙", "👪", "💬", "📍", "🗑️"}
+chat_icons = {
+    "055-chat.png", "015-union.png", "016-clan.png", "017-telepathy.png",
+    "018-qa.png", "019-can.png"
+}
 chat_tooltips = {"All", "Guild", "Clan", "Tells", "Local", "Clear"}
 chat_consoles = {
     "ChatAllConsole", "ChatGuildConsole", "ChatClanConsole", "ChatTellsConsole",
@@ -36,13 +39,13 @@ GUI.BoxChatButtonCSS = CSSMan.new([[
 -- Helper function to create label with icon and tooltip
 local function createChatLabel(index)
     local section_value = chat_sections[index]
-    local icon_value = chat_icons[index]
+    local icon_value = getMudletHomeDir() .. "/StickMUD/" .. chat_icons[index]
     local tooltip_value = chat_tooltips[index]
 
     GUI[section_value] = Geyser.Label:new({
         name = "GUI." .. section_value,
-        message = "<center><font size=\"6\">" .. icon_value ..
-            "</font></center>"
+        message = "<center><font size=\"6\"><img src=\"" .. icon_value ..
+            "\"></font></center>"
     }, GUI.HBoxChat)
 
     GUI[section_value]:setStyleSheet(GUI.BoxChatButtonCSS:getCSS())
@@ -50,11 +53,12 @@ local function createChatLabel(index)
 
     -- Set tooltips for hover behavior
     GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"3\">" .. icon_value ..
-                                      "</font></b><br>" .. tooltip_value)
+                                  "<center><b><font size=\"3\"><img src=\"" ..
+                                      icon_value .. "\"></font></b><br>" ..
+                                      tooltip_value)
     GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"6\">" .. icon_value ..
-                                      "</font></b>")
+                                  "<center><b><font size=\"6\"><img src=\"" ..
+                                      icon_value .. "\"></font></b>")
 end
 
 -- Function to toggle doublespace

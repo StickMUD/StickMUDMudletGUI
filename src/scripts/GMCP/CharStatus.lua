@@ -98,11 +98,18 @@ function CharStatus()
         "helmet", "leggings", "mask", "necklace", "ring", "ring 2", "shield",
         "shoulders"
     }
-
+    local header_icons = {
+        "001-amulet.png", "006-armour.png", "005-belt.png", "007-boots.png",
+        "002-gauntlet.png", "008-cloak.png", "004-gauntlet-2.png",
+        "009-helmet.png", "053-armor.png", "054-mask.png", "010-necklace.png",
+        "012-magic-ring-1.png", "011-magic-ring.png", "013-knight.png",
+        "014-body-armor.png"
+    }
     local item
 
     for i = 1, 15 do
         item = gmcp.Char.Status[icons[i]]
+        local icon_value = header_icons[i]
 
         GUI["Box" .. icons[i] .. "CSS"] = CSSMan.new(GUI.BoxHeaderCSS:getCSS())
 

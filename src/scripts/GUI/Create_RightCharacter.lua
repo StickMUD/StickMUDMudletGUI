@@ -15,18 +15,18 @@ character_sections =
   }
 character_icons =
   {
-    "😱",
-    "😈",
-    "☠️️",
-    "⁉",
-    "🍄",
-    "🍺",
-    "💤️",
-    "👻️",
-    "🍞",
-    "🥛",
-    "✨",
-    "🐸",
+    "026-running.png",
+    "027-skull.png",
+    "028-poisonous.png",
+    "029-dazed.png",
+    "030-hallucination.png",
+    "031-drunk.png",
+    "032-rest.png",
+    "033-invisible-man.png",
+    "034-hungry.png",
+    "035-water.png",
+    "036-portal.png",
+    "037-amazon-river.png",
   }
 character_tooltips =
   {
@@ -65,7 +65,7 @@ GUI.HBoxCharacter =
 -- Add the icons and events
 for index = 1, #character_sections do
   local section_value = character_sections[index]
-  local icon_value = character_icons[index]
+  local icon_value = getMudletHomeDir() .. "/StickMUD/" .. character_icons[index]
   local tooltip_value = character_tooltips[index]
   local stretch_value = character_stretch[index]
   GUI[section_value] =
@@ -74,7 +74,7 @@ for index = 1, #character_sections do
       {
         name = "GUI." .. section_value,
         h_stretch_factor = stretch_value,
-        message = "<center><font size=\"6\">" .. icon_value .. "</font></center>",
+        message = "<center><font size=\"6\"><img src=\"" .. icon_value .. "\"></font></center>",
       },
       GUI.HBoxCharacter
     )
@@ -82,11 +82,11 @@ for index = 1, #character_sections do
   GUI[section_value]:setOnEnter(
     "enable_tooltip",
     GUI[section_value],
-    "<center><b><font size=\"4\">" .. icon_value .. "</font></b><br>" .. tooltip_value
+    "<center><b><font size=\"4\"><img src=\"" .. icon_value .. "\"></font></b><br>" .. tooltip_value
   )
   GUI[section_value]:setOnLeave(
     "disable_tooltip",
     GUI[section_value],
-    "<center><b><font size=\"6\">" .. icon_value .. "</font></b>"
+    "<center><b><font size=\"6\"><img src=\"" .. icon_value .. "\"></font></b>"
   )
 end

@@ -2,7 +2,10 @@ content_sections = {
     "BoxWieldedWeapons", "BoxWornArmour", "BoxInventory", "BoxRoomInv",
     "BoxMap", "BoxInfo"
 }
-content_icons = {"⚔️", "🛡", "🎒", "📍", "🗺️", "ℹ️"}
+content_icons = {
+    "044-swords.png", "045-knight-1.png", "040-school-bag.png",
+    "041-location.png", "042-treasure-map.png", "043-informative.png"
+}
 content_tooltips = {"Weapon", "Armour️", "Carry", "Room", "Map", "Info"}
 content_consoles = {
     "WieldedWeaponsConsole", "WornArmourConsole", "InventoryConsole",
@@ -55,17 +58,20 @@ GUI.HBoxContent = Geyser.HBox:new({
 local function createLabel(section_value, icon_value, tooltip_value)
     GUI[section_value] = Geyser.Label:new({
         name = "GUI." .. section_value,
-        message = "<center><font size=\"6\">" .. icon_value ..
-            "</font></center>"
+        message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
+            "/StickMUD/" .. icon_value .. "\"></font></center>"
     }, GUI.HBoxContent)
     GUI[section_value]:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
     GUI[section_value]:setClickCallback("on_content_box_press", section_value)
     GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"3\">" .. icon_value ..
-                                      "</font></b><br>" .. tooltip_value)
+                                  "<center><b><font size=\"3\"><img src=\"" ..
+                                      getMudletHomeDir() .. "/StickMUD/" ..
+                                      icon_value .. "\"></font></b><br>" ..
+                                      tooltip_value)
     GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"6\">" .. icon_value ..
-                                      "</font></b>")
+                                  "<center><b><font size=\"6\"><img src=\"" ..
+                                      getMudletHomeDir() .. "/StickMUD/" ..
+                                      icon_value .. "\"></font></b>")
 end
 
 -- Add the icons and events
@@ -105,10 +111,10 @@ local function initializeConsole(console_value)
     createControlLabel(console_value, "Minus", "-25px", "-")
 
     -- Connect labels to font adjustment functions
-    GUI[console_value .. "PlusLabel"]:setClickCallback(
-        increaseFontSize, GUI[console_value])
-    GUI[console_value .. "MinusLabel"]:setClickCallback(
-        decreaseFontSize, GUI[console_value])
+    GUI[console_value .. "PlusLabel"]:setClickCallback(increaseFontSize,
+                                                       GUI[console_value])
+    GUI[console_value .. "MinusLabel"]:setClickCallback(decreaseFontSize,
+                                                        GUI[console_value])
 
     GUI[console_value]:hide()
 end
