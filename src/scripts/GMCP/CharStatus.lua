@@ -103,8 +103,13 @@ function CharStatus()
 
     for i = 1, 15 do
         item = gmcp.Char.Status[icons[i]]
+        local icon_value = header_icons[index]
 
         GUI["Box" .. icons[i] .. "CSS"] = CSSMan.new(GUI.BoxHeaderCSS:getCSS())
+        GUI["Box" .. icons[i] .. "CSS"]:set("background-image", [[url(]] ..
+                                                getMudletHomeDir() ..
+                                                "/StickMUD/" .. icon_value ..
+                                                [[)]])
         GUI["Box" .. icons[i] .. "CSS"]:set("background-repeat", "no-repeat")
         GUI["Box" .. icons[i] .. "CSS"]:set("background-origin", "margin")
         GUI["Box" .. icons[i] .. "CSS"]:set("background-position", "right")
