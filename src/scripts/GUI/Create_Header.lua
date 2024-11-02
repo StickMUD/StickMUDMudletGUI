@@ -88,18 +88,8 @@ for index = 1, #header_sections do
     GUI[section_value]:setBackgroundImage(getMudletHomeDir() .. "/StickMUD/" .. icon_value)
     GUI[section_value]:setStyleSheet([[
       background-color: rgba(0,0,0,100);
-      background-repeat: no-repeat; background-position: center middle;
+      background-repeat: no-repeat; background-position: center center;
     ]])
-    GUI[section_value]:setOnEnter(
-      "enable_tooltip",
-      GUI[section_value],
-      "<center><b><font size=\"2\">" .. icon_value .. "</font></b><br>" .. tooltip_value
-    )
-    GUI[section_value]:setOnLeave(
-      "disable_tooltip",
-      GUI[section_value],
-      "<center><b><font size=\"3\">" .. icon_value .. "</font></b>"
-    )
   else
     GUI[section_value] =
       GUI[section_value] or
