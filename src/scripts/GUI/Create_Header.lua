@@ -49,7 +49,7 @@ for index = 1, #header_sections do
           background-color: rgba(0,0,0,100);
           background-repeat: no-repeat;
           background-origin: margin;
-          background-position: right;
+          background-position: center;
         ]])
     else
         GUI[section_value] = GUI[section_value] or Geyser.Label:new({
