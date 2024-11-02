@@ -80,8 +80,7 @@ for index = 1, #header_sections do
       GUI[section_value] or
       Geyser.Label:new(
         {
-          name = "GUI." .. section_value,
-          h_stretch_factor = stretch_value,
+          name = "GUI." .. section_value
         },
         GUI.HBoxEquipment
       )
