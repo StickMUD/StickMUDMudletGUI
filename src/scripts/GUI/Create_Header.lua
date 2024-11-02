@@ -20,21 +20,21 @@ header_sections =
 header_icons =
   {
     "STICKMUD",
-    "💠",
-    "🤺",
-    "🥋",
-    "👞",
-    "💪",
-    "🧥",
-    "🧤",
-    "👑",
-    "👖",
-    "🎭",
-    "📿",
-    "💍",
-    "💍",
-    "🛡️",
-    "👘",
+    "001-amulet.png",
+    "006-armour.png",
+    "005-belt.png",
+    "007-boots.png",
+    "002-gauntlet.png",
+    "008-cloak.png",
+    "004-gauntlet-2.png",
+    "009-helmet.png",
+    "053-armor.png",
+    "054-mask.png",
+    "010-necklace.png",
+    "012-magic-ring-1.png",
+    "011-magic-ring.png",
+    "013-knight.png",
+    "014-body-armor.png",
   }
 header_tooltips =
   {
@@ -103,12 +103,16 @@ for index = 1, #header_sections do
       Geyser.Label:new(
         {
           name = "GUI." .. section_value,
-          message = "<center><b><font size=\"3\">" .. icon_value .. "</font></b>",
           h_stretch_factor = stretch_value,
         },
         GUI.HBoxEquipment
       )
     GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+    GUI[section_value]:setStyleSheet([[
+      background-color: rgba(0,0,0,100);
+      background-image: url("]] + getMudletHomeDir() + icon_value + [[");
+      background-repeat: no-repeat; background-position: center middle;
+    ]])
     GUI[section_value]:setOnEnter(
       "enable_tooltip",
       GUI[section_value],
