@@ -1,21 +1,21 @@
-header_sections = {
+local header_sections = {
     "BoxStickMUD", "BoxAmulet", "BoxArmour", "BoxBelt", "BoxBoots",
     "BoxBracers", "BoxCloak", "BoxGloves", "BoxHelmet", "BoxLeggings",
     "BoxMask", "BoxNecklace", "BoxRing", "BoxRing2", "BoxShield", "BoxShoulders"
 }
-header_icons = {
+local header_icons = {
     "STICKMUD", "001-amulet.png", "006-armour.png", "005-belt.png",
     "007-boots.png", "002-gauntlet.png", "008-cloak.png", "004-gauntlet-2.png",
     "009-helmet.png", "053-armor.png", "054-mask.png", "010-necklace.png",
     "012-magic-ring-1.png", "011-magic-ring.png", "013-knight.png",
     "014-body-armor.png"
 }
-header_tooltips = {
+local header_tooltips = {
     "Est. 1991", "Amulet", "Armour", "Belt", "Boots", "Bracers", "Cloak",
     "Gloves", "Helmet", "Leggings", "Mask", "Necklace", "Ring", "Ring 2",
     "Shield", "Shoulders"
 }
-header_stretch = {1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
+local header_stretch = {1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 GUI.BoxHeaderCSS = CSSMan.new([[
   background-color: rgba(0,0,0,100);
@@ -44,7 +44,8 @@ for index = 1, #header_sections do
                                      {name = "GUI." .. section_value},
                                      GUI.HBoxEquipment)
         GUI[section_value]:setStyleSheet([[
-          background-image: url(]] .. getMudletHomeDir() .. "/StickMUD/" .. icon_value ..[[);
+          background-image: url(]] .. getMudletHomeDir() .. "/StickMUD/" ..
+                                             icon_value .. [[);
           background-color: rgba(0,0,0,100);
           background-repeat: no-repeat;
           background-origin: margin;
