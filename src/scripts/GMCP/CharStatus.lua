@@ -107,8 +107,7 @@ function CharStatus()
         GUI["Box" .. icons[i] .. "CSS"] = CSSMan.new(GUI.BoxHeaderCSS:getCSS())
         GUI["Box" .. icons[i] .. "CSS"]:set("background-attachment", "fixed")
         GUI["Box" .. icons[i] .. "CSS"]:set("background-repeat", "no-repeat")
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-position",
-                                            "center center")
+        GUI["Box" .. icons[i] .. "CSS"]:set("background-position", "center")
 
         if item == "Yes" then
             GUI["Box" .. icons[i] .. "CSS"]:set("background-color",

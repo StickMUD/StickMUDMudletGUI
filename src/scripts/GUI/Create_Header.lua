@@ -89,7 +89,7 @@ for index = 1, #header_sections do
       background-color: rgba(0,0,0,100);
       background-attachment: fixed;
       background-repeat: no-repeat;
-      background-position: center center;
+      background-position: center;
     ]])
   else
     GUI[section_value] =
