@@ -105,9 +105,8 @@ function CharStatus()
         item = gmcp.Char.Status[icons[i]]
 
         GUI["Box" .. icons[i] .. "CSS"] = CSSMan.new(GUI.BoxHeaderCSS:getCSS())
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-attachment", "fixed")
         GUI["Box" .. icons[i] .. "CSS"]:set("background-repeat", "no-repeat")
-        GUI["Box" .. icons[i] .. "CSS"]:set("background-position", "center")
+        GUI["Box" .. icons[i] .. "CSS"]:set("background-position", "right")
         GUI["Box" .. icons[i] .. "CSS"]:set("background-origin", "margin")
 
         if item == "Yes" then
