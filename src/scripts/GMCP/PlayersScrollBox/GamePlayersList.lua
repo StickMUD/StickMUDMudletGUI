@@ -59,9 +59,15 @@ function GamePlayersList()
             gamePlayersList = gamePlayersList .. #coders .. "</font></td></tr>"
             for k, v in pairs(coders) do
                 gamePlayersList = gamePlayersList ..
-                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
+                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src="\"
                 if v.guild == "bard" then
-                    gamePlayersList = gamePlayersList .. "🪕"
+                    if v.gender == "female" then
+                        gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
+                             "/StickMUD/066-musician.png\"
+                    else
+                        gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
+                             "/StickMUD/056-bard.png\"
+                    end
                 elseif v.guild == "fighter" then
                     gamePlayersList = gamePlayersList .. "⚔️"
                 elseif v.guild == "healer" then
@@ -79,7 +85,7 @@ function GamePlayersList()
                 else
                     gamePlayersList = gamePlayersList .. "🤩"
                 end
-                gamePlayersList = gamePlayersList .. "</font></td>"
+                gamePlayersList = gamePlayersList .. "\"></font></td>"
                 gamePlayersList = gamePlayersList ..
                                       "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
                                       firstToUpper(v.name) ..
