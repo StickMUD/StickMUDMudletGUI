@@ -4,51 +4,25 @@ function RoomInfo()
     local exits = gmcp.Room.Info.exits or {}
 
     GUI.BoxRoom:echo(
-        "<center><font size=\"4\">📍</font> <b><font size=\"3\">" .. name ..
-            "</font></b></center>")
+        string.format("<center><font size=\"4\">📍</font> <b><font size=\"3\">%s</font></b></center>", name)
+    )
     GUI.BoxArea:echo(
-        "<center><font size=\"4\">🏰</font> <b><font size=\"3\">" .. area ..
-            "</font></b></center>")
+        string.format("<center><font size=\"4\">🏰</font> <b><font size=\"3\">%s</font></b></center>", area)
+    )
 
-    local directions = nil
+    local exitAbbreviations = {
+        north = "n", northeast = "ne", east = "e", southeast = "se",
+        south = "s", southwest = "sw", west = "w", northwest = "nw",
+        up = "u", down = "d"
+    }
 
-    for k, _ in pairs(exits) do
-        local dir
-
-        if k == "north" then
-            dir = "n"
-        elseif k == "northeast" then
-            dir = "ne"
-        elseif k == "east" then
-            dir = "e"
-        elseif k == "southeast" then
-            dir = "se"
-        elseif k == "south" then
-            dir = "s"
-        elseif k == "southwest" then
-            dir = "sw"
-        elseif k == "west" then
-            dir = "w"
-        elseif k == "northwest" then
-            dir = "nw"
-        elseif k == "up" then
-            dir = "u"
-        elseif k == "down" then
-            dir = "d"
-        else
-            dir = k
-        end
-
-        if directions ~= nil then
-            directions = directions .. ", " .. dir
-        else
-            directions = dir
-        end
+    local directions = {}
+    for dir in pairs(exits) do
+        table.insert(directions, exitAbbreviations[dir] or dir)
     end
 
-    if directions == nil then directions = "No obvious exits" end
-
+    local directionsText = #directions > 0 and table.concat(directions, ", ") or "No obvious exits"
     GUI.BoxExits:echo(
-        "<center><font size=\"4\">🚪</font> <b><font size=\"3\">" ..
-            directions .. "</font></b></center>")
+        string.format("<center><font size=\"4\">🚪</font> <b><font size=\"3\">%s</font></b></center>", directionsText)
+    )
 end

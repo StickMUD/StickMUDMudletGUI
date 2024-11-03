@@ -1,19 +1,8 @@
+-- CSS configurations
 GUI.BoxFooterCSS = CSSMan.new([[
   background-color: rgba(0,0,0,100);
-	qproperty-wordWrap: true;
+  qproperty-wordWrap: true;
 ]])
-
-GUI.Footer = Geyser.VBox:new({
-    name = "GUI.Footer",
-    x = 0,
-    y = 0,
-    width = "100%",
-    height = "100%"
-}, GUI.Bottom)
-
-GUI.FooterTop = Geyser.Container:new({name = "GUI.FooterTop"}, GUI.Footer)
-
-GUI.FooterBottom = Geyser.HBox:new({name = "GUI.FooterBottom"}, GUI.Footer)
 
 GUI.GaugeBackCSS = CSSMan.new([[
   background-color: rgba(0,0,0,0);
@@ -25,7 +14,6 @@ GUI.GaugeBackCSS = CSSMan.new([[
 ]])
 
 GUI.GaugeFrontCSS = CSSMan.new([[
-  background-color: rgba(0,0,0,0);
   border-style: solid;
   border-color: white;
   border-width: 1px;
@@ -33,141 +21,59 @@ GUI.GaugeFrontCSS = CSSMan.new([[
   margin: 5px;
 ]])
 
-GUI.BoxHealth = Geyser.Label:new({
-    name = "GUI.BoxHealth",
-    message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
-        "/StickMUD/050-better-health.png\"></font></center>",
-    x = 0,
-    y = 0,
-    width = "5%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.BoxHealth:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxHealth:setOnEnter("enable_tooltip", GUI.BoxHealth,
-                         "<center><b><font size=\"4\"><img src=\"" ..
-                             getMudletHomeDir() ..
-                             "/StickMUD/050-better-health.png\"></font></b><br>Health")
-GUI.BoxHealth:setOnLeave("disable_tooltip", GUI.BoxHealth,
-                         "<center><b><font size=\"6\"><img src=\"" ..
-                             getMudletHomeDir() ..
-                             "/StickMUD/050-better-health.png\"></font></b>")
+-- Footer container
+GUI.Footer = Geyser.VBox:new({
+    name = "GUI.Footer",
+    x = 0, y = 0, width = "100%", height = "100%"
+}, GUI.Bottom)
 
-GUI.HitPoints = Geyser.Gauge:new({
-    name = "GUI.HitPoints",
-    x = "5%",
-    y = 0,
-    width = "20%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.HitPoints.back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-GUI.GaugeFrontCSS:set("background-color", "red")
-GUI.HitPoints.front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-GUI.HitPoints:setValue(math.random(100), 100)
+GUI.FooterTop = Geyser.Container:new({name = "GUI.FooterTop"}, GUI.Footer)
+GUI.FooterBottom = Geyser.HBox:new({name = "GUI.FooterBottom"}, GUI.Footer)
 
-GUI.BoxMana = Geyser.Label:new({
-    name = "GUI.BoxMana",
-    message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
-        "/StickMUD/052-potion.png\"></font></center>",
-    x = "25%",
-    y = 0,
-    width = "5%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.BoxMana:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxMana:setOnEnter("enable_tooltip", GUI.BoxMana,
-                       "<center><b><font size=\"4\"><img src=\"" ..
-                           getMudletHomeDir() ..
-                           "/StickMUD/052-potion.png\"></font></b><br>Mana")
-GUI.BoxMana:setOnLeave("disable_tooltip", GUI.BoxMana,
-                       "<center><b><font size=\"6\"><img src=\"" ..
-                           getMudletHomeDir() ..
-                           "/StickMUD/052-potion.png\"></font></b>")
+-- Helper function to create globally accessible icon labels with tooltips
+local function createIconLabel(globalName, img, tooltip, xPos)
+    GUI[globalName] = Geyser.Label:new({
+        name = "GUI." .. globalName,
+        message = string.format("<center><font size=\"6\"><img src=\"%s/StickMUD/%s\"></font></center>", getMudletHomeDir(), img),
+        x = xPos, y = 0, width = "5%", height = "100%"
+    }, GUI.FooterTop)
+    GUI[globalName]:setStyleSheet(GUI.BoxFooterCSS:getCSS())
+    GUI[globalName]:setOnEnter("enable_tooltip", GUI[globalName], string.format("<center><b><font size=\"4\"><img src=\"%s/StickMUD/%s\"></font></b><br>%s", getMudletHomeDir(), img, tooltip))
+    GUI[globalName]:setOnLeave("disable_tooltip", GUI[globalName], string.format("<center><b><font size=\"6\"><img src=\"%s/StickMUD/%s\"></font></b>", getMudletHomeDir(), img))
+end
 
-GUI.SpellPoints = Geyser.Gauge:new({
-    name = "GUI.SpellPoints",
-    x = "30%",
-    y = 0,
-    width = "20%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.SpellPoints.back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-GUI.GaugeFrontCSS:set("background-color", "blue")
-GUI.SpellPoints.front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-GUI.SpellPoints:setValue(math.random(100), 100)
+-- Helper function to create globally accessible gauges
+local function createGauge(globalName, xPos, color)
+    GUI[globalName] = Geyser.Gauge:new({
+        name = "GUI." .. globalName,
+        x = xPos, y = 0, width = "20%", height = "100%"
+    }, GUI.FooterTop)
+    GUI[globalName].back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
+    GUI.GaugeFrontCSS:set("background-color", color)
+    GUI[globalName].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
+    GUI[globalName]:setValue(math.random(100), 100)
+end
 
-GUI.BoxFatigue = Geyser.Label:new({
-    name = "GUI.BoxFatigue",
-    message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
-        "/StickMUD/051-stamina.png\"></font></center>",
-    x = "50%",
-    y = 0,
-    width = "5%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.BoxFatigue:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxFatigue:setOnEnter("enable_tooltip", GUI.BoxFatigue,
-                          "<center><b><font size=\"4\"><img src=\"" ..
-                              getMudletHomeDir() ..
-                              "/StickMUD/051-stamina.png\"></font></b><br>Endurance")
-GUI.BoxFatigue:setOnLeave("disable_tooltip", GUI.BoxFatigue,
-                          "<center><b><font size=\"6\"><img src=\"" ..
-                              getMudletHomeDir() ..
-                              "/StickMUD/051-stamina.png\"></font></b>")
+-- Setup icons and gauges
+createIconLabel("BoxHealth", "050-better-health.png", "Health", 0)
+createGauge("HitPoints", "5%", "red")
 
-GUI.FatiguePoints = Geyser.Gauge:new({
-    name = "GUI.Endurance",
-    x = "55%",
-    y = 0,
-    width = "20%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.FatiguePoints.back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-GUI.GaugeFrontCSS:set("background-color", "yellow")
-GUI.FatiguePoints.front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-GUI.FatiguePoints:setValue(math.random(100), 100)
+createIconLabel("BoxMana", "052-potion.png", "Mana", "25%")
+createGauge("SpellPoints", "30%", "blue")
 
-GUI.Target = Geyser.Label:new({
-    name = "GUI.Target",
-    message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
-        "/StickMUD/049-target.png\"></font></center>",
-    x = "75%",
-    y = 0,
-    width = "5%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.Target:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.Target:setOnEnter("enable_tooltip", GUI.Target,
-                      "<center><b><font size=\"4\"><img src=\"" ..
-                          getMudletHomeDir() ..
-                          "/StickMUD/049-target.png\"></font></b><br>Target")
-GUI.Target:setOnLeave("disable_tooltip", GUI.Target,
-                      "<center><b><font size=\"6\"><img src=\"" ..
-                          getMudletHomeDir() ..
-                          "/StickMUD/049-target.png\"></font></b>")
+createIconLabel("BoxFatigue", "051-stamina.png", "Endurance", "50%")
+createGauge("FatiguePoints", "55%", "yellow")
 
-GUI.EnemyHealth = Geyser.Gauge:new({
-    name = "GUI.EnemyHealth",
-    x = "80%",
-    y = 0,
-    width = "20%",
-    height = "100%"
-}, GUI.FooterTop)
-GUI.EnemyHealth.back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-GUI.GaugeFrontCSS:set("background-color", "purple")
-GUI.EnemyHealth.front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-GUI.EnemyHealth:setValue(math.random(100), 100)
+createIconLabel("Target", "049-target.png", "Target", "75%")
+createGauge("EnemyHealth", "80%", "purple")
 
-GUI.BoxRoom = Geyser.Label:new({name = "GUI.BoxRoom"}, GUI.FooterBottom)
-GUI.BoxRoom:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxRoom:echo(
-    "<center><font size=\"4\">📍</font> <b><font size=\"3\">Room</font></b></center>")
+-- Footer bottom labels for Room, Area, and Exits
+local function createFooterLabel(globalName, icon, text)
+    GUI[globalName] = Geyser.Label:new({name = "GUI." .. globalName}, GUI.FooterBottom)
+    GUI[globalName]:setStyleSheet(GUI.BoxFooterCSS:getCSS())
+    GUI[globalName]:echo(string.format("<center><font size=\"4\">%s</font> <b><font size=\"3\">%s</font></b></center>", icon, text))
+end
 
-GUI.BoxArea = Geyser.Label:new({name = "GUI.BoxArea"}, GUI.FooterBottom)
-GUI.BoxArea:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxArea:echo(
-    "<center><font size=\"4\">🏰</font> <b><font size=\"3\">Area</font></b></center>")
-
-GUI.BoxExits = Geyser.Label:new({name = "GUI.BoxExits"}, GUI.FooterBottom)
-GUI.BoxExits:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-GUI.BoxExits:echo(
-    "<center><font size=\"4\">🚪</font> <b><font size=\"3\">Exits</font></b></center>")
+createFooterLabel("BoxRoom", "📍", "Room")
+createFooterLabel("BoxArea", "🏰", "Area")
+createFooterLabel("BoxExits", "🚪", "Exits")
