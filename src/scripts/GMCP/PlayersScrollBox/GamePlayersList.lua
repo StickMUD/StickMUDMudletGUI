@@ -59,31 +59,90 @@ function GamePlayersList()
             gamePlayersList = gamePlayersList .. #coders .. "</font></td></tr>"
             for k, v in pairs(coders) do
                 gamePlayersList = gamePlayersList ..
-                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src="\"
+                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src=\""
                 if v.guild == "bard" then
                     if v.gender == "female" then
-                        gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
-                             "/StickMUD/066-musician.png\"
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/066-musician.png\""
                     else
-                        gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
-                             "/StickMUD/056-bard.png\"
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/056-bard.png\""
                     end
                 elseif v.guild == "fighter" then
-                    gamePlayersList = gamePlayersList .. "⚔️"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/070-girl.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/057-knight-2.png\""
+                    end
                 elseif v.guild == "healer" then
-                    gamePlayersList = gamePlayersList .. "💝"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/069-hippie-1.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/067-hippie.png\""
+                    end
                 elseif v.guild == "mage" then
-                    gamePlayersList = gamePlayersList .. "🧙"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/068-magician.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/065-wizard.png\""
+                    end
                 elseif v.guild == "necromancer" then
-                    gamePlayersList = gamePlayersList .. "💀"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/071-skeleton.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/059-necromancer.png\""
+                    end
                 elseif v.guild == "ninja" then
-                    gamePlayersList = gamePlayersList .. "🥷"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/062-ninja-1.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/058-ninja.png\""
+                    end
                 elseif v.guild == "priest" then
-                    gamePlayersList = gamePlayersList .. "⛪"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/061-cross.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/060-priest.png\""
+                    end
                 elseif v.guild == "thief" then
-                    gamePlayersList = gamePlayersList .. "😈"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/063-people.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/064-man.png\""
+                    end
                 else
-                    gamePlayersList = gamePlayersList .. "🤩"
+                    gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
+                                          "/StickMUD/029-dazed.png\""
                 end
                 gamePlayersList = gamePlayersList .. "\"></font></td>"
                 gamePlayersList = gamePlayersList ..
@@ -104,27 +163,92 @@ function GamePlayersList()
             gamePlayersList = gamePlayersList .. #players .. "</font></td></tr>"
             for k, v in pairs(players) do
                 gamePlayersList = gamePlayersList ..
-                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\">"
+                                      "<tr><td width=\"20%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src=\""
                 if v.guild == "bard" then
-                    gamePlayersList = gamePlayersList .. "🪕"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/066-musician.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/056-bard.png\""
+                    end
                 elseif v.guild == "fighter" then
-                    gamePlayersList = gamePlayersList .. "⚔️"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/070-girl.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/057-knight-2.png\""
+                    end
                 elseif v.guild == "healer" then
-                    gamePlayersList = gamePlayersList .. "💝"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/069-hippie-1.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/067-hippie.png\""
+                    end
                 elseif v.guild == "mage" then
-                    gamePlayersList = gamePlayersList .. "🧙"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/068-magician.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/065-wizard.png\""
+                    end
                 elseif v.guild == "necromancer" then
-                    gamePlayersList = gamePlayersList .. "💀"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/071-skeleton.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/059-necromancer.png\""
+                    end
                 elseif v.guild == "ninja" then
-                    gamePlayersList = gamePlayersList .. "🥷"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/062-ninja-1.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/058-ninja.png\""
+                    end
                 elseif v.guild == "priest" then
-                    gamePlayersList = gamePlayersList .. "⛪"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/061-cross.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/060-priest.png\""
+                    end
                 elseif v.guild == "thief" then
-                    gamePlayersList = gamePlayersList .. "😈"
+                    if v.gender == "female" then
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/063-people.png\""
+                    else
+                        gamePlayersList =
+                            gamePlayersList .. getMudletHomeDir() ..
+                                "/StickMUD/064-man.png\""
+                    end
                 else
-                    gamePlayersList = gamePlayersList .. "🤩"
+                    gamePlayersList = gamePlayersList .. getMudletHomeDir() ..
+                                          "/StickMUD/029-dazed.png\""
                 end
-                gamePlayersList = gamePlayersList .. "</font></td>"
+                gamePlayersList = gamePlayersList .. "\"></font></td>"
                 gamePlayersList = gamePlayersList ..
                                       "<td width=\"80%\" valign=\"center\" align=\"left\"><font size=\"4\">" ..
                                       firstToUpper(v.name) .. "</font>"
