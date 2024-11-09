@@ -34,12 +34,12 @@ GUI.FooterBottom = Geyser.HBox:new({name = "GUI.FooterBottom"}, GUI.Footer)
 local function createIconLabel(globalName, img, tooltip, xPos)
     GUI[globalName] = Geyser.Label:new({
         name = "GUI." .. globalName,
-        message = string.format("<center><font size=\"6\"><img src=\"%s/StickMUD/%s\"></font></center>", getMudletHomeDir(), img),
+        message = string.format("<center><img src=\"%s/StickMUD/%s\">", getMudletHomeDir(), img),
         x = xPos, y = 0, width = "5%", height = "100%"
     }, GUI.FooterTop)
     GUI[globalName]:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-    GUI[globalName]:setOnEnter("enable_tooltip", GUI[globalName], string.format("<center><b><font size=\"4\"><img src=\"%s/StickMUD/%s\"></font></b><br>%s", getMudletHomeDir(), img, tooltip))
-    GUI[globalName]:setOnLeave("disable_tooltip", GUI[globalName], string.format("<center><b><font size=\"6\"><img src=\"%s/StickMUD/%s\"></font></b>", getMudletHomeDir(), img))
+    GUI[globalName]:setOnEnter("enable_tooltip", GUI[globalName], string.format("<center><img src=\"%s/StickMUD/%s\"><br>%s", getMudletHomeDir(), img, tooltip))
+    GUI[globalName]:setOnLeave("disable_tooltip", GUI[globalName], string.format("<center><img src=\"%s/StickMUD/%s\">", getMudletHomeDir(), img))
 end
 
 -- Helper function to create globally accessible gauges
