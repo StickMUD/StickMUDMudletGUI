@@ -36,12 +36,7 @@ function GameInfo()
     local gameInfo = "<center>"
 
     if nextContentBox ~= "BoxInfo" then
-        tempTimer(2.0, function()
-            on_content_box_press(nextContentBox)
-            if GUI.GameInfoLabel then
-                GUI.GameInfoLabel:hide()
-            end
-        end)
+        tempTimer(2.0, function() on_content_box_press(nextContentBox) end)
     end
 
     on_content_box_press("BoxInfo")
