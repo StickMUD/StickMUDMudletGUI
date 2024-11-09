@@ -7,7 +7,7 @@ local content_items = {
     { section = "BoxInventory", icon = "040-school-bag.png", tooltip = "Carry", console = "InventoryConsole" },
     { section = "BoxRoomInv", icon = "041-location.png", tooltip = "Room", console = "RoomConsole" },
     { section = "BoxMap", icon = "042-treasure-map.png", tooltip = "Map", console = "MapperConsole" },
-    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoConsole" }
+    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoScrollBox" }
 }
 
 -- Function to send GMCP for selected sections
