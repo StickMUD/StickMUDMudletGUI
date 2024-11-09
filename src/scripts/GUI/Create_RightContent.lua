@@ -1,3 +1,5 @@
+nextContentBox = "BoxMap";
+
 -- Content items data structure
 local content_items = {
     { section = "BoxWieldedWeapons", icon = "044-swords.png", tooltip = "Weapon", console = "WieldedWeaponsConsole" },
@@ -23,6 +25,7 @@ function on_content_box_press(section)
         if item.section == section then
             GUI[item.console]:show()
             sendGMCPForSection(section)
+            nextContentBox = section
         else
             GUI[item.console]:hide()
         end
