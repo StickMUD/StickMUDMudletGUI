@@ -33,7 +33,7 @@ GUI.GameInfoCSS = CSSMan.new([[
 function GameInfo()
     local game_info = gmcp.Game and gmcp.Game.Info
     local icon_path = getMudletHomeDir() .. "/StickMUD/"
-    local gameInfo = "<table height=\100%\" width=\100%\">"
+    local gameInfo = "<table height=\"100%\" width=\"100%\">"
 
     if nextContentBox ~= "BoxInfo" then
         local next = nextContentBox;
