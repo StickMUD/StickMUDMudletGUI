@@ -19,7 +19,7 @@ local header_stretch = {1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
 GUI.BoxHeaderCSS = CSSMan.new([[
   background-color: rgba(0,0,0,100);
-	qproperty-wordWrap: true;
+  qproperty-wordWrap: true;
 ]])
 
 -- The icons will be contained here
@@ -31,45 +31,38 @@ GUI.HBoxEquipment = Geyser.HBox:new({
     height = "100%"
 }, GUI.Top)
 
--- Add the icons and events
-for index = 1, #header_sections do
-    local section_value = header_sections[index]
-    local icon_value = header_icons[index]
-    local tooltip_value = header_tooltips[index]
-    local stretch_value = header_stretch[index]
+-- Helper function to create a section label
+local function createSectionLabel(name, icon, tooltip, stretch, isText)
+    local message = isText and
+        ("<center><b><font size=\"3\">" .. icon .. "</font></b>") or
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\">")
+    
+    local sectionLabel = Geyser.Label:new({
+        name = name,
+        message = message,
+        h_stretch_factor = stretch
+    }, GUI.HBoxEquipment)
+    
+    sectionLabel:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+    
+    -- Tooltip configurations
+    local enterMessage = isText and
+        ("<center><b><font size=\"2\">" .. icon .. "</font></b><br>" .. tooltip) or
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"><br>" .. tooltip)
+    
+    local leaveMessage = message
+    
+    sectionLabel:setOnEnter("enable_tooltip", sectionLabel, enterMessage)
+    sectionLabel:setOnLeave("disable_tooltip", sectionLabel, leaveMessage)
+    
+    return sectionLabel
+end
 
-    if section_value ~= "BoxStickMUD" then
-        GUI[section_value] = GUI[section_value] or Geyser.Label:new({
-            name = "GUI." .. section_value,
-            message = "<center><b><font size=\"6\"><img src=\"" ..
-                getMudletHomeDir() .. "/StickMUD/" .. icon_value ..
-                "\"></font></b>",
-            h_stretch_factor = stretch_value
-        }, GUI.HBoxEquipment)
-        GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
-        GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                      "<center><b><font size=\"3\"><img src=\"" ..
-                                          getMudletHomeDir() .. "/StickMUD/" ..
-                                          icon_value .. "\"></font></b><br>" ..
-                                          tooltip_value)
-        GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                      "<center><b><font size=\"6\"><img src=\"" ..
-                                          getMudletHomeDir() .. "/StickMUD/" ..
-                                          icon_value .. "\"></font></b>")
-    else
-        GUI[section_value] = GUI[section_value] or Geyser.Label:new({
-            name = "GUI." .. section_value,
-            message = "<center><b><font size=\"3\">" .. icon_value ..
-                "</font></b>",
-            h_stretch_factor = stretch_value
-        }, GUI.HBoxEquipment)
-        GUI[section_value]:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
-        GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                      "<center><b><font size=\"2\">" ..
-                                          icon_value .. "</font></b><br>" ..
-                                          tooltip_value)
-        GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                      "<center><b><font size=\"3\">" ..
-                                          icon_value .. "</font></b>")
-    end
+-- Add sections to GUI
+for i, section in ipairs(header_sections) do
+    local icon = header_icons[i]
+    local tooltip = header_tooltips[i]
+    local stretch = header_stretch[i]
+    
+    GUI[section] = GUI[section] or createSectionLabel("GUI." .. section, icon, tooltip, stretch, section == "BoxStickMUD")
 end

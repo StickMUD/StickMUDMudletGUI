@@ -1,24 +1,16 @@
-content_sections = {
-    "BoxWieldedWeapons", "BoxWornArmour", "BoxInventory", "BoxRoomInv",
-    "BoxMap", "BoxInfo"
-}
-content_icons = {
-    "044-swords.png", "045-knight-1.png", "040-school-bag.png",
-    "041-location.png", "042-treasure-map.png", "043-informative.png"
-}
-content_tooltips = {"Weapon", "Armour️", "Carry", "Room", "Map", "Info"}
-content_consoles = {
-    "WieldedWeaponsConsole", "WornArmourConsole", "InventoryConsole",
-    "RoomConsole", "MapperConsole", "InfoConsole"
+-- Content items data structure
+local content_items = {
+    { section = "BoxWieldedWeapons", icon = "044-swords.png", tooltip = "Weapon", console = "WieldedWeaponsConsole" },
+    { section = "BoxWornArmour", icon = "045-knight-1.png", tooltip = "Armour️", console = "WornArmourConsole" },
+    { section = "BoxInventory", icon = "040-school-bag.png", tooltip = "Carry", console = "InventoryConsole" },
+    { section = "BoxRoomInv", icon = "041-location.png", tooltip = "Room", console = "RoomConsole" },
+    { section = "BoxMap", icon = "042-treasure-map.png", tooltip = "Map", console = "MapperConsole" },
+    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoConsole" }
 }
 
 -- Function to send GMCP for selected sections
 local function sendGMCPForSection(section)
-    local itemSections = {
-        ["BoxWieldedWeapons"] = true,
-        ["BoxWornArmour"] = true,
-        ["BoxInventory"] = true
-    }
+    local itemSections = { BoxWieldedWeapons = true, BoxWornArmour = true, BoxInventory = true }
     if itemSections[section] then
         sendGMCP("Char.Items.Inv")
     elseif section == "BoxRoomInv" then
@@ -27,18 +19,17 @@ local function sendGMCPForSection(section)
 end
 
 function on_content_box_press(section)
-    for index = 1, #content_sections do
-        local section_value = content_sections[index]
-        local console_value = content_consoles[index]
-        if section_value == section then
-            GUI[console_value]:show()
+    for _, item in ipairs(content_items) do
+        if item.section == section then
+            GUI[item.console]:show()
             sendGMCPForSection(section)
         else
-            GUI[console_value]:hide()
+            GUI[item.console]:hide()
         end
     end
 end
 
+-- CSS for content buttons
 GUI.BoxContentButtonCSS = CSSMan.new([[
   background-color: rgba(0,0,0,0);
   border-style: solid;
@@ -46,6 +37,7 @@ GUI.BoxContentButtonCSS = CSSMan.new([[
   border-width: 1px;
 ]])
 
+-- Main container for content buttons
 GUI.HBoxContent = Geyser.HBox:new({
     name = "GUI.HBoxContent",
     x = 0,
@@ -54,32 +46,26 @@ GUI.HBoxContent = Geyser.HBox:new({
     height = "5%"
 }, GUI.Right)
 
--- Helper function to create labels
-local function createLabel(section_value, icon_value, tooltip_value)
-    GUI[section_value] = Geyser.Label:new({
-        name = "GUI." .. section_value,
-        message = "<center><font size=\"6\"><img src=\"" .. getMudletHomeDir() ..
-            "/StickMUD/" .. icon_value .. "\"></font></center>"
+-- Function to create labels for content items
+local function createLabel(item)
+    local icon_path = getMudletHomeDir() .. "/StickMUD/" .. item.icon
+    GUI[item.section] = Geyser.Label:new({
+        name = "GUI." .. item.section,
+        message = "<center><img src=\"" .. icon_path .. "\">"
     }, GUI.HBoxContent)
-    GUI[section_value]:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
-    GUI[section_value]:setClickCallback("on_content_box_press", section_value)
-    GUI[section_value]:setOnEnter("enable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"3\"><img src=\"" ..
-                                      getMudletHomeDir() .. "/StickMUD/" ..
-                                      icon_value .. "\"></font></b><br>" ..
-                                      tooltip_value)
-    GUI[section_value]:setOnLeave("disable_tooltip", GUI[section_value],
-                                  "<center><b><font size=\"6\"><img src=\"" ..
-                                      getMudletHomeDir() .. "/StickMUD/" ..
-                                      icon_value .. "\"></font></b>")
+    
+    GUI[item.section]:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
+    GUI[item.section]:setClickCallback("on_content_box_press", item.section)
+    GUI[item.section]:setOnEnter("enable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnLeave("disable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 
--- Add the icons and events
-for index = 1, #content_sections do
-    createLabel(content_sections[index], content_icons[index],
-                content_tooltips[index])
+-- Create labels for each content item
+for _, item in ipairs(content_items) do
+    createLabel(item)
 end
 
+-- Main content display box
 GUI.ContentBox = Geyser.Label:new({
     name = "GUI.ContentBox",
     x = 0,
@@ -90,37 +76,35 @@ GUI.ContentBox = Geyser.Label:new({
 GUI.ContentBox:setStyleSheet(GUI.BoxRightCSS:getCSS())
 
 -- Helper function to initialize consoles
-local function initializeConsole(console_value)
-    GUI[console_value] = GUI[console_value] or Geyser.MiniConsole:new({
-        name = "GUI." .. console_value,
+local function initializeConsole(item)
+    GUI[item.console] = Geyser.MiniConsole:new({
+        name = "GUI." .. item.console,
         x = GUI.ContentBox:get_x(),
         y = GUI.ContentBox:get_y(),
         height = GUI.ContentBox:get_height(),
         width = GUI.ContentBox:get_width()
     })
-    setBackgroundColor("GUI." .. console_value, 0, 0, 0, 0)
-    setFont("GUI." .. console_value, getFont())
-    setMiniConsoleFontSize("GUI." .. console_value,
-                           content_preferences["GUI." .. console_value].fontSize)
-    setFgColor("GUI." .. console_value, 192, 192, 192)
-    setBgColor("GUI." .. console_value, 0, 0, 0)
-    GUI[console_value]:enableAutoWrap()
+    setBackgroundColor("GUI." .. item.console, 0, 0, 0, 0)
+    setFont("GUI." .. item.console, getFont())
+    setMiniConsoleFontSize("GUI." .. item.console, content_preferences["GUI." .. item.console].fontSize)
+    setFgColor("GUI." .. item.console, 192, 192, 192)
+    setBgColor("GUI." .. item.console, 0, 0, 0)
+    GUI[item.console]:enableAutoWrap()
 
     -- Create and style '+' and '-' labels
-    createControlLabel(console_value, "Plus", "-50px", "+")
-    createControlLabel(console_value, "Minus", "-25px", "-")
+    createControlLabel(item.console, "Plus", "-50px", "+")
+    createControlLabel(item.console, "Minus", "-25px", "-")
 
     -- Connect labels to font adjustment functions
-    GUI[console_value .. "PlusLabel"]:setClickCallback(increaseFontSize,
-                                                       GUI[console_value])
-    GUI[console_value .. "MinusLabel"]:setClickCallback(decreaseFontSize,
-                                                        GUI[console_value])
+    GUI[item.console .. "PlusLabel"]:setClickCallback(increaseFontSize, GUI[item.console])
+    GUI[item.console .. "MinusLabel"]:setClickCallback(decreaseFontSize, GUI[item.console])
 
-    GUI[console_value]:hide()
+    GUI[item.console]:hide()
 end
 
--- Add the consoles (except the Mapper)
-for index = 1, #content_sections do
-    local console_value = content_consoles[index]
-    if console_value ~= "MapperConsole" then initializeConsole(console_value) end
+-- Initialize all consoles except the Mapper
+for _, item in ipairs(content_items) do
+    if item.console ~= "MapperConsole" then
+        initializeConsole(item)
+    end
 end
