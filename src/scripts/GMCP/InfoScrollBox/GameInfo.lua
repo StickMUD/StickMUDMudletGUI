@@ -39,7 +39,7 @@ function GameInfo()
         tempTimer(2.0, function()
             on_content_box_press(nextContentBox)
             if GUI.GameInfoLabel then
-                GUI.GameInfoLabel:echo("")
+                GUI.GameInfoLabel:hide()
             end
         end)
     end
@@ -54,9 +54,10 @@ function GameInfo()
     -- Set up and display the game info label in the GUI
     GUI.GameInfoLabel = GUI.GameInfoLabel or Geyser.Label:new({
         name = "GUI.GameInfoLabel",
-        x = 0, y = 0, width = "100%", height = "200%"
+        x = 0, y = 0, width = "100%", height = "100%",
+        message = gameInfo
     }, GUI.InfoScrollBox)
     GUI.GameInfoLabel:setStyleSheet(GUI.GameInfoCSS:getCSS())
     setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
-    GUI.GameInfoLabel:echo(gameInfo)
+    GUI.GameInfoLabel:show()
 end
