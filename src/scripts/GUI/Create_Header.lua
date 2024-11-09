@@ -35,7 +35,7 @@ GUI.HBoxEquipment = Geyser.HBox:new({
 local function createSectionLabel(name, icon, tooltip, stretch, isText)
     local message = isText and
         ("<center><b><font size=\"3\">" .. icon .. "</font></b>") or
-        ("<center><b><font size=\"6\"><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"></font></b>")
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\">")
     
     local sectionLabel = Geyser.Label:new({
         name = name,
@@ -48,7 +48,7 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     -- Tooltip configurations
     local enterMessage = isText and
         ("<center><b><font size=\"2\">" .. icon .. "</font></b><br>" .. tooltip) or
-        ("<center><b><font size=\"3\"><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"></font></b><br>" .. tooltip)
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"><br>" .. tooltip)
     
     local leaveMessage = message
     
