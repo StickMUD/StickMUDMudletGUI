@@ -50,18 +50,17 @@ content_preferences_file = getMudletHomeDir() .. "/Content_Preferences.lua"
 
 -- Load or set content preferences
 content_preferences = content_preferences or {}
+
 if io.exists(content_preferences_file) then
     table.load(content_preferences_file, content_preferences)
 
     -- Loop through default content preferences and add any missing keys
-    for key, value in pairs(default_content_preferences) do
-        if not content_preferences[key] then
-            content_preferences[key] = value
-        else
-            for key2, value2 in pairs(default_content_preferences[key]) do
-                if not content_preferences[key][key2] then
-                    content_preferences[key][key2] = value2
-                end
+    for key, default_values in pairs(default_content_preferences) do
+        content_preferences[key] = content_preferences[key] or {}
+
+        for key2, default_value in pairs(default_values) do
+            if content_preferences[key][key2] == nil then
+                content_preferences[key][key2] = default_value
             end
         end
     end
