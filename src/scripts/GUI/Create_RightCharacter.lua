@@ -34,7 +34,7 @@ local function createCharacterBox(data)
   GUI[data.section] = Geyser.Label:new({
       name = "GUI." .. data.section,
       h_stretch_factor = data.stretch,
-      message = string.format("<center><font size=\"6\"><img src=\"%s\"></font></center>", iconPath)
+      message = string.format("<center><img src=\"%s\">", iconPath)
   }, GUI.HBoxCharacter)
 
   GUI[data.section]:setStyleSheet(GUI.BoxRightCSS:getCSS())

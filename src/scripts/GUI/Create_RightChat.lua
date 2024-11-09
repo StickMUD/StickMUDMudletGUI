@@ -46,13 +46,13 @@ local function createChatLabel(item)
     local icon_path = getMudletHomeDir() .. "/StickMUD/" .. item.icon
     GUI[item.section] = Geyser.Label:new({
         name = "GUI." .. item.section,
-        message = "<center><font size=\"6\"><img src=\"" .. icon_path .. "\"></font></center>"
+        message = "<center><img src=\"" .. icon_path .. "\">"
     }, GUI.HBoxChat)
 
     GUI[item.section]:setStyleSheet(GUI.BoxChatButtonCSS:getCSS())
     GUI[item.section]:setClickCallback("on_chat_box_press", item.section)
-    GUI[item.section]:setOnEnter("enable_tooltip", GUI[item.section], "<center><b><font size=\"3\"><img src=\"" .. icon_path .. "\"></font></b><br>" .. item.tooltip)
-    GUI[item.section]:setOnLeave("disable_tooltip", GUI[item.section], "<center><b><font size=\"6\"><img src=\"" .. icon_path .. "\"></font></b>")
+    GUI[item.section]:setOnEnter("enable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnLeave("disable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 
 -- Create labels for each chat item
