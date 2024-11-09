@@ -35,7 +35,7 @@ function GameInfo()
     local icon_path = getMudletHomeDir() .. "/StickMUD/"
     local gameInfo = "<center>"
 
-    if nextContentBox ~= "InfoScrollBox" then
+    if nextContentBox ~= "BoxInfo" then
         tempTimer(2.0, function()
             on_content_box_press(nextContentBox)
             if GUI.GameInfoLabel then
@@ -44,7 +44,7 @@ function GameInfo()
         end)
     end
 
-    on_content_box_press("InfoScrollBox")
+    on_content_box_press("BoxInfo")
 
     -- Display icon based on game event if available
     if game_info and info_data[game_info.event] then
@@ -52,12 +52,11 @@ function GameInfo()
     end
 
     -- Set up and display the game info label in the GUI
-    GUI.GameInfoLabel = GUI.GameInfoLabel or Geyser.Label:new({
+    GUI.GameInfoLabel = Geyser.Label:new({
         name = "GUI.GameInfoLabel",
         x = 0, y = 0, width = "100%", height = "100%",
         message = gameInfo
     }, GUI.InfoScrollBox)
     GUI.GameInfoLabel:setStyleSheet(GUI.GameInfoCSS:getCSS())
     setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
-    GUI.GameInfoLabel:show()
 end
