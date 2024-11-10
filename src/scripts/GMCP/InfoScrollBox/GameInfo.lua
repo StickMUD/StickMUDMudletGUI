@@ -47,7 +47,7 @@ function GameInfo()
         gameInfo = gameInfo .. string.format('<tr><td valign=\"middle\"><center><img src="%s%s"></td></tr>', icon_path, info_data[game_info.event])
     end
 
-    gameInfo = "</table>"
+    gameInfo = gameInfo .. "</table>"
 
     -- Set up and display the game info label in the GUI
     GUI.GameInfoLabel = Geyser.Label:new({
