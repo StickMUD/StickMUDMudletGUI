@@ -1,0 +1,11 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "GameInfo",
+              "eventHandlerList": [
+                     "gmcp.Game.Info"
+              ],
+              "script": ""
+       }
+]

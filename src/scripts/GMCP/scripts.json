@@ -89,6 +89,12 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
+              "name": "InfoScrollBox",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
               "name": "HelpContainer",
               "script": ""
        },

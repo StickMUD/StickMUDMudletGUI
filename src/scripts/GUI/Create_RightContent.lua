@@ -1,3 +1,5 @@
+nextContentBox = "BoxMap";
+
 -- Content items data structure
 local content_items = {
     { section = "BoxWieldedWeapons", icon = "044-swords.png", tooltip = "Weapon", console = "WieldedWeaponsConsole" },
@@ -5,7 +7,7 @@ local content_items = {
     { section = "BoxInventory", icon = "040-school-bag.png", tooltip = "Carry", console = "InventoryConsole" },
     { section = "BoxRoomInv", icon = "041-location.png", tooltip = "Room", console = "RoomConsole" },
     { section = "BoxMap", icon = "042-treasure-map.png", tooltip = "Map", console = "MapperConsole" },
-    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoConsole" }
+    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoScrollBox" }
 }
 
 -- Function to send GMCP for selected sections
@@ -23,6 +25,7 @@ function on_content_box_press(section)
         if item.section == section then
             GUI[item.console]:show()
             sendGMCPForSection(section)
+            nextContentBox = section
         else
             GUI[item.console]:hide()
         end
@@ -104,7 +107,7 @@ end
 
 -- Initialize all consoles except the Mapper
 for _, item in ipairs(content_items) do
-    if item.console ~= "MapperConsole" then
+    if item.console ~= "MapperConsole" and item.console ~= "InfoConsole" then
         initializeConsole(item)
     end
 end

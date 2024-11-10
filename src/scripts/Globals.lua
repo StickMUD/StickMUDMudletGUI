@@ -37,7 +37,7 @@ default_content_preferences = {
     ["GUI.WornArmourConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.InventoryConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.RoomConsole"] = {fontSize = getDefaultConsoleFontSize()},
-    ["GUI.InfoConsole"] = {fontSize = getDefaultConsoleFontSize()},
+    ["GUI.InfoScrollBox"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.AbilitiesConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.TrainingScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
     ["GUI.SessionScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
