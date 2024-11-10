@@ -78,36 +78,47 @@ GUI.ContentBox = Geyser.Label:new({
 }, GUI.Right)
 GUI.ContentBox:setStyleSheet(GUI.BoxRightCSS:getCSS())
 
--- Helper function to initialize consoles
+-- Function to initialize consoles
 local function initializeConsole(item)
-    GUI[item.console] = Geyser.MiniConsole:new({
+    local console_type = item.console:find("Console") and "MiniConsole" or item.console:find("Container") and "Container" or "ScrollBox"
+    local console_settings = {
         name = "GUI." .. item.console,
         x = GUI.ContentBox:get_x(),
         y = GUI.ContentBox:get_y(),
         height = GUI.ContentBox:get_height(),
         width = GUI.ContentBox:get_width()
-    })
-    setBackgroundColor("GUI." .. item.console, 0, 0, 0, 0)
-    setFont("GUI." .. item.console, getFont())
-    setMiniConsoleFontSize("GUI." .. item.console, content_preferences["GUI." .. item.console].fontSize)
-    setFgColor("GUI." .. item.console, 192, 192, 192)
-    setBgColor("GUI." .. item.console, 0, 0, 0)
-    GUI[item.console]:enableAutoWrap()
+    }
 
-    -- Create and style '+' and '-' labels
-    createControlLabel(item.console, "Plus", "-50px", "+")
-    createControlLabel(item.console, "Minus", "-25px", "-")
+    GUI[item.console] = Geyser[console_type]:new(console_settings)
+    setBackgroundColor("GUI." .. item.console, 0, 0, 0, 255)
 
-    -- Connect labels to font adjustment functions
-    GUI[item.console .. "PlusLabel"]:setClickCallback(increaseFontSize, GUI[item.console])
-    GUI[item.console .. "MinusLabel"]:setClickCallback(decreaseFontSize, GUI[item.console])
+    if console_type == "MiniConsole" then
+        setFont("GUI." .. item.console, getFont())
+        setMiniConsoleFontSize("GUI." .. item.console, content_preferences["GUI." .. item.console].fontSize)
+        setFgColor("GUI." .. item.console, 192, 192, 192)
+        setBgColor("GUI." .. item.console, 0, 0, 0)
+        GUI[item.console]:enableAutoWrap()
 
+        -- Create '+' and '-' labels
+        createControlLabel(item.console, "Plus", "-50px", "+")
+        createControlLabel(item.console, "Minus", "-25px", "-")
+
+        -- Connect labels to font adjustment functions
+        GUI[item.console .. "PlusLabel"]:setClickCallback(increaseFontSize, GUI[item.console])
+        GUI[item.console .. "MinusLabel"]:setClickCallback(decreaseFontSize, GUI[item.console])
+    elseif console_type == "ScrollBox" and item.console == "InfoScrollBox" then
+      GUI.GameInfoLabel = Geyser.Label:new({
+          name = "GUI.GameInfoLabel",
+          x = 0, y = 0, width = "100%", height = "100%"
+      }, GUI[item.console])
+      setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
+    end
     GUI[item.console]:hide()
 end
 
 -- Initialize all consoles except the Mapper
 for _, item in ipairs(content_items) do
-    if item.console ~= "MapperConsole" and item.console ~= "InfoConsole" then
+    if item.console ~= "MapperConsole" then
         initializeConsole(item)
     end
 end

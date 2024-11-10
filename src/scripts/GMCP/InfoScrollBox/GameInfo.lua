@@ -39,10 +39,19 @@ function GameInfo()
 
     if nextContentBox ~= "BoxInfo" then
         local next = nextContentBox;
-        tempTimer(3.0, function() on_content_box_press(next) end)
+        tempTimer(3.0, function()
+            on_content_box_press(next)
+            if GUI.GameInfoLabel then
+                GUI.GameInfoLabel:echo("");
+            end
+        end)
+    else
+        tempTimer(3.0, function()
+            if GUI.GameInfoLabel then
+                GUI.GameInfoLabel:echo("");
+            end
+        end)
     end
-
-    on_content_box_press("BoxInfo")
 
     -- Display icon based on game event if available
     if game_info and info_data[game_info.event] then
@@ -53,9 +62,10 @@ function GameInfo()
     GUI.GameInfoLabel = Geyser.Label:new({
         name = "GUI.GameInfoLabel",
         x = 0, y = 0, width = "100%", height = "100%",
-        message = gameInfo,
-        h_stretch_factor = 1
+        message = gameInfo
     }, GUI.InfoScrollBox)
     GUI.GameInfoLabel:setStyleSheet(GUI.GameInfoCSS:getCSS())
     setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
+
+    on_content_box_press("BoxInfo")
 end
