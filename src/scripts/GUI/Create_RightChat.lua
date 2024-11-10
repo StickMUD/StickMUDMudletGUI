@@ -38,7 +38,7 @@ GUI.HBoxChat = Geyser.HBox:new({
     x = 0,
     y = 0,
     width = "50%",
-    height = "5%"
+    height = "7%"
 }, GUI.Right)
 
 -- Function to create a chat label with icon and tooltip
@@ -181,9 +181,9 @@ end
 GUI.ChatBox = Geyser.Label:new({
     name = "GUI.ChatBox",
     x = 0,
-    y = "5%",
+    y = "7%",
     width = "50%",
-    height = "40%"
+    height = "38%"
 }, GUI.Right)
 GUI.ChatBox:setStyleSheet(GUI.BoxRightCSS:getCSS())
 
