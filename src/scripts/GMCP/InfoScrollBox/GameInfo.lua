@@ -45,9 +45,13 @@ function GameInfo()
                 GUI.GameInfoLabel:echo("");
             end
         end)
+    else
+        tempTimer(3.0, function()
+            if GUI.GameInfoLabel then
+                GUI.GameInfoLabel:echo("");
+            end
+        end)
     end
-
-    on_content_box_press("BoxInfo")
 
     -- Display icon based on game event if available
     if game_info and info_data[game_info.event] then
@@ -62,4 +66,6 @@ function GameInfo()
     }, GUI.InfoScrollBox)
     GUI.GameInfoLabel:setStyleSheet(GUI.GameInfoCSS:getCSS())
     setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
+
+    on_content_box_press("BoxInfo")
 end
