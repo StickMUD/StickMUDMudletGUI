@@ -26,14 +26,14 @@ local info_data = {
 -- Define CSS for Game Info List
 GUI.GameInfoCSS = CSSMan.new([[
 	qproperty-wordWrap: true;
-	qproperty-alignment: 'AlignTop';
+	qproperty-alignment: 'AlignCenter';
 ]])
 
 -- Function to display Game Info HTML
 function GameInfo()
     local game_info = gmcp.Game and gmcp.Game.Info
     local icon_path = getMudletHomeDir() .. "/StickMUD/"
-    local gameInfo = "<table>"
+    local gameInfo = "<center>"
 
     if nextContentBox ~= "BoxInfo" then
         local next = nextContentBox;
@@ -44,10 +44,8 @@ function GameInfo()
 
     -- Display icon based on game event if available
     if game_info and info_data[game_info.event] then
-        gameInfo = string.format('<tr><td><center><img src="%s%s"></center></td></tr>', icon_path, info_data[game_info.event])
+        gameInfo = string.format('<img src="%s%s">', icon_path, info_data[game_info.event])
     end
-
-    gameInfo = gameInfo .. "</table>"
 
     -- Set up and display the game info label in the GUI
     GUI.GameInfoLabel = Geyser.Label:new({
