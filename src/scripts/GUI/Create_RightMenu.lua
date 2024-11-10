@@ -12,9 +12,9 @@ local menu_items = {
 GUI.MenuBox = Geyser.Label:new({
     name = "GUI.MenuBox",
     x = "50%",
-    y = "5%",
+    y = "7%",
     width = "50%",
-    height = "89%"
+    height = "85%"
 }, GUI.Right)
 setBackgroundColor("GUI.MenuBox", 0, 0, 0)
 
@@ -95,7 +95,7 @@ GUI.HBoxMenu = Geyser.HBox:new({
     x = "50%",
     y = 0,
     width = "50%",
-    height = "5%"
+    height = "7%"
 }, GUI.Right)
 
 -- Initialize menu labels and consoles

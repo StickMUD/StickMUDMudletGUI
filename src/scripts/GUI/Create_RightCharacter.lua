@@ -17,7 +17,7 @@ local character_data = {
 -- Main container for character status icons
 GUI.LabelCharacter = Geyser.Label:new({
   name = "GUI.LabelCharacter",
-  x = 0, y = "94%", width = "100%", height = "6%"
+  x = 0, y = "93%", width = "100%", height = "7%"
 }, GUI.Right)
 GUI.LabelCharacter:setStyleSheet([[
   QLabel { background-color: rgba(0,0,0,255); }
@@ -25,7 +25,7 @@ GUI.LabelCharacter:setStyleSheet([[
 
 GUI.HBoxCharacter = Geyser.HBox:new({
   name = "GUI.HBoxCharacter",
-  x = 0, y = "94%", width = "100%", height = "6%"
+  x = 0, y = "93%", width = "100%", height = "7%"
 }, GUI.Right)
 
 -- Function to initialize character status boxes

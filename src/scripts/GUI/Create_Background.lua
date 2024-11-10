@@ -10,7 +10,7 @@ GUI.Top = Geyser.Label:new({
   name = "GUI.Top",
   x = 0, y = 0,
   width = "60%",
-  height = "5%",
+  height = "7%",
 })
 setBackgroundColor("GUI.Top", 0, 0, 0)
 

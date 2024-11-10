@@ -46,7 +46,7 @@ GUI.HBoxContent = Geyser.HBox:new({
     x = 0,
     y = "45%",
     width = "50%",
-    height = "5%"
+    height = "7%"
 }, GUI.Right)
 
 -- Function to create labels for content items
@@ -72,9 +72,9 @@ end
 GUI.ContentBox = Geyser.Label:new({
     name = "GUI.ContentBox",
     x = 0,
-    y = "50%",
+    y = "52%",
     width = "50%",
-    height = "39%"
+    height = "37%"
 }, GUI.Right)
 GUI.ContentBox:setStyleSheet(GUI.BoxRightCSS:getCSS())
 
