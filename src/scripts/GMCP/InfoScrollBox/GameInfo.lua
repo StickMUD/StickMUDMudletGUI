@@ -44,7 +44,7 @@ function GameInfo()
 
     -- Display icon based on game event if available
     if game_info and info_data[game_info.event] then
-        gameInfo = string.format('<tr><td align=\"center\" valign=\"middle\"><img src="%s%s"></td></tr>', icon_path, info_data[game_info.event])
+        gameInfo = string.format('<tr><td><center><img src="%s%s"></center></td></tr>', icon_path, info_data[game_info.event])
     end
 
     gameInfo = gameInfo .. "</table>"
