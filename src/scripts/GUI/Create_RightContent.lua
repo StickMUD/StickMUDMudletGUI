@@ -107,7 +107,7 @@ end
 
 -- Initialize all consoles except the Mapper
 for _, item in ipairs(content_items) do
-    if item.console ~= "MapperConsole" and item.console ~= "InfoConsole" then
+    if item.console ~= "MapperConsole" and item.console ~= "InfoScrollBox" then
         initializeConsole(item)
     end
 end
