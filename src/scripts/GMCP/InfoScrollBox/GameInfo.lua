@@ -52,9 +52,10 @@ function GameInfo()
     -- Set up and display the game info label in the GUI
     GUI.GameInfoLabel = Geyser.Label:new({
         name = "GUI.GameInfoLabel",
-        x = 0, y = 0, width = "100%", height = "100%"
+        x = 0, y = 0, width = "100%", height = "100%",
+        message = gameInfo,
+        h_stretch_factor = 1
     }, GUI.InfoScrollBox)
     GUI.GameInfoLabel:setStyleSheet(GUI.GameInfoCSS:getCSS())
     setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
-    GUI.GameInfoLabel:echo(gameInfo)
 end
