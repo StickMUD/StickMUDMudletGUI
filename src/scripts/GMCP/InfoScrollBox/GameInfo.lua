@@ -1,7 +1,7 @@
 -- Data table for character status icons mapped by event
 local info_data = {
     boom = "001-boom.png",
-    grave = "002-grave.png",
+    rip = "002-grave.png",
     level = "003-level-up.png",
     winner = "004-winner.png",
     trophy = "005-trophy.png",
@@ -37,7 +37,7 @@ function GameInfo()
 
     if nextContentBox ~= "BoxInfo" then
         local next = nextContentBox;
-        tempTimer(2.0, function() on_content_box_press(next) end)
+        tempTimer(3.0, function() on_content_box_press(next) end)
     end
 
     on_content_box_press("BoxInfo")
