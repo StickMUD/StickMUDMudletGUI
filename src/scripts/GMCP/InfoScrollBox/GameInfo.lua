@@ -9,18 +9,20 @@ local info_data = {
     fireworks1 = "007-fireworks.png",
     fireworks2 = "008-fireworks-1.png",
     party = "009-party-popper.png",
-    coloredegg = "010-easter-egg.png",
-    whiteegg = "011-easter-egg1.png",
-    flag = "012-red-flag.png",
-    fourleafclover = "013-clover.png",
-    threeleafclover = "014-shamrock.png",
+    egg_colored = "010-easter-egg.png",
+    egg_white = "011-easter-egg1.png",
+    flag_white = "012-red-flag.png",
+    flag_blue = "022-flag.png",
+    flag_red = "023-red-flag-1.png",
+    clover4 = "013-clover.png",
+    clover3 = "014-shamrock.png",
     delivery = "015-delivery.png",
     turkey = "016-turkey.png",
     zombie = "017-zombie.png",
     werewolf = "018-werewolf.png",
-    vampire1 = "019-vampire.png",
-    vampire2 = "020-people.png",
-    trooper = "021-droid.png",
+    vampire_male = "019-vampire.png",
+    vampire_female = "020-people.png",
+    trooper = "021-droid.png"
 }
 
 -- Define CSS for Game Info List
