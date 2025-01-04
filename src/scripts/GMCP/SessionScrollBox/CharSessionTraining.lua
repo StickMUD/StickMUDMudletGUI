@@ -222,7 +222,7 @@ function CharSessionTraining()
         x = 0,
         y = "25px", -- Adjust y position to accommodate the adjustment panel
         width = "100%",
-        height = "200%"
+        height = "400%"
     }, GUI.SessionScrollBox)
 
     -- Set the CSS with the current font size and update the background

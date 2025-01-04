@@ -91,7 +91,7 @@ function GamePlayersList()
     -- Display the player list in the GUI
     GUI.GamePlayersListLabel = Geyser.Label:new({
         name = "GUI.GamePlayersListLabel",
-        x = 0, y = 0, width = "100%", height = "200%"
+        x = 0, y = 0, width = "100%", height = "400%"
     }, GUI.PlayersScrollBox)
     GUI.GamePlayersListLabel:setStyleSheet(GUI.GamePlayersListCSS:getCSS())
     setBackgroundColor("GUI.GamePlayersListLabel", 0, 0, 0)

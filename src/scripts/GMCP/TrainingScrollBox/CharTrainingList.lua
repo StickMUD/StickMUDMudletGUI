@@ -1,6 +1,8 @@
 -- Initialize font size for the training list
 local currentFontSize = content_preferences["GUI.TrainingScrollBox"].fontSize
 local minFontSize = 1 -- Minimum allowed font size
+-- Add a global variable to track the selected filter
+local activeFilter = "Yes"
 
 -- Define the CSS for the training list display with dynamic font size
 -- Dynamically sets the font size based on the provided `fontSize` parameter
@@ -24,7 +26,7 @@ function adjustFontSizeTrainingList(adjustment)
     CharTrainingList() -- Rebuild the training list with the updated font size
 end
 
--- Creates the font adjustment panel with "+" and "-" buttons to change the font size
+-- Creates the font adjustment panel with "Active" and "All" buttons
 function createFontAdjustmentPanel()
     -- Background label for the adjustment panel
     GUI.TrainingBackgroundLabel = Geyser.Label:new({
@@ -42,7 +44,7 @@ function createFontAdjustmentPanel()
   		}
 	]])
 
-    -- Main container (HBox) to hold the "+" and "-" buttons
+    -- Main container (HBox) to hold the controls
     GUI.TrainingHBox = Geyser.Label:new({
         name = "GUI.TrainingHBox",
         x = 0,
@@ -51,16 +53,63 @@ function createFontAdjustmentPanel()
         height = "25px"
     }, GUI.TrainingBackgroundLabel)
 
-    -- Left filler to center the "+" and "-" buttons
+    -- Label for "Active" filter
+    GUI.ActiveSelect = Geyser.Label:new({
+        name = "GUI.ActiveSelect",
+        x = "0%",
+        y = 0,
+        width = "15%",
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"green\">Active</font></center>"
+    }, GUI.TrainingHBox)
+
+    GUI.ActiveSelect:setClickCallback(function()
+        activeFilter = "Yes"
+        CharTrainingList() -- Refresh the training list based on the filter
+    end)
+
+    GUI.ActiveSelect:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0,0,0,255);
+            border-style: solid;
+            border-width: 1px;
+            text-align: center;
+        }
+    ]])
+
+    -- Label for "All" filter
+    GUI.AllSelect = Geyser.Label:new({
+        name = "GUI.AllSelect",
+        x = "15%",
+        y = 0,
+        width = "16%",
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"red\">All</font></center>"
+    }, GUI.TrainingHBox)
+
+    GUI.AllSelect:setClickCallback(function()
+        activeFilter = "No"
+        CharTrainingList() -- Refresh the training list based on the filter
+    end)
+
+    GUI.AllSelect:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0,0,0,255);
+            border-style: solid;
+            border-width: 1px;
+            text-align: center;
+        }
+    ]])
+
+    -- Adjust filler width to make room for new labels
     GUI.TrainingLeftFillerLabel = Geyser.Label:new({
         name = "GUI.TrainingLeftFillerLabel",
-        x = 0,
+        x = "30%",
         y = 0,
-        width = "75%",
+        width = "50%",
         height = "25px"
     }, GUI.TrainingHBox)
 
-    -- Empty left filler area
     GUI.TrainingLeftFillerLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
@@ -73,15 +122,13 @@ function createFontAdjustmentPanel()
         name = "GUI.PlusLabel",
         x = "75%",
         y = 0,
-        width = "11%",
+        width = "10%",
         height = "25px",
-        message = "<center><font size=\"4\" color=\"green\">+</font></center>" -- Display a green "+" symbol
+        message = "<center><font size=\"4\" color=\"green\">+</font></center>"
     }, GUI.TrainingHBox)
 
-    -- Attach the click callback to increase the font size when "+" is clicked
     GUI.PlusLabel:setClickCallback(function() adjustFontSizeTrainingList(1) end)
 
-    -- Style the "+" button
     GUI.PlusLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
@@ -94,102 +141,65 @@ function createFontAdjustmentPanel()
         name = "GUI.MinusLabel",
         x = "85%",
         y = 0,
-        width = "10%",
+        width = "11%",
         height = "25px",
-        message = "<center><font size=\"4\" color=\"red\">-</font></center>" -- Display a red "-" symbol
+        message = "<center><font size=\"4\" color=\"red\">-</font></center>"
     }, GUI.TrainingHBox)
 
-    -- Attach the click callback to decrease the font size when "-" is clicked
-    GUI.MinusLabel:setClickCallback(
-        function() adjustFontSizeTrainingList(-1) end)
+    GUI.MinusLabel:setClickCallback(function() adjustFontSizeTrainingList(-1) end)
 
-    -- Style the "-" button
     GUI.MinusLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
         border-width: 1px;
         text-align: center;
     ]])
-
-    -- Right filler to keep the layout aligned
-    GUI.TrainingRightFillerLabel = Geyser.Label:new({
-        name = "GUI.TrainingRightFillerLabel",
-        x = "95%",
-        y = 0,
-        width = "5%",
-        height = "25px"
-    }, GUI.TrainingHBox)
-
-    -- Empty right filler area
-    GUI.TrainingRightFillerLabel:setStyleSheet([[
-        background-color: rgba(0,0,0,255);
-        border-style: solid;
-        border-width: 0px;
-        text-align: center;
-    ]])
 end
 
--- Function to display the character training list
+-- Modify CharTrainingList to filter based on the active filter
 function CharTrainingList()
     local training_total = nil
     local session_training = nil
 
-    -- Retrieve training data from GMCP if available
     if gmcp.Char and gmcp.Char.Training and gmcp.Char.Training.List then
         training_total = gmcp.Char.Training.List
     end
 
-    -- Retrieve session training data from GMCP if available
     if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
         session_training = gmcp.Char.Session.Training
     end
 
     local skill_max_length = 0
     local max_count = 0
-
-    -- Convert session_training into a set for quick lookup, if it exists
     local sessionSkills = {}
+
     if session_training then
         for _, v in pairs(session_training) do
             sessionSkills[v.skill] = true
         end
     end
 
-    -- Start constructing the training list as an HTML table
     local trainingList = "<table width=\"100%\"><tr><td><font size=\"" ..
                              currentFontSize ..
                              "\" color=\"red\">TRAINING</font></td><td><font size=\"" ..
                              currentFontSize ..
                              "\" color=\"red\">RANK</font></td></tr>"
 
-    -- If training data is available, process and display it
     if training_total then
-        table.sort(training_total,
-                   function(v1, v2) return v1.skill < v2.skill end)
-
-        -- Calculate maximum lengths and counts for alignment
-        for k, v in pairs(training_total) do
-            local count = 0
-
-            if string.len(v.name) > skill_max_length then
-                skill_max_length = string.len(v.name)
+        -- Filter training_total based on activeFilter
+        local filteredTraining = {}
+        for _, v in ipairs(training_total) do
+            if activeFilter == "No" or v.active == "Yes" then
+                table.insert(filteredTraining, v)
             end
-
-            -- Count occurrences of "." to determine depth/indentation
-            for i = 0, string.len(v.skill) do
-                if string.sub(v.skill, i, i) == "." then
-                    count = count + 1
-                end
-            end
-
-            if count > max_count then max_count = count end
         end
 
-        -- Build the table rows for each training item
-        for k, v in pairs(training_total) do
-            local count = 0
+        -- Sort and display filtered training
+        table.sort(filteredTraining,
+                   function(v1, v2) return v1.skill < v2.skill end)
 
-            -- Count occurrences of "." for indentation
+        for _, v in ipairs(filteredTraining) do
+            local count = 0
             for i = 0, string.len(v.skill) do
                 if string.sub(v.skill, i, i) == "." then
                     count = count + 1
@@ -197,14 +207,11 @@ function CharTrainingList()
             end
 
             local session = ""
-
-            -- Mark if the skill was trained in the current session
             if sessionSkills[v.skill] then
                 session = "<font size=\"" .. currentFontSize ..
                               "\" color=\"white\">*</font>"
             end
 
-            -- Set color based on depth
             local color = "<font size=\"" .. currentFontSize ..
                               "\" color=\"gray\">"
 
@@ -216,7 +223,6 @@ function CharTrainingList()
                             "\" color=\"yellow\">"
             end
 
-            -- Append the skill name and rank to the training list
             trainingList = trainingList .. "<tr><td>" .. color ..
                                string.rep("&nbsp;", count) .. v.name .. session ..
                                string.rep("&nbsp;",
@@ -230,27 +236,28 @@ function CharTrainingList()
         end
     end
 
-    -- Close the table and append the footnote
     trainingList =
         trainingList .. "</table><p><font size=\"" .. currentFontSize ..
             "\" color=\"white\">*Trained this session</font></p>"
 
-    -- Create the ScrollBox and populate it with the training list
-    GUI.CharTrainingListLabel = Geyser.Label:new({
-        name = "GUI.CharTrainingListLabel",
-        x = 0,
-        y = "25px", -- Adjust y position to accommodate the adjustment panel
-        width = "100%",
-        height = "200%"
-    }, GUI.TrainingScrollBox)
+    if GUI.CharTrainingListLabel then
+        GUI.CharTrainingListLabel:echo(trainingList)
+    else
+        GUI.CharTrainingListLabel = Geyser.Label:new({
+            name = "GUI.CharTrainingListLabel",
+            x = 0,
+            y = "25px",
+            width = "100%",
+            height = "400%"
+        }, GUI.TrainingScrollBox)
+    end
 
-    -- Set the CSS with the current font size and update the background
     GUI.CharTrainingListLabel:setStyleSheet(
         getCharTrainingListCSS(currentFontSize):getCSS())
     setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
     GUI.CharTrainingListLabel:echo(trainingList)
 end
 
--- Create the font adjustment panel and the training list
+-- Initialize the panel and the training list
 createFontAdjustmentPanel()
 CharTrainingList()
