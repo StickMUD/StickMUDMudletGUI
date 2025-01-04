@@ -24,7 +24,7 @@ function adjustFontSizeTrainingList(adjustment)
     CharTrainingList() -- Rebuild the training list with the updated font size
 end
 
--- Creates the font adjustment panel with "+" and "-" buttons to change the font size
+-- Creates the font adjustment panel with "Active" and "All" buttons
 function createFontAdjustmentPanel()
     -- Background label for the adjustment panel
     GUI.TrainingBackgroundLabel = Geyser.Label:new({
@@ -42,7 +42,7 @@ function createFontAdjustmentPanel()
   		}
 	]])
 
-    -- Main container (HBox) to hold the "+" and "-" buttons
+    -- Main container (HBox) to hold the controls
     GUI.TrainingHBox = Geyser.Label:new({
         name = "GUI.TrainingHBox",
         x = 0,
@@ -51,16 +51,63 @@ function createFontAdjustmentPanel()
         height = "25px"
     }, GUI.TrainingBackgroundLabel)
 
-    -- Left filler to center the "+" and "-" buttons
+    -- Label for "Active" filter
+    GUI.ActiveSelect = Geyser.Label:new({
+        name = "GUI.ActiveSelect",
+        x = "0%",
+        y = 0,
+        width = "15%",
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"green\">Active</font></center>"
+    }, GUI.TrainingHBox)
+
+    GUI.ActiveSelect:setClickCallback(function()
+        activeFilter = "Yes"
+        CharTrainingList() -- Refresh the training list based on the filter
+    end)
+
+    GUI.ActiveSelect:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0,0,0,255);
+            border-style: solid;
+            border-width: 1px;
+            text-align: center;
+        }
+    ]])
+
+    -- Label for "All" filter
+    GUI.AllSelect = Geyser.Label:new({
+        name = "GUI.AllSelect",
+        x = "15%",
+        y = 0,
+        width = "15%",
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"red\">All</font></center>"
+    }, GUI.TrainingHBox)
+
+    GUI.AllSelect:setClickCallback(function()
+        activeFilter = "No"
+        CharTrainingList() -- Refresh the training list based on the filter
+    end)
+
+    GUI.AllSelect:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0,0,0,255);
+            border-style: solid;
+            border-width: 1px;
+            text-align: center;
+        }
+    ]])
+
+    -- Adjust filler width to make room for new labels
     GUI.TrainingLeftFillerLabel = Geyser.Label:new({
         name = "GUI.TrainingLeftFillerLabel",
-        x = 0,
+        x = "30%",
         y = 0,
-        width = "75%",
+        width = "45%",
         height = "25px"
     }, GUI.TrainingHBox)
 
-    -- Empty left filler area
     GUI.TrainingLeftFillerLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
@@ -73,15 +120,13 @@ function createFontAdjustmentPanel()
         name = "GUI.PlusLabel",
         x = "75%",
         y = 0,
-        width = "11%",
+        width = "10%",
         height = "25px",
-        message = "<center><font size=\"4\" color=\"green\">+</font></center>" -- Display a green "+" symbol
+        message = "<center><font size=\"4\" color=\"green\">+</font></center>"
     }, GUI.TrainingHBox)
 
-    -- Attach the click callback to increase the font size when "+" is clicked
     GUI.PlusLabel:setClickCallback(function() adjustFontSizeTrainingList(1) end)
 
-    -- Style the "+" button
     GUI.PlusLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
@@ -96,89 +141,16 @@ function createFontAdjustmentPanel()
         y = 0,
         width = "10%",
         height = "25px",
-        message = "<center><font size=\"4\" color=\"red\">-</font></center>" -- Display a red "-" symbol
+        message = "<center><font size=\"4\" color=\"red\">-</font></center>"
     }, GUI.TrainingHBox)
 
-    -- Attach the click callback to decrease the font size when "-" is clicked
-    GUI.MinusLabel:setClickCallback(
-        function() adjustFontSizeTrainingList(-1) end)
+    GUI.MinusLabel:setClickCallback(function() adjustFontSizeTrainingList(-1) end)
 
-    -- Style the "-" button
     GUI.MinusLabel:setStyleSheet([[
         background-color: rgba(0,0,0,255);
         border-style: solid;
         border-width: 1px;
         text-align: center;
-    ]])
-
-    -- Right filler to keep the layout aligned
-    GUI.TrainingRightFillerLabel = Geyser.Label:new({
-        name = "GUI.TrainingRightFillerLabel",
-        x = "95%",
-        y = 0,
-        width = "5%",
-        height = "25px"
-    }, GUI.TrainingHBox)
-
-    -- Empty right filler area
-    GUI.TrainingRightFillerLabel:setStyleSheet([[
-        background-color: rgba(0,0,0,255);
-        border-style: solid;
-        border-width: 0px;
-        text-align: center;
-    ]])
-end
-
--- Add a global variable to track the selected filter
-local activeFilter = "Yes"
-
--- Create the filter drop-down
-function createActiveFilterDropdown()
-    -- Label for the "Active:" filter
-    GUI.ActiveFilterLabel = Geyser.Label:new({
-        name = "GUI.ActiveFilterLabel",
-        x = 0,
-        y = "0%",
-        width = "10%",
-        height = "25px",
-        message = "<font size=\"4\" color=\"white\">Active:</font>"
-    }, GUI.TrainingScrollBox)
-
-    GUI.ActiveFilterLabel:setStyleSheet([[
-        QLabel {
-            background-color: rgba(0, 0, 0, 255);
-            text-align: center;
-        }
-    ]])
-
-    -- Drop-down for the filter
-    GUI.ActiveFilterDropdown = Geyser.Label:new({
-        name = "GUI.ActiveFilterDropdown",
-        x = "10%",
-        y = "0%",
-        width = "15%",
-        height = "25px",
-        message = [[
-            <select id="activeFilterSelect">
-                <option value="Yes" selected>Yes</option>
-                <option value="No">No</option>
-            </select>
-        ]]
-    }, GUI.TrainingScrollBox)
-
-    GUI.ActiveFilterDropdown:setClickCallback(function()
-        local selectedValue = getWebViewInput("activeFilterSelect")
-        if selectedValue then
-            activeFilter = selectedValue
-            CharTrainingList() -- Refresh the training list based on the filter
-        end
-    end)
-
-    GUI.ActiveFilterDropdown:setStyleSheet([[
-        QLabel {
-            background-color: rgba(0, 0, 0, 255);
-            border: 1px solid white;
-        }
     ]])
 end
 
@@ -284,6 +256,6 @@ function CharTrainingList()
     GUI.CharTrainingListLabel:echo(trainingList)
 end
 
--- Initialize the drop-down and the training list
-createActiveFilterDropdown()
+-- Initialize the panel and the training list
+createFontAdjustmentPanel()
 CharTrainingList()
