@@ -1,6 +1,8 @@
 -- Initialize font size for the training list
 local currentFontSize = content_preferences["GUI.TrainingScrollBox"].fontSize
 local minFontSize = 1 -- Minimum allowed font size
+-- Add a global variable to track the selected filter
+local activeFilter = "Yes"
 
 -- Define the CSS for the training list display with dynamic font size
 -- Dynamically sets the font size based on the provided `fontSize` parameter
@@ -80,7 +82,7 @@ function createFontAdjustmentPanel()
         name = "GUI.AllSelect",
         x = "15%",
         y = 0,
-        width = "15%",
+        width = "16%",
         height = "25px",
         message = "<center><font size=\"4\" color=\"red\">All</font></center>"
     }, GUI.TrainingHBox)
@@ -104,7 +106,7 @@ function createFontAdjustmentPanel()
         name = "GUI.TrainingLeftFillerLabel",
         x = "30%",
         y = 0,
-        width = "45%",
+        width = "50%",
         height = "25px"
     }, GUI.TrainingHBox)
 
@@ -139,7 +141,7 @@ function createFontAdjustmentPanel()
         name = "GUI.MinusLabel",
         x = "85%",
         y = 0,
-        width = "10%",
+        width = "11%",
         height = "25px",
         message = "<center><font size=\"4\" color=\"red\">-</font></center>"
     }, GUI.TrainingHBox)
