@@ -129,67 +129,103 @@ function createFontAdjustmentPanel()
     ]])
 end
 
--- Function to display the character training list
+-- Add a global variable to track the selected filter
+local activeFilter = "Yes"
+
+-- Create the filter drop-down
+function createActiveFilterDropdown()
+    -- Label for the "Active:" filter
+    GUI.ActiveFilterLabel = Geyser.Label:new({
+        name = "GUI.ActiveFilterLabel",
+        x = 0,
+        y = "0%",
+        width = "10%",
+        height = "25px",
+        message = "<font size=\"4\" color=\"white\">Active:</font>"
+    }, GUI.TrainingScrollBox)
+
+    GUI.ActiveFilterLabel:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0, 0, 0, 255);
+            text-align: center;
+        }
+    ]])
+
+    -- Drop-down for the filter
+    GUI.ActiveFilterDropdown = Geyser.Label:new({
+        name = "GUI.ActiveFilterDropdown",
+        x = "10%",
+        y = "0%",
+        width = "15%",
+        height = "25px",
+        message = [[
+            <select id="activeFilterSelect">
+                <option value="Yes" selected>Yes</option>
+                <option value="No">No</option>
+            </select>
+        ]]
+    }, GUI.TrainingScrollBox)
+
+    GUI.ActiveFilterDropdown:setClickCallback(function()
+        local selectedValue = getWebViewInput("activeFilterSelect")
+        if selectedValue then
+            activeFilter = selectedValue
+            CharTrainingList() -- Refresh the training list based on the filter
+        end
+    end)
+
+    GUI.ActiveFilterDropdown:setStyleSheet([[
+        QLabel {
+            background-color: rgba(0, 0, 0, 255);
+            border: 1px solid white;
+        }
+    ]])
+end
+
+-- Modify CharTrainingList to filter based on the active filter
 function CharTrainingList()
     local training_total = nil
     local session_training = nil
 
-    -- Retrieve training data from GMCP if available
     if gmcp.Char and gmcp.Char.Training and gmcp.Char.Training.List then
         training_total = gmcp.Char.Training.List
     end
 
-    -- Retrieve session training data from GMCP if available
     if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
         session_training = gmcp.Char.Session.Training
     end
 
     local skill_max_length = 0
     local max_count = 0
-
-    -- Convert session_training into a set for quick lookup, if it exists
     local sessionSkills = {}
+
     if session_training then
         for _, v in pairs(session_training) do
             sessionSkills[v.skill] = true
         end
     end
 
-    -- Start constructing the training list as an HTML table
     local trainingList = "<table width=\"100%\"><tr><td><font size=\"" ..
                              currentFontSize ..
                              "\" color=\"red\">TRAINING</font></td><td><font size=\"" ..
                              currentFontSize ..
                              "\" color=\"red\">RANK</font></td></tr>"
 
-    -- If training data is available, process and display it
     if training_total then
-        table.sort(training_total,
-                   function(v1, v2) return v1.skill < v2.skill end)
-
-        -- Calculate maximum lengths and counts for alignment
-        for k, v in pairs(training_total) do
-            local count = 0
-
-            if string.len(v.name) > skill_max_length then
-                skill_max_length = string.len(v.name)
+        -- Filter training_total based on activeFilter
+        local filteredTraining = {}
+        for _, v in ipairs(training_total) do
+            if activeFilter == "No" or v.active == "Yes" then
+                table.insert(filteredTraining, v)
             end
-
-            -- Count occurrences of "." to determine depth/indentation
-            for i = 0, string.len(v.skill) do
-                if string.sub(v.skill, i, i) == "." then
-                    count = count + 1
-                end
-            end
-
-            if count > max_count then max_count = count end
         end
 
-        -- Build the table rows for each training item
-        for k, v in pairs(training_total) do
-            local count = 0
+        -- Sort and display filtered training
+        table.sort(filteredTraining,
+                   function(v1, v2) return v1.skill < v2.skill end)
 
-            -- Count occurrences of "." for indentation
+        for _, v in ipairs(filteredTraining) do
+            local count = 0
             for i = 0, string.len(v.skill) do
                 if string.sub(v.skill, i, i) == "." then
                     count = count + 1
@@ -197,14 +233,11 @@ function CharTrainingList()
             end
 
             local session = ""
-
-            -- Mark if the skill was trained in the current session
             if sessionSkills[v.skill] then
                 session = "<font size=\"" .. currentFontSize ..
                               "\" color=\"white\">*</font>"
             end
 
-            -- Set color based on depth
             local color = "<font size=\"" .. currentFontSize ..
                               "\" color=\"gray\">"
 
@@ -216,7 +249,6 @@ function CharTrainingList()
                             "\" color=\"yellow\">"
             end
 
-            -- Append the skill name and rank to the training list
             trainingList = trainingList .. "<tr><td>" .. color ..
                                string.rep("&nbsp;", count) .. v.name .. session ..
                                string.rep("&nbsp;",
@@ -230,27 +262,28 @@ function CharTrainingList()
         end
     end
 
-    -- Close the table and append the footnote
     trainingList =
         trainingList .. "</table><p><font size=\"" .. currentFontSize ..
             "\" color=\"white\">*Trained this session</font></p>"
 
-    -- Create the ScrollBox and populate it with the training list
-    GUI.CharTrainingListLabel = Geyser.Label:new({
-        name = "GUI.CharTrainingListLabel",
-        x = 0,
-        y = "25px", -- Adjust y position to accommodate the adjustment panel
-        width = "100%",
-        height = "200%"
-    }, GUI.TrainingScrollBox)
+    if GUI.CharTrainingListLabel then
+        GUI.CharTrainingListLabel:echo(trainingList)
+    else
+        GUI.CharTrainingListLabel = Geyser.Label:new({
+            name = "GUI.CharTrainingListLabel",
+            x = 0,
+            y = "25px",
+            width = "100%",
+            height = "400%"
+        }, GUI.TrainingScrollBox)
+    end
 
-    -- Set the CSS with the current font size and update the background
     GUI.CharTrainingListLabel:setStyleSheet(
         getCharTrainingListCSS(currentFontSize):getCSS())
     setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
     GUI.CharTrainingListLabel:echo(trainingList)
 end
 
--- Create the font adjustment panel and the training list
-createFontAdjustmentPanel()
+-- Initialize the drop-down and the training list
+createActiveFilterDropdown()
 CharTrainingList()
