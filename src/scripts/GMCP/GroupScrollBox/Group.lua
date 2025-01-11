@@ -50,23 +50,6 @@ function createFontAdjustmentPanelForGroup()
         height = "25px"
     }, GUI.GroupFontAdjustmentBackgroundLabel)
 
-    -- Left filler to center the "+" and "-" buttons
-    GUI.GroupLeftFillerLabel = Geyser.Label:new({
-        name = "GUI.GroupLeftFillerLabel",
-        x = 0,
-        y = 0,
-        width = "75%",
-        height = "25px"
-    }, GUI.GroupFontAdjustmentHBox)
-
-    -- Empty left filler area
-    GUI.GroupLeftFillerLabel:setStyleSheet([[
-        background-color: rgba(0,0,0,255);
-        border-style: solid;
-        border-width: 0px;
-        text-align: left;
-    ]])
-
     -- Label for the "+" button to increase font size
     GUI.GroupPlusLabel = Geyser.Label:new({
         name = "GUI.GroupPlusLabel",
@@ -164,11 +147,33 @@ function Group()
         if group_name then
             groupListHTML = groupListHTML .. string.format(
                 "<tr><td colspan=\"2\"><font size=\"%d\" color=\"cyan\"><b>%s</b></font></td></tr>",
-                groupCurrentFontSize, group_name
+                groupCurrentFontSize + 2, group_name
             )
         end
 
+        -- Separate members into "Here" and "Not Here"
+        local membersHere = {}
+        local membersNotHere = {}
+
         for _, member in ipairs(group_members) do
+            if member.info.here == "Yes" then
+                table.insert(membersHere, member)
+            else
+                table.insert(membersNotHere, member)
+            end
+        end
+
+        -- Sort each list alphabetically by name
+        table.sort(membersHere, function(a, b) return a.name < b.name end)
+        table.sort(membersNotHere, function(a, b) return a.name < b.name end)
+
+        -- Add "Here" members to the HTML
+        for _, member in ipairs(membersHere) do
+            groupListHTML = groupListHTML .. generateGroupMemberEntry(member, leader)
+        end
+
+        -- Add "Not Here" members to the HTML
+        for _, member in ipairs(membersNotHere) do
             groupListHTML = groupListHTML .. generateGroupMemberEntry(member, leader)
         end
     end
