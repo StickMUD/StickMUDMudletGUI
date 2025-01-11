@@ -77,7 +77,7 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
-              "name": "GroupConsole",
+              "name": "GroupScrollBox",
               "script": ""
        },
        {
