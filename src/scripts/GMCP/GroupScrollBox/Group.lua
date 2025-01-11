@@ -50,6 +50,23 @@ function createFontAdjustmentPanelForGroup()
         height = "25px"
     }, GUI.GroupFontAdjustmentBackgroundLabel)
 
+        -- Left filler to center the "+" and "-" buttons
+    GUI.GroupLeftFillerLabel = Geyser.Label:new({
+        name = "GUI.GroupLeftFillerLabel",
+        x = 0,
+        y = 0,
+        width = "75%",
+        height = "25px"
+    }, GUI.GroupFontAdjustmentHBox)
+
+    -- Empty left filler area
+    GUI.GroupLeftFillerLabel:setStyleSheet([[
+        background-color: rgba(0,0,0,255);
+        border-style: solid;
+        border-width: 0px;
+        text-align: left;
+    ]])
+
     -- Label for the "+" button to increase font size
     GUI.GroupPlusLabel = Geyser.Label:new({
         name = "GUI.GroupPlusLabel",
