@@ -4,7 +4,7 @@ local menu_items = {
     { name = "BoxAbilities", icon = "021-self-improvement.png", tooltip = "Abilities", console = "AbilitiesConsole", gmcp_calls = {"Char.Guild.Help.List"} },
     { name = "BoxTraining", icon = "022-skill.png", tooltip = "Training", console = "TrainingScrollBox", gmcp_calls = {"Char.Session.Training", "Char.Training.List"} },
     { name = "BoxSession", icon = "023-hourglass.png", tooltip = "Session", console = "SessionScrollBox", gmcp_calls = {"Char.Session.Training"} },
-    { name = "BoxGroup", icon = "024-drakkar.png", tooltip = "Party", console = "GroupConsole", gmcp_calls = {"Group"} },
+    { name = "BoxGroup", icon = "024-drakkar.png", tooltip = "Party", console = "GroupScrollBox", gmcp_calls = {"Group"} },
     { name = "BoxHelp", icon = "025-pen-and-ink.png", tooltip = "Help", console = "HelpContainer", gmcp_calls = {"Char.Help.List"} }
 }
 
