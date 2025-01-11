@@ -216,7 +216,9 @@ function CharSessionTraining()
 
     sessionList = sessionList .. "</table>"
 
-    if not GUI.CharSessionTrainingLabel then
+    if GUI.CharSessionTrainingLabel then
+        GUI.CharSessionTrainingLabel:echo(sessionList)
+    else
         -- Create the ScrollBox and populate it with the session training list
         GUI.CharSessionTrainingLabel = Geyser.Label:new({
             name = "GUI.CharSessionTrainingLabel",
@@ -231,8 +233,6 @@ function CharSessionTraining()
             getSessionTrainingCSS(sessionCurrentFontSize):getCSS())
         setBackgroundColor("GUI.CharSessionTrainingLabel", 0, 0, 0)
     end
-
-    GUI.CharSessionTrainingLabel:echo(sessionList)
 end
 
 -- Create the font adjustment panel and the session training list
