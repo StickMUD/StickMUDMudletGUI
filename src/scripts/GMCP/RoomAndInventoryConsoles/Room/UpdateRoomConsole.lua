@@ -18,8 +18,8 @@ local function updateRoomSection(consoleName, header, dataTable, getAction)
     for key, value in pairs(dataTable) do
         echo(consoleName, " ")
         echoLink(consoleName, getAction,
-                 [[send("]] .. getAction .. [[ ]] .. key .. [[", false)]],
-                 getAction, false)
+                 [[send("get ]] .. key .. [[", false)]],
+                 "Get", false)
         echo(consoleName, " ( ")
         echoLink(consoleName, "L", [[send("look at ]] .. key .. [[", false)]],
                  "Look at", false)
