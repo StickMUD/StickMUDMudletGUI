@@ -54,6 +54,12 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     
     sectionLabel:setOnEnter("enable_tooltip", sectionLabel, enterMessage)
     sectionLabel:setOnLeave("disable_tooltip", sectionLabel, leaveMessage)
+
+    if icon == "STICKMUD" then
+        sectionLabel:setClickCallback(function()
+            openWebPage("https://www.patreon.com/bePatron?u=43734767&redirect_uri=https%3A%2F%2Fwww.stickmud.com%2F")
+        end)
+    end
     
     return sectionLabel
 end
