@@ -11,9 +11,7 @@ function GameEventsActive(event, gmcp_data)
     -- If no data available, clear active events and return
     if not data or type(data) ~= "table" then
         activeEvents = {}
-        if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-            CharEventsList()
-        end
+        CharEventsList()
         return
     end
     
@@ -32,10 +30,8 @@ function GameEventsActive(event, gmcp_data)
         end
     end
     
-    -- Rebuild the events display if EventsScrollBox is currently visible
-    if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-        CharEventsList()
-    end
+    -- Rebuild the events display
+    CharEventsList()
 end
 
 -- Register the event handler

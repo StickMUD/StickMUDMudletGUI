@@ -10,19 +10,15 @@ function CharEventsSession(event, gmcp_data)
     
     if not data or type(data) ~= "table" then
         eventsSessionData = {}
-        if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-            CharEventsList()
-        end
+        CharEventsList()
         return
     end
     
     -- Store the session data
     eventsSessionData = data
     
-    -- Rebuild the events display if EventsScrollBox is currently visible
-    if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-        CharEventsList()
-    end
+    -- Rebuild the events display
+    CharEventsList()
 end
 
 -- Register the event handler

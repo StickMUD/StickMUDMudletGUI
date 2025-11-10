@@ -19,10 +19,8 @@ function GameEventsStart(event, gmcp_data)
         end_time = data.end_time
     }
     
-    -- Rebuild the events display if EventsScrollBox is currently visible
-    if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-        CharEventsList()
-    end
+    -- Rebuild the events display
+    CharEventsList()
     
     -- Optional: Display notification that event started
     cecho("\n<yellow>Event Started: <white>" .. data.event_name .. "\n")

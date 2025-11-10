@@ -20,10 +20,8 @@ function GameEventsEnd(event, gmcp_data)
         eventsSessionData = {}
     end
     
-    -- Rebuild the events display if EventsScrollBox is currently visible
-    if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
-        CharEventsList()
-    end
+    -- Rebuild the events display
+    CharEventsList()
     
     -- Optional: Display notification that event ended
     cecho("\n<yellow>Event Ended: <white>" .. data.event_name .. "\n")
