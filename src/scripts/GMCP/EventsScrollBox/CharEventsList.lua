@@ -146,7 +146,7 @@ function CharEventsList()
     eventsSessionData = eventsSessionData or {}
     
     -- Refresh active events from GMCP data to ensure we have the latest
-    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active and type(gmcp.Game.Events.Active) == "table" then
         activeEvents = {}
         for _, event_data in ipairs(gmcp.Game.Events.Active) do
             if event_data.id then
