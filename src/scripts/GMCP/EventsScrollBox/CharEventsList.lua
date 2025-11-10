@@ -142,44 +142,18 @@ end
 
 -- Main function to display the events list
 function CharEventsList()
-    -- Check if GUI.EventsScrollBox exists and has valid dimensions before trying to update
-    if not GUI or not GUI.EventsScrollBox then
-        return
-    end
-    
-    -- Verify the ScrollBox has valid dimensions (needed for Geyser calculations)
-    local width = GUI.EventsScrollBox:get_width()
-    local height = GUI.EventsScrollBox:get_height()
-    if not width or not height or width == 0 or height == 0 then
-        return
-    end
-    
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
     eventsSessionData = eventsSessionData or {}
-
-    -- Clear existing content
-    if GUI.EventsVBox then
-        GUI.EventsVBox:hide()
-        GUI.EventsVBox = nil
-    end
 
     -- Create the font adjustment panel if it doesn't exist
     if not GUI.EventsBackgroundLabel then
         createFontAdjustmentPanelForEvents()
     end
 
-    -- Create the main VBox container for events
-    GUI.EventsVBox = Geyser.VBox:new({
-        name = "GUI.EventsVBox",
-        x = 0,
-        y = "30px",
-        width = "100%",
-        height = "calc(100% - 30px)"
-    }, GUI.EventsScrollBox)
-
-    local eventsCSS = getEventsListCSS(eventsCurrentFontSize)
-
+    -- Build the HTML content
+    local eventsList = "<table width=\"100%\">"
+    
     -- Check if there are any active events
     local hasActiveEvents = false
     for _ in pairs(activeEvents) do
@@ -188,62 +162,103 @@ function CharEventsList()
     end
 
     if not hasActiveEvents then
-        -- Display "No active events" message
-        local noEventsLabel = Geyser.Label:new({
-            name = "GUI.NoEventsLabel"
-        }, GUI.EventsVBox)
-
-        noEventsLabel:setStyleSheet(eventsCSS:getCSS())
-        noEventsLabel:echo("<center><dim>No active events</dim></center>")
+        eventsList = eventsList .. "<tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">No active events</font></center></td></tr>"
     else
         -- Display each active event
         for eventId, eventData in pairs(activeEvents) do
-            local eventLabel = Geyser.Label:new({
-                name = "GUI.EventLabel_" .. eventId
-            }, GUI.EventsVBox)
-
-            -- Build the event display text
-            local displayText = string.format(
-                "<white><b>%s</b></white>\n" ..
-                "<dim>Type:</dim> <cyan>%s</cyan>\n" ..
-                "%s\n",
-                eventData.event_name,
-                getEventTypeName(eventData.event_type),
-                formatTimeRemaining(eventData.end_time)
+            eventsList = eventsList .. "<tr><td>"
+            
+            -- Event name and type
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\" color=\"white\"><b>%s</b></font><br>",
+                eventsCurrentFontSize + 1,
+                eventData.event_name
+            )
+            
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\" color=\"gray\">Type: </font><font size=\"%d\" color=\"cyan\">%s</font><br>",
+                eventsCurrentFontSize,
+                eventsCurrentFontSize,
+                getEventTypeName(eventData.event_type)
+            )
+            
+            -- Time remaining
+            local timeText = formatTimeRemaining(eventData.end_time)
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\">%s</font><br>",
+                eventsCurrentFontSize,
+                timeText
             )
 
             -- Add session data if available for this event
             if eventsSessionData and eventsSessionData.event_id == eventId then
-                displayText = displayText .. "\n<white><b>Your Progress:</b></white>\n"
+                eventsList = eventsList .. "<br>"
+                eventsList = eventsList .. string.format(
+                    "<font size=\"%d\" color=\"white\"><b>Your Progress:</b></font><br>",
+                    eventsCurrentFontSize
+                )
                 
-                -- Display session data based on what's available
                 if eventsSessionData.rank then
-                    displayText = displayText .. string.format("<dim>Rank:</dim> <green>#%d</green>\n", eventsSessionData.rank)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank
+                    )
                 end
                 
                 if eventsSessionData.kills then
-                    displayText = displayText .. string.format("<dim>Kills:</dim> <yellow>%d</yellow>\n", eventsSessionData.kills)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Kills: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.kills
+                    )
                 end
                 
                 if eventsSessionData.points then
-                    displayText = displayText .. string.format("<dim>Points:</dim> <yellow>%d</yellow>\n", eventsSessionData.points)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Points: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.points
+                    )
                 end
                 
                 if eventsSessionData.total_bosses then
-                    displayText = displayText .. string.format("<dim>Bosses Killed:</dim> <yellow>%d</yellow>\n", eventsSessionData.total_bosses)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Bosses: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.total_bosses
+                    )
                 end
                 
                 if eventsSessionData.areas_completed then
-                    displayText = displayText .. string.format("<dim>Areas Completed:</dim> <yellow>%d</yellow>\n", eventsSessionData.areas_completed)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.areas_completed
+                    )
                 end
             end
 
-            displayText = displayText .. "\n<dim>" .. string.rep("─", 50) .. "</dim>\n"
-
-            eventLabel:setStyleSheet(eventsCSS:getCSS())
-            eventLabel:echo(displayText)
+            eventsList = eventsList .. "<br><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">" .. string.rep("─", 50) .. "</font><br>"
+            eventsList = eventsList .. "</td></tr>"
         end
     end
 
-    GUI.EventsVBox:show()
+    eventsList = eventsList .. "</table>"
+
+    -- Create or update the label
+    if GUI.CharEventsListLabel then
+        GUI.CharEventsListLabel:echo(eventsList)
+    else
+        GUI.CharEventsListLabel = Geyser.Label:new({
+            name = "GUI.CharEventsListLabel",
+            x = 0,
+            y = "25px",
+            width = "100%",
+            height = "400%"
+        }, GUI.EventsScrollBox)
+
+        GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
+        setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+        GUI.CharEventsListLabel:echo(eventsList)
+    end
 end
+
+-- Initialize the font adjustment panel and events list
+createFontAdjustmentPanelForEvents()
+CharEventsList()
