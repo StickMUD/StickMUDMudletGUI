@@ -144,6 +144,22 @@ function CharEventsList()
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
     eventsSessionData = eventsSessionData or {}
+    
+    -- Refresh active events from GMCP data to ensure we have the latest
+    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+        activeEvents = {}
+        for _, event_data in ipairs(gmcp.Game.Events.Active) do
+            if event_data.id then
+                activeEvents[event_data.id] = {
+                    event_id = event_data.id,
+                    event_name = event_data.name,
+                    event_type = event_data.type,
+                    start_time = event_data.start_time,
+                    end_time = event_data.end_time
+                }
+            end
+        end
+    end
 
     -- Create the font adjustment panel if it doesn't exist
     if not GUI.EventsBackgroundLabel then
