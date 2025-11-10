@@ -104,6 +104,11 @@ end
 
 -- Helper function to format time remaining
 local function formatTimeRemaining(endTime)
+    -- If end_time is 0, the event has no end time (ongoing/permanent)
+    if endTime == 0 then
+        return "<green>Ongoing</green>"
+    end
+    
     local now = os.time()
     local remaining = endTime - now
     
