@@ -95,6 +95,12 @@
        {
               "isActive": "yes",
               "isFolder": "yes",
+              "name": "EventsScrollBox",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "yes",
               "name": "HelpContainer",
               "script": ""
        },

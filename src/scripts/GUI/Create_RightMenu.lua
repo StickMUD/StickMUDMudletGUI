@@ -5,6 +5,7 @@ local menu_items = {
     { name = "BoxTraining", icon = "022-skill.png", tooltip = "Training", console = "TrainingScrollBox", gmcp_calls = {"Char.Session.Training", "Char.Training.List"} },
     { name = "BoxSession", icon = "023-hourglass.png", tooltip = "Session", console = "SessionScrollBox", gmcp_calls = {"Char.Session.Training"} },
     { name = "BoxGroup", icon = "024-drakkar.png", tooltip = "Party", console = "GroupScrollBox", gmcp_calls = {"Group"} },
+    { name = "BoxEvents", icon = "schedule.png", tooltip = "Events", console = "EventsScrollBox", gmcp_calls = {"Game.Events.Active", "Char.Events.Session"} },
     { name = "BoxHelp", icon = "025-pen-and-ink.png", tooltip = "Help", console = "HelpContainer", gmcp_calls = {"Char.Help.List"} }
 }
 
@@ -28,6 +29,11 @@ function on_menu_box_press(section)
                 for _, call in ipairs(item.gmcp_calls) do
                     sendGMCP(call)
                 end
+            end
+            -- Call display function for EventsScrollBox when shown
+            -- This will show cached data or placeholder while waiting for GMCP response
+            if item.console == "EventsScrollBox" then
+                CharEventsList()
             end
         else
             GUI[item.console]:hide()

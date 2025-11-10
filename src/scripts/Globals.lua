@@ -41,6 +41,7 @@ default_content_preferences = {
     ["GUI.AbilitiesConsole"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.TrainingScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
     ["GUI.SessionScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
+    ["GUI.EventsScrollBox"] = {fontSize = getDefaultScrollBoxFontSize()},
     ["GUI.GroupScrollBox"] = {fontSize = getDefaultConsoleFontSize()},
     ["GUI.HelpConsole"] = {fontSize = getDefaultConsoleFontSize()}
 }
