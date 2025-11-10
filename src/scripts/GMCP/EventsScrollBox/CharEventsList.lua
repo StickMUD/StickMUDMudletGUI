@@ -190,11 +190,7 @@ function CharEventsList()
     if not hasActiveEvents then
         -- Display "No active events" message
         local noEventsLabel = Geyser.Label:new({
-            name = "GUI.NoEventsLabel",
-            x = 0,
-            y = 0,
-            width = "100%",
-            height = "100%"
+            name = "GUI.NoEventsLabel"
         }, GUI.EventsVBox)
 
         noEventsLabel:setStyleSheet(eventsCSS:getCSS())
@@ -202,19 +198,9 @@ function CharEventsList()
     else
         -- Display each active event
         for eventId, eventData in pairs(activeEvents) do
-            local eventContainer = Geyser.Container:new({
-                name = "GUI.Event_" .. eventId,
-                width = "100%",
-                height = "auto"
-            }, GUI.EventsVBox)
-
             local eventLabel = Geyser.Label:new({
-                name = "GUI.EventLabel_" .. eventId,
-                x = "5px",
-                y = 0,
-                width = "calc(100% - 10px)",
-                height = "100%"
-            }, eventContainer)
+                name = "GUI.EventLabel_" .. eventId
+            }, GUI.EventsVBox)
 
             -- Build the event display text
             local displayText = string.format(
