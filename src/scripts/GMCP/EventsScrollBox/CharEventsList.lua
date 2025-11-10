@@ -169,6 +169,11 @@ end
 
 -- Main function to display the events list
 function CharEventsList()
+    -- Check if GUI.EventsScrollBox exists before trying to update
+    if not GUI or not GUI.EventsScrollBox then
+        return
+    end
+    
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
     eventsSessionData = eventsSessionData or {}
