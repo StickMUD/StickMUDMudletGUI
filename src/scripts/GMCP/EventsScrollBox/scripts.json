@@ -1,0 +1,44 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "GameEventsActive",
+              "eventHandlerList": [
+                     "gmcp.Game.Events.Active"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "GameEventsStart",
+              "eventHandlerList": [
+                     "gmcp.Game.Events.Start"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "GameEventsEnd",
+              "eventHandlerList": [
+                     "gmcp.Game.Events.End"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharEventsSession",
+              "eventHandlerList": [
+                     "gmcp.Char.Events.Session"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharEventsList",
+              "script": ""
+       }
+]

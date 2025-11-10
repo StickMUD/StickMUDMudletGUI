@@ -1,0 +1,33 @@
+-- Handler for Game.Events.End GMCP package
+-- Notifies when an event ends
+
+function GameEventsEnd(event, gmcp_data)
+    -- Parse the GMCP data
+    local data = gmcp_data and yajl.to_value(gmcp_data) or gmcp.Game.Events.End
+    
+    if not data then
+        return
+    end
+    
+    -- Remove from active events list
+    activeEvents = activeEvents or {}
+    if activeEvents[data.event_id] then
+        activeEvents[data.event_id] = nil
+    end
+    
+    -- Clear session data for this event
+    if eventsSessionData and eventsSessionData.event_id == data.event_id then
+        eventsSessionData = {}
+    end
+    
+    -- Rebuild the events display if EventsScrollBox is currently visible
+    if GUI.EventsScrollBox and GUI.EventsScrollBox:isHidden() == false then
+        CharEventsList()
+    end
+    
+    -- Optional: Display notification that event ended
+    cecho("\n<yellow>Event Ended: <white>" .. data.event_name .. "\n")
+end
+
+-- Register the event handler
+registerAnonymousEventHandler("gmcp.Game.Events.End", "GameEventsEnd")
