@@ -169,8 +169,15 @@ end
 
 -- Main function to display the events list
 function CharEventsList()
-    -- Check if GUI.EventsScrollBox exists before trying to update
+    -- Check if GUI.EventsScrollBox exists and has valid dimensions before trying to update
     if not GUI or not GUI.EventsScrollBox then
+        return
+    end
+    
+    -- Verify the ScrollBox has valid dimensions (needed for Geyser calculations)
+    local width = GUI.EventsScrollBox:get_width()
+    local height = GUI.EventsScrollBox:get_height()
+    if not width or not height or width == 0 or height == 0 then
         return
     end
     
