@@ -41,8 +41,8 @@ function createFontAdjustmentPanelForEvents()
         }
     ]])
 
-    -- Main container (HBox) to hold the "+" and "-" buttons
-    GUI.EventsHBox = Geyser.Label:new({
+    -- Main container (HBox) to hold the title and buttons
+    GUI.EventsHBox = Geyser.HBox:new({
         name = "GUI.EventsHBox",
         x = 0,
         y = 0,
@@ -50,23 +50,10 @@ function createFontAdjustmentPanelForEvents()
         height = "25px"
     }, GUI.EventsBackgroundLabel)
 
-    -- Container to hold the title
-    GUI.EventsTitleContainer = Geyser.Container:new({
-        name = "GUI.EventsTitleContainer",
-        x = "5px",
-        y = 0,
-        width = "calc(100% - 60px)",
-        height = "100%"
-    }, GUI.EventsHBox)
-
     -- Title label
     GUI.EventsTitleLabel = Geyser.Label:new({
-        name = "GUI.EventsTitleLabel",
-        x = 0,
-        y = 0,
-        width = "100%",
-        height = "100%"
-    }, GUI.EventsTitleContainer)
+        name = "GUI.EventsTitleLabel"
+    }, GUI.EventsHBox)
 
     GUI.EventsTitleLabel:echo("<center>Active Events</center>")
     GUI.EventsTitleLabel:setStyleSheet([[
@@ -77,23 +64,10 @@ function createFontAdjustmentPanelForEvents()
         }
     ]])
 
-    -- Container for the "+" and "-" buttons
-    GUI.EventsButtonsContainer = Geyser.Container:new({
-        name = "GUI.EventsButtonsContainer",
-        x = "calc(100% - 55px)",
-        y = 0,
-        width = "50px",
-        height = "100%"
-    }, GUI.EventsHBox)
-
     -- Plus button
     GUI.EventsPlusLabel = Geyser.Label:new({
-        name = "GUI.EventsPlusLabel",
-        x = 0,
-        y = 0,
-        width = "50%",
-        height = "100%"
-    }, GUI.EventsButtonsContainer)
+        name = "GUI.EventsPlusLabel"
+    }, GUI.EventsHBox)
 
     GUI.EventsPlusLabel:echo("<center><b>+</b></center>")
     GUI.EventsPlusLabel:setStyleSheet([[
@@ -112,12 +86,8 @@ function createFontAdjustmentPanelForEvents()
 
     -- Minus button
     GUI.EventsMinusLabel = Geyser.Label:new({
-        name = "GUI.EventsMinusLabel",
-        x = "50%",
-        y = 0,
-        width = "50%",
-        height = "100%"
-    }, GUI.EventsButtonsContainer)
+        name = "GUI.EventsMinusLabel"
+    }, GUI.EventsHBox)
 
     GUI.EventsMinusLabel:echo("<center><b>-</b></center>")
     GUI.EventsMinusLabel:setStyleSheet([[
