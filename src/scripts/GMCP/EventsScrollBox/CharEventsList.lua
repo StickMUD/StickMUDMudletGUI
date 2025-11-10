@@ -193,7 +193,11 @@ function CharEventsList()
 
     -- Create the font adjustment panel if it doesn't exist
     if not GUI.EventsBackgroundLabel then
-        createFontAdjustmentPanelForEvents()
+        local success, err = pcall(createFontAdjustmentPanelForEvents)
+        if not success then
+            cecho("\n<red>Error creating Events panel: " .. tostring(err) .. "\n")
+            return
+        end
     end
 
     -- Create the main VBox container for events
