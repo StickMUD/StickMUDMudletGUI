@@ -24,9 +24,6 @@ function GameEventsEnd(event, gmcp_data)
     if selected_console == "EventsScrollBox" then
         CharEventsList()
     end
-    
-    -- Optional: Display notification that event ended
-    cecho("\n<yellow>Event Ended: <white>" .. data.name .. "\n")
 end
 
 -- Register the event handler

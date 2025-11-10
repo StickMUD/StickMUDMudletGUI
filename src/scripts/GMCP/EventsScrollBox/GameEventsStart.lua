@@ -23,9 +23,6 @@ function GameEventsStart(event, gmcp_data)
     if selected_console == "EventsScrollBox" then
         CharEventsList()
     end
-    
-    -- Optional: Display notification that event started
-    cecho("\n<yellow>Event Started: <white>" .. data.name .. "\n")
 end
 
 -- Register the event handler

@@ -254,6 +254,7 @@ function CharEventsList()
     GUI.CharEventsListLabel:echo(eventsList)
 end
 
--- Initialize the font adjustment panel and events list
+-- Initialize the font adjustment panel
+-- Don't call CharEventsList() here - it will be called when the Events button is clicked
+-- and GMCP data is requested/received
 createFontAdjustmentPanelForEvents()
-CharEventsList()
