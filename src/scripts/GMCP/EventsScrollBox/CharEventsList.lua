@@ -1,5 +1,5 @@
 -- Initialize font size for the events list
-local eventsCurrentFontSize = content_preferences["GUI.EventsScrollBox"].fontSize
+local eventsCurrentFontSize = content_preferences["GUI.EventsScrollBox"] and content_preferences["GUI.EventsScrollBox"].fontSize or 12
 local eventsMinFontSize = 1 -- Minimum allowed font size
 
 -- Define the CSS for the events list display with dynamic font size
@@ -241,24 +241,18 @@ function CharEventsList()
 
     eventsList = eventsList .. "</table>"
 
-    -- Create or update the label
-    if GUI.CharEventsListLabel then
-        -- Update stylesheet to match current font size
-        GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
-        GUI.CharEventsListLabel:echo(eventsList)
-    else
-        GUI.CharEventsListLabel = Geyser.Label:new({
-            name = "GUI.CharEventsListLabel",
-            x = 0,
-            y = "25px",
-            width = "100%",
-            height = "400%"
-        }, GUI.EventsScrollBox)
+    -- Display the events list in the GUI
+    GUI.CharEventsListLabel = GUI.CharEventsListLabel or Geyser.Label:new({
+        name = "GUI.CharEventsListLabel",
+        x = 0,
+        y = "25px",
+        width = "100%",
+        height = "400%"
+    }, GUI.EventsScrollBox)
 
-        GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
-        setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
-        GUI.CharEventsListLabel:echo(eventsList)
-    end
+    GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
+    setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+    GUI.CharEventsListLabel:echo(eventsList)
 end
 
 -- Initialize the font adjustment panel and events list
