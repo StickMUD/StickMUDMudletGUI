@@ -2,10 +2,10 @@
 -- Notifies when a new event begins
 
 function GameEventsStart(event, gmcp_data)
-    -- Parse the GMCP data
-    local data = gmcp_data and yajl.to_value(gmcp_data) or gmcp.Game.Events.Start
+    -- Get the data from gmcp table
+    local data = gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Start
     
-    if not data then
+    if not data or type(data) ~= "table" then
         return
     end
     
