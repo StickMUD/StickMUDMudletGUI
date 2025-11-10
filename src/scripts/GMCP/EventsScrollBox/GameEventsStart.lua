@@ -11,10 +11,10 @@ function GameEventsStart(event, gmcp_data)
     
     -- Store in active events list
     activeEvents = activeEvents or {}
-    activeEvents[data.event_id] = {
-        event_id = data.event_id,
-        event_name = data.event_name,
-        event_type = data.event_type,
+    activeEvents[data.id] = {
+        event_id = data.id,
+        event_name = data.name,
+        event_type = data.type,
         start_time = data.start_time,
         end_time = data.end_time
     }
@@ -25,7 +25,7 @@ function GameEventsStart(event, gmcp_data)
     end
     
     -- Optional: Display notification that event started
-    cecho("\n<yellow>Event Started: <white>" .. data.event_name .. "\n")
+    cecho("\n<yellow>Event Started: <white>" .. data.name .. "\n")
 end
 
 -- Register the event handler

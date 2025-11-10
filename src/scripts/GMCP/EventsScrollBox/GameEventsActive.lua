@@ -18,11 +18,11 @@ function GameEventsActive(event, gmcp_data)
     activeEvents = {}
     
     for _, event_data in ipairs(data) do
-        if event_data.event_id then
-            activeEvents[event_data.event_id] = {
-                event_id = event_data.event_id,
-                event_name = event_data.event_name,
-                event_type = event_data.event_type,
+        if event_data.id then
+            activeEvents[event_data.id] = {
+                event_id = event_data.id,
+                event_name = event_data.name,
+                event_type = event_data.type,
                 start_time = event_data.start_time,
                 end_time = event_data.end_time
             }

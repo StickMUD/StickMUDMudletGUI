@@ -65,23 +65,20 @@ function createFontAdjustmentPanelForEvents()
         x = "80%",
         y = 0,
         width = "10%",
-        height = "25px"
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"green\">+</font></center>"
     }, GUI.EventsBackgroundLabel)
 
-    GUI.EventsPlusLabel:echo("<center><b>+</b></center>")
-    GUI.EventsPlusLabel:setStyleSheet([[
-        QLabel{
-            background-color: rgba(60,60,60,255);
-            border: 1px solid rgba(100,100,100,255);
-            color: white;
-        }
-        QLabel:hover{
-            background-color: rgba(80,80,80,255);
-        }
-    ]])
     GUI.EventsPlusLabel:setClickCallback(function()
         adjustFontSizeEventsList(1)
     end)
+
+    GUI.EventsPlusLabel:setStyleSheet([[
+        background-color: rgba(0,0,0,255);
+        border-style: solid;
+        border-width: 1px;
+        text-align: center;
+    ]])
 
     -- Minus button
     GUI.EventsMinusLabel = Geyser.Label:new({
@@ -89,23 +86,20 @@ function createFontAdjustmentPanelForEvents()
         x = "90%",
         y = 0,
         width = "10%",
-        height = "25px"
+        height = "25px",
+        message = "<center><font size=\"4\" color=\"red\">-</font></center>"
     }, GUI.EventsBackgroundLabel)
 
-    GUI.EventsMinusLabel:echo("<center><b>-</b></center>")
-    GUI.EventsMinusLabel:setStyleSheet([[
-        QLabel{
-            background-color: rgba(60,60,60,255);
-            border: 1px solid rgba(100,100,100,255);
-            color: white;
-        }
-        QLabel:hover{
-            background-color: rgba(80,80,80,255);
-        }
-    ]])
     GUI.EventsMinusLabel:setClickCallback(function()
         adjustFontSizeEventsList(-1)
     end)
+
+    GUI.EventsMinusLabel:setStyleSheet([[
+        background-color: rgba(0,0,0,255);
+        border-style: solid;
+        border-width: 1px;
+        text-align: center;
+    ]])
 end
 
 -- Helper function to format time remaining
