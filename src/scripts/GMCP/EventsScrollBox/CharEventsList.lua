@@ -254,7 +254,18 @@ function CharEventsList()
     GUI.CharEventsListLabel:echo(eventsList)
 end
 
--- Initialize the font adjustment panel
--- Don't call CharEventsList() here - it will be called when the Events button is clicked
--- and GMCP data is requested/received
+-- Initialize the font adjustment panel and create the display label
 createFontAdjustmentPanelForEvents()
+
+-- Create the display label with initial placeholder
+GUI.CharEventsListLabel = Geyser.Label:new({
+    name = "GUI.CharEventsListLabel",
+    x = 0,
+    y = "25px",
+    width = "100%",
+    height = "400%"
+}, GUI.EventsScrollBox)
+
+GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
+setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+GUI.CharEventsListLabel:echo("<table><tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">Click to load events...</font></center></td></tr></table>")
