@@ -30,10 +30,6 @@ function on_menu_box_press(section)
                     sendGMCP(call)
                 end
             end
-            -- Call display function for EventsScrollBox when shown
-            if item.console == "EventsScrollBox" then
-                CharEventsList()
-            end
         else
             GUI[item.console]:hide()
         end
