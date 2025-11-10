@@ -1,7 +1,7 @@
 GUI.Right = Geyser.Label:new({
   name = "GUI.Right",
-  x = "-40%", y = 0,
-  width = "40%",
+  x = "-42%", y = 0,
+  width = "42%",
   height = "100%",
 })
 setBackgroundColor("GUI.Right", 0, 0, 0)
@@ -9,7 +9,7 @@ setBackgroundColor("GUI.Right", 0, 0, 0)
 GUI.Top = Geyser.Label:new({
   name = "GUI.Top",
   x = 0, y = 0,
-  width = "60%",
+  width = "58%",
   height = "7%",
 })
 setBackgroundColor("GUI.Top", 0, 0, 0)
@@ -17,7 +17,7 @@ setBackgroundColor("GUI.Top", 0, 0, 0)
 GUI.Bottom = Geyser.Label:new({
   name = "GUI.Bottom",
   x = 0, y = "90%",
-  width = "60%",
+  width = "58%",
   height = "10%",
 })
 setBackgroundColor("GUI.Bottom", 0, 0, 0)
