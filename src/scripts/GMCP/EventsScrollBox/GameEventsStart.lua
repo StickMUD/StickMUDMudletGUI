@@ -19,8 +19,10 @@ function GameEventsStart(event, gmcp_data)
         end_time = data.end_time
     }
     
-    -- Rebuild the events display
-    CharEventsList()
+    -- Only rebuild the display if EventsScrollBox is currently selected
+    if selected_console == "EventsScrollBox" then
+        CharEventsList()
+    end
     
     -- Optional: Display notification that event started
     cecho("\n<yellow>Event Started: <white>" .. data.event_name .. "\n")

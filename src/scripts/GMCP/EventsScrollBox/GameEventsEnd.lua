@@ -20,8 +20,10 @@ function GameEventsEnd(event, gmcp_data)
         eventsSessionData = {}
     end
     
-    -- Rebuild the events display
-    CharEventsList()
+    -- Only rebuild the display if EventsScrollBox is currently selected
+    if selected_console == "EventsScrollBox" then
+        CharEventsList()
+    end
     
     -- Optional: Display notification that event ended
     cecho("\n<yellow>Event Ended: <white>" .. data.event_name .. "\n")

@@ -10,15 +10,16 @@ function CharEventsSession(event, gmcp_data)
     
     if not data or type(data) ~= "table" then
         eventsSessionData = {}
-        CharEventsList()
         return
     end
     
     -- Store the session data
     eventsSessionData = data
     
-    -- Rebuild the events display
-    CharEventsList()
+    -- Only rebuild the display if EventsScrollBox is currently selected
+    if selected_console == "EventsScrollBox" then
+        CharEventsList()
+    end
 end
 
 -- Register the event handler

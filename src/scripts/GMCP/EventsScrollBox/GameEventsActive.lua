@@ -11,7 +11,6 @@ function GameEventsActive(event, gmcp_data)
     -- If no data available, clear active events and return
     if not data or type(data) ~= "table" then
         activeEvents = {}
-        CharEventsList()
         return
     end
     
@@ -30,8 +29,10 @@ function GameEventsActive(event, gmcp_data)
         end
     end
     
-    -- Rebuild the events display
-    CharEventsList()
+    -- Only rebuild the display if EventsScrollBox is currently selected
+    if selected_console == "EventsScrollBox" then
+        CharEventsList()
+    end
 end
 
 -- Register the event handler
