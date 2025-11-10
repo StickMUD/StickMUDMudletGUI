@@ -243,6 +243,8 @@ function CharEventsList()
 
     -- Create or update the label
     if GUI.CharEventsListLabel then
+        -- Update stylesheet to match current font size
+        GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
         GUI.CharEventsListLabel:echo(eventsList)
     else
         GUI.CharEventsListLabel = Geyser.Label:new({
