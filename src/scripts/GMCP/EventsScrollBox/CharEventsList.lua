@@ -171,13 +171,17 @@ end
 function CharEventsList()
     -- Check if GUI.EventsScrollBox exists and has valid dimensions before trying to update
     if not GUI or not GUI.EventsScrollBox then
+        cecho("\n<yellow>Events: GUI or EventsScrollBox not ready</yellow>\n")
         return
     end
     
     -- Verify the ScrollBox has valid dimensions (needed for Geyser calculations)
     local width = GUI.EventsScrollBox:get_width()
     local height = GUI.EventsScrollBox:get_height()
+    cecho(string.format("\n<cyan>Events: ScrollBox dimensions - width: %s, height: %s</cyan>\n", tostring(width), tostring(height)))
+    
     if not width or not height or width == 0 or height == 0 then
+        cecho("\n<yellow>Events: Invalid dimensions, skipping display update</yellow>\n")
         return
     end
     
