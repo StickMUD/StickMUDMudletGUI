@@ -41,15 +41,14 @@ function createFontAdjustmentPanelForEvents()
         }
     ]])
 
-    -- Main container (HBox) to hold the title and buttons
-    GUI.EventsHBox = Geyser.HBox:new({
-        name = "GUI.EventsHBox"
-    }, GUI.EventsBackgroundLabel)
-
-    -- Title label
+    -- Title label (takes up most of the space)
     GUI.EventsTitleLabel = Geyser.Label:new({
-        name = "GUI.EventsTitleLabel"
-    }, GUI.EventsHBox)
+        name = "GUI.EventsTitleLabel",
+        x = 0,
+        y = 0,
+        width = "80%",
+        height = "25px"
+    }, GUI.EventsBackgroundLabel)
 
     GUI.EventsTitleLabel:echo("<center>Active Events</center>")
     GUI.EventsTitleLabel:setStyleSheet([[
@@ -62,8 +61,12 @@ function createFontAdjustmentPanelForEvents()
 
     -- Plus button
     GUI.EventsPlusLabel = Geyser.Label:new({
-        name = "GUI.EventsPlusLabel"
-    }, GUI.EventsHBox)
+        name = "GUI.EventsPlusLabel",
+        x = "80%",
+        y = 0,
+        width = "10%",
+        height = "25px"
+    }, GUI.EventsBackgroundLabel)
 
     GUI.EventsPlusLabel:echo("<center><b>+</b></center>")
     GUI.EventsPlusLabel:setStyleSheet([[
@@ -82,8 +85,12 @@ function createFontAdjustmentPanelForEvents()
 
     -- Minus button
     GUI.EventsMinusLabel = Geyser.Label:new({
-        name = "GUI.EventsMinusLabel"
-    }, GUI.EventsHBox)
+        name = "GUI.EventsMinusLabel",
+        x = "90%",
+        y = 0,
+        width = "10%",
+        height = "25px"
+    }, GUI.EventsBackgroundLabel)
 
     GUI.EventsMinusLabel:echo("<center><b>-</b></center>")
     GUI.EventsMinusLabel:setStyleSheet([[
