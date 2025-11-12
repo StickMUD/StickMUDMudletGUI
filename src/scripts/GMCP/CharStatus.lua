@@ -1,9 +1,6 @@
 function CharStatus()
     local gold = gmcp.Char.Status.gold or "?"
     local bank = gmcp.Char.Status.bank or "?"
-    local enemy = gmcp.Char.Status.enemy or "None"
-    local current_enemy_health = gmcp.Char.Status.enemy_health
-    local percent_enemy_health
 
     GUI.BoxGold:echo(
         "<center><font size=\"3\">💰</font> <b><font size=\"4\">" .. gold ..
@@ -12,31 +9,7 @@ function CharStatus()
         "<center><font size=\"3\">🏦</font> <b><font size=\"4\">" .. bank ..
             "</font></b></center>")
 
-    if enemy == "None" then
-        GUI.EnemyHealth:setValue(0, 100,
-                                 ("<center><b>Enemy Health</b></center>"))
-    else
-
-        if current_enemy_health == "mortally wounded" then
-            percent_enemy_health = 0
-        elseif current_enemy_health == "nearly dead" then
-            percent_enemy_health = 4
-        elseif current_enemy_health == "in very bad shape" then
-            percent_enemy_health = 10
-        elseif current_enemy_health == "in bad shape" then
-            percent_enemy_health = 20
-        elseif current_enemy_health == "not in good shape" then
-            percent_enemy_health = 50
-        elseif current_enemy_health == "slightly hurt" then
-            percent_enemy_health = 95
-        elseif current_enemy_health == "in good shape" then
-            percent_enemy_health = 100
-        end
-
-        GUI.EnemyHealth:setValue(percent_enemy_health, 100, ("<center><b>" ..
-                                     enemy .. " is " .. current_enemy_health ..
-                                     "</b></center>"))
-    end
+    -- Enemy health now handled in CharVitals (updates every heartbeat)
 
     local char_status = {
         "brave", "pkable", "poisoned", "confused", "hallucinating", "drunk",
