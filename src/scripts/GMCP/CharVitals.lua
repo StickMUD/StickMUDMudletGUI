@@ -27,4 +27,32 @@ function CharVitals()
 	if current_fp > max_fp then current_fp = max_fp end
 
 	GUI.FatiguePoints:setValue(current_fp, max_fp, ("<span style = 'color: black'><center><b>" ..current_fp.. "/" ..max_fp.. " Fatigue (" ..percent_fp.. ")</b></center></span>"))	
+
+	-- Handle enemy health (moved from CharStatus - updates every heartbeat during combat)
+	local enemy = gmcp.Char.Vitals.enemy or "None"
+	local current_enemy_health = gmcp.Char.Vitals.enemyhealth
+	local percent_enemy_health
+
+	if enemy == "None" then
+		GUI.EnemyHealth:setValue(0, 100, ("<center><b>Enemy Health</b></center>"))
+	else
+		if current_enemy_health == "mortally wounded" then
+			percent_enemy_health = 0
+		elseif current_enemy_health == "nearly dead" then
+			percent_enemy_health = 4
+		elseif current_enemy_health == "in very bad shape" then
+			percent_enemy_health = 10
+		elseif current_enemy_health == "in bad shape" then
+			percent_enemy_health = 20
+		elseif current_enemy_health == "not in good shape" then
+			percent_enemy_health = 50
+		elseif current_enemy_health == "slightly hurt" then
+			percent_enemy_health = 95
+		elseif current_enemy_health == "in good shape" then
+			percent_enemy_health = 100
+		end
+
+		GUI.EnemyHealth:setValue(percent_enemy_health, 100, ("<center><b>" ..
+			enemy .. " is " .. current_enemy_health .. "</b></center>"))
+	end
 end
