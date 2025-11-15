@@ -217,10 +217,20 @@ function CharEventsList()
             -- This handles cases where Game.Events.Active might not include all events with session data
             for _, session in ipairs(eventsSessionData) do
                 if session.event_id and not activeEvents[session.event_id] then
-                    -- Try to get additional event info from Game.Events.Active
+                    -- Try to get additional event info from Game.Events.Active first
                     local eventInfo = nil
                     if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
                         for _, evt in ipairs(gmcp.Game.Events.Active) do
+                            if evt.id == session.event_id then
+                                eventInfo = evt
+                                break
+                            end
+                        end
+                    end
+                    
+                    -- If not found in Active, check Game.Events.List
+                    if not eventInfo and gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.List then
+                        for _, evt in ipairs(gmcp.Game.Events.List) do
                             if evt.id == session.event_id then
                                 eventInfo = evt
                                 break
