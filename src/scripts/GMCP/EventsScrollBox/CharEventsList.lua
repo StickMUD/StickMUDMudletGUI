@@ -199,11 +199,19 @@ function CharEventsList()
     end
     
     -- Also check gmcp.Char.Events.Session for session data (alternative location)
-    -- This takes precedence over eventsSessionData as it's more current
+    -- As of server update, this is now an ARRAY of session objects (one per active event)
     if gmcp and gmcp.Char and gmcp.Char.Events and gmcp.Char.Events.Session then
-        local charEventSession = gmcp.Char.Events.Session
-        if charEventSession.event_id then
-            eventsSessionData = charEventSession
+        local charEventSessions = gmcp.Char.Events.Session
+        -- Handle both old format (single object) and new format (array)
+        if type(charEventSessions) == "table" then
+            -- Check if it's an array (new format) or single object (old format)
+            if charEventSessions[1] or #charEventSessions > 0 then
+                -- New array format - store for later lookup by event_id
+                eventsSessionData = charEventSessions
+            elseif charEventSessions.event_id then
+                -- Old single object format - wrap in array for consistency
+                eventsSessionData = {charEventSessions}
+            end
         end
     end
 
@@ -268,13 +276,19 @@ function CharEventsList()
             end
             
             -- Fallback to Char.Events.Session if not found in Active
-            if not sessionMatches and eventsSessionData then
-                if eventsSessionData.event_id == eventId then
-                    currentSessionData = eventsSessionData
-                    sessionMatches = true
-                elseif eventsSessionData.event_name and eventsSessionData.event_name == eventData.event_name then
-                    currentSessionData = eventsSessionData
-                    sessionMatches = true
+            -- Note: eventsSessionData is now an array of session objects
+            if not sessionMatches and eventsSessionData and type(eventsSessionData) == "table" then
+                -- Search through the array of sessions
+                for _, session in ipairs(eventsSessionData) do
+                    if session.event_id == eventId then
+                        currentSessionData = session
+                        sessionMatches = true
+                        break
+                    elseif session.event_name and session.event_name == eventData.event_name then
+                        currentSessionData = session
+                        sessionMatches = true
+                        break
+                    end
                 end
             end
             
@@ -358,7 +372,7 @@ function CharEventsList()
                     local completed_areas = {}
                     local in_progress_areas = {}
                     
-                    for _, area in ipairs(eventsSessionData.progress) do
+                    for _, area in ipairs(currentSessionData.progress) do
                         if area.completed == 1 then
                             table.insert(completed_areas, area)
                         else
