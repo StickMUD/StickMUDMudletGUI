@@ -176,6 +176,14 @@ function CharEventsList()
             end
         end
     end
+    
+    -- Also check gmcp.Char.Events.Session for session data (alternative location)
+    if gmcp and gmcp.Char and gmcp.Char.Events and gmcp.Char.Events.Session then
+        local charEventSession = gmcp.Char.Events.Session
+        if charEventSession.event_id and not eventsSessionData.event_id then
+            eventsSessionData = charEventSession
+        end
+    end
 
     -- Create the font adjustment panel if it doesn't exist
     if not GUI.EventsBackgroundLabel then
@@ -222,7 +230,17 @@ function CharEventsList()
             )
 
             -- Add session data if available for this event
-            if eventsSessionData and eventsSessionData.event_id == eventId then
+            -- Match by event_id or by event_name (fallback for events that use different ID formats)
+            local sessionMatches = false
+            if eventsSessionData then
+                if eventsSessionData.event_id == eventId then
+                    sessionMatches = true
+                elseif eventsSessionData.event_name and eventsSessionData.event_name == eventData.event_name then
+                    sessionMatches = true
+                end
+            end
+            
+            if sessionMatches then
                 eventsList = eventsList .. "<br>"
                 eventsList = eventsList .. string.format(
                     "<font size=\"%d\" color=\"white\"><b>Your Progress:</b></font><br>",
@@ -241,16 +259,40 @@ function CharEventsList()
                 end
                 
                 if eventsSessionData.rank then
-                    eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank
-                    )
+                    local totalParticipants = eventsSessionData.total_participants or 0
+                    if totalParticipants > 0 then
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><font size=\"%d\" color=\"gray\"> / %d</font><br>",
+                            eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank,
+                            eventsCurrentFontSize, totalParticipants
+                        )
+                    else
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
+                            eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank
+                        )
+                    end
                 end
                 
                 if eventsSessionData.kills then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Kills: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
                         eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.kills
+                    )
+                end
+                
+                -- Display clover-specific fields
+                if eventsSessionData.clovers then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Clovers Captured: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.clovers
+                    )
+                end
+                
+                if eventsSessionData.four_leaf_clovers and eventsSessionData.four_leaf_clovers > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Four Leaf Clovers: </font><font size=\"%d\" color=\"green\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.four_leaf_clovers
                     )
                 end
                 
