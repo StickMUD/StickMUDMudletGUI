@@ -367,6 +367,7 @@ function CharEventsList()
                         "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
                         eventsCurrentFontSize
                     )
+                    eventsList = eventsList .. "<br>"
                     
                     -- Count completed and in-progress areas
                     local completed_areas = {}
@@ -381,12 +382,11 @@ function CharEventsList()
                             local total_value = area.bosses_total or 0
                             
                             -- For Kill events: show if bosses_total > 0 (available bosses to kill)
-                            -- For Collect events: show if collection_value > 0 (items collected)
+                            -- For Collect events: show all incomplete areas (where collection is possible)
                             if isCompetitiveCollect(eventData.event_type) then
-                                -- Collect events: only show areas where you've collected something
-                                if collection_value > 0 then
-                                    table.insert(in_progress_areas, area)
-                                end
+                                -- Collect events: show all areas that aren't completed
+                                -- (all areas are collectable until marked complete)
+                                table.insert(in_progress_areas, area)
                             else
                                 -- Kill events: show areas with bosses to kill OR already started
                                 if total_value > 0 or collection_value > 0 then
