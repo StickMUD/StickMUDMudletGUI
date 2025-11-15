@@ -124,11 +124,11 @@ local function formatTimeRemaining(endTime)
     local seconds = remaining % 60
     
     if hours > 0 then
-        return string.format("<yellow>%dh %dm %ds remaining</yellow>", hours, minutes, seconds), false
+        return string.format("<white>%d</white><yellow>h</yellow> <white>%d</white><yellow>m</yellow> <white>%d</white><yellow>s remaining</yellow>", hours, minutes, seconds), false
     elseif minutes > 0 then
-        return string.format("<yellow>%dm %ds remaining</yellow>", minutes, seconds), false
+        return string.format("<white>%d</white><yellow>m</yellow> <white>%d</white><yellow>s remaining</yellow>", minutes, seconds), false
     else
-        return string.format("<yellow>%ds remaining</yellow>", seconds), false
+        return string.format("<white>%d</white><yellow>s remaining</yellow>", seconds), false
     end
 end
 
@@ -280,8 +280,31 @@ function CharEventsList()
                     table.sort(completed_areas, function(a, b) return a.area_name < b.area_name end)
                     table.sort(in_progress_areas, function(a, b) return a.area_name < b.area_name end)
                     
-                    -- Show completed areas
+                    -- Show in-progress areas first (more important)
+                    if #in_progress_areas > 0 then
+                        eventsList = eventsList .. string.format(
+                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font></td></tr>",
+                            eventsCurrentFontSize, #in_progress_areas
+                        )
+                        for _, area in ipairs(in_progress_areas) do
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
+                            eventsList = eventsList .. string.format(
+                                "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
+                                area.area_name, eventsCurrentFontSize - 1, area.area_name
+                            )
+                            eventsList = eventsList .. string.format(
+                                " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
+                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
+                            )
+                            eventsList = eventsList .. "</td></tr>"
+                        end
+                    end
+                    
+                    -- Show completed areas below in-progress
                     if #completed_areas > 0 then
+                        if #in_progress_areas > 0 then
+                            eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
+                        end
                         eventsList = eventsList .. string.format(
                             "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
                             eventsCurrentFontSize, #completed_areas
@@ -302,29 +325,6 @@ function CharEventsList()
                                     eventsCurrentFontSize - 1, bosses_killed, bosses_total
                                 )
                             end
-                            eventsList = eventsList .. "</td></tr>"
-                        end
-                    end
-                    
-                    -- Show in-progress areas
-                    if #in_progress_areas > 0 then
-                        if #completed_areas > 0 then
-                            eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
-                        end
-                        eventsList = eventsList .. string.format(
-                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font></td></tr>",
-                            eventsCurrentFontSize, #in_progress_areas
-                        )
-                        for _, area in ipairs(in_progress_areas) do
-                            eventsList = eventsList .. "<tr><td width=\"100%\">"
-                            eventsList = eventsList .. string.format(
-                                "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
-                                area.area_name, eventsCurrentFontSize - 1, area.area_name
-                            )
-                            eventsList = eventsList .. string.format(
-                                " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
-                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
-                            )
                             eventsList = eventsList .. "</td></tr>"
                         end
                     end
