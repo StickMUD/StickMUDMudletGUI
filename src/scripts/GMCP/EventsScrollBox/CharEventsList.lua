@@ -424,10 +424,34 @@ function CharEventsList()
                                     eventsCurrentFontSize - 1, field_value, bosses_total
                                 )
                             elseif field_name and field_value > 0 then
-                                eventsList = eventsList .. string.format(
-                                    " <font size=\"%d\" color=\"yellow\">(%s: %d)</font>",
-                                    eventsCurrentFontSize - 1, field_name, field_value
-                                )
+                                -- For collection events, show details if available instead of just count
+                                local details = {}
+                                
+                                -- Capture the Clover: four_leaf field (0 or 1)
+                                if area.four_leaf and area.four_leaf == 1 then
+                                    table.insert(details, "4-leaf")
+                                end
+                                
+                                -- Easter Egg Hunt: egg_type field (string or 0)
+                                if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
+                                    table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Deliver the Package: package_type and to_npc fields
+                                if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
+                                    local package_desc = area.package_type .. " package"
+                                    if area.to_npc and area.to_npc == 1 then
+                                        package_desc = package_desc .. " to NPC"
+                                    end
+                                    table.insert(details, package_desc)
+                                end
+                                
+                                if #details > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%s)</font>",
+                                        eventsCurrentFontSize - 1, table.concat(details, ", ")
+                                    )
+                                end
                             end
                             eventsList = eventsList .. "</td></tr>"
                         end
@@ -451,7 +475,7 @@ function CharEventsList()
                                 eventsCurrentFontSize - 1, area.area_name
                             )
                             
-                            -- Show collection counts for completed areas
+                            -- Show collection details for completed areas
                             local field_name, field_value = getCollectionFieldName(area)
                             if field_name == "bosses" then
                                 local bosses_total = area.bosses_total or 0
@@ -462,10 +486,34 @@ function CharEventsList()
                                     )
                                 end
                             elseif field_name and field_value > 0 then
-                                eventsList = eventsList .. string.format(
-                                    " <font size=\"%d\" color=\"yellow\">(%s: %d)</font>",
-                                    eventsCurrentFontSize - 1, field_name, field_value
-                                )
+                                -- For collection events, show details if available instead of just count
+                                local details = {}
+                                
+                                -- Capture the Clover: four_leaf field (0 or 1)
+                                if area.four_leaf and area.four_leaf == 1 then
+                                    table.insert(details, "4-leaf")
+                                end
+                                
+                                -- Easter Egg Hunt: egg_type field (string or 0)
+                                if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
+                                    table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Deliver the Package: package_type and to_npc fields
+                                if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
+                                    local package_desc = area.package_type .. " package"
+                                    if area.to_npc and area.to_npc == 1 then
+                                        package_desc = package_desc .. " to NPC"
+                                    end
+                                    table.insert(details, package_desc)
+                                end
+                                
+                                if #details > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%s)</font>",
+                                        eventsCurrentFontSize - 1, table.concat(details, ", ")
+                                    )
+                                end
                             end
                             eventsList = eventsList .. "</td></tr>"
                         end
