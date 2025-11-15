@@ -107,8 +107,8 @@ end
 
 -- Helper function to format time remaining
 local function formatTimeRemaining(endTime)
-    -- If end_time is 0, the event has no end time (ongoing/permanent)
-    if endTime == 0 then
+    -- If end_time is nil or 0, the event has no end time (ongoing/permanent)
+    if not endTime or endTime == 0 then
         return "<font color=\"lime\">Ongoing</font>"
     end
     
