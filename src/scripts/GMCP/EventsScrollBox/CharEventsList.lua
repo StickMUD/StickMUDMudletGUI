@@ -436,7 +436,7 @@ function CharEventsList()
                     -- Show completed areas below in-progress
                     if #completed_areas > 0 then
                         if #in_progress_areas > 0 then
-                            eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
+                            eventsList = eventsList .. "<tr><td width=\"100%\">&nbsp;</td></tr>"
                         end
                         eventsList = eventsList .. "<tr><td width=\"100%\">"
                         eventsList = eventsList .. string.format(
