@@ -275,67 +275,46 @@ function CharEventsList()
                             "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
                             eventsCurrentFontSize, #completed_areas
                         )
-                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">"
                         for _, area in ipairs(completed_areas) do
                             local bosses_killed = area.bosses_killed or 0
                             local bosses_total = area.bosses_total or 0
-                            -- Debug
-                            cecho(string.format("\n<cyan>DEBUG Completed: %s - killed=%s, total=%s</cyan>", 
-                                area.area_name, tostring(bosses_killed), tostring(bosses_total)))
                             
-                            eventsList = eventsList .. "<tr>"
-                            eventsList = eventsList .. "<td width=\"3%\"></td>"
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
-                                "<td width=\"72%%\"><font size=\"%d\" color=\"gray\">%s</font></td>",
+                                "<font size=\"%d\" color=\"gray\">  %s</font>",
                                 eventsCurrentFontSize - 1, area.area_name
                             )
                             -- Show boss counts
                             if bosses_killed > 0 or bosses_total > 0 then
                                 eventsList = eventsList .. string.format(
-                                    "<td width=\"25%%\" align=\"right\"><font size=\"%d\" color=\"yellow\">%d / %d</font></td>",
+                                    " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
                                     eventsCurrentFontSize - 1, bosses_killed, bosses_total
                                 )
-                            else
-                                eventsList = eventsList .. "<td width=\"25%\"></td>"
                             end
-                            eventsList = eventsList .. "</tr>"
+                            eventsList = eventsList .. "</td></tr>"
                         end
-                        eventsList = eventsList .. "</table>"
                     end
                     
                     -- Show in-progress areas
                     if #in_progress_areas > 0 then
                         if #completed_areas > 0 then
-                            eventsList = eventsList .. "<br>"
+                            eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
                         end
                         eventsList = eventsList .. string.format(
-                            "<font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font><br>",
+                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font></td></tr>",
                             eventsCurrentFontSize, #in_progress_areas
                         )
-                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">"
                         for _, area in ipairs(in_progress_areas) do
-                            -- Debug
-                            cecho(string.format("\n<yellow>DEBUG In-progress: %s - killed=%d, total=%d</yellow>", 
-                                area.area_name, area.bosses_killed, area.bosses_total))
-                            
-                            eventsList = eventsList .. "<tr>"
-                            eventsList = eventsList .. "<td width=\"3%\"></td>"
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
-                                "<td width=\"72%%\"><a href=\"send([[goto %s]])\"><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
+                                "  <a href=\"send([[goto %s]])\"><font size=\"%d\" color=\"cyan\">%s</font></a>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
                             eventsList = eventsList .. string.format(
-                                "<td width=\"25%%\" align=\"right\"><font size=\"%d\" color=\"yellow\">%d / %d</font></td>",
+                                " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
                                 eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
                             )
-                            eventsList = eventsList .. "</tr>"
-                        end
-                        eventsList = eventsList .. "</table>"
-                        
-                        -- Debug: Show raw HTML for one link
-                        if #in_progress_areas > 0 then
-                            local test_area = in_progress_areas[1].area_name
-                            cecho(string.format("\n<green>DEBUG Link HTML: <a href=\"send([[goto %s]])\">Test Link</a></green>", test_area))
+                            eventsList = eventsList .. "</td></tr>"
                         end
                     end
                 end
