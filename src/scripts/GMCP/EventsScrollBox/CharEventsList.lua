@@ -2,6 +2,9 @@
 local eventsCurrentFontSize = content_preferences["GUI.EventsScrollBox"] and content_preferences["GUI.EventsScrollBox"].fontSize or 12
 local eventsMinFontSize = 1 -- Minimum allowed font size
 
+-- Timer for updating the events list countdown
+local eventsCountdownTimer = nil
+
 -- Define the CSS for the events list display with dynamic font size
 function getEventsListCSS(fontSize)
     return CSSMan.new([[
@@ -104,25 +107,28 @@ end
 
 -- Helper function to format time remaining
 local function formatTimeRemaining(endTime)
-    -- If end_time is 0, the event has no end time (ongoing/permanent)
-    if endTime == 0 then
-        return "<green>Ongoing</green>"
+    -- If end_time is nil or 0, the event has no end time (ongoing/permanent)
+    if not endTime or endTime == 0 then
+        return "<font color=\"lime\">Ongoing</font>"
     end
     
     local now = os.time()
     local remaining = endTime - now
     
     if remaining <= 0 then
-        return "<red>Ended</red>"
+        return "<font color=\"red\">Ended</font>", true  -- Return true to indicate event ended
     end
     
     local hours = math.floor(remaining / 3600)
     local minutes = math.floor((remaining % 3600) / 60)
+    local seconds = remaining % 60
     
     if hours > 0 then
-        return string.format("<yellow>%dh %dm remaining</yellow>", hours, minutes)
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">h</font> <font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", hours, minutes, seconds), false
+    elseif minutes > 0 then
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", minutes, seconds), false
     else
-        return string.format("<yellow>%dm remaining</yellow>", minutes)
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", seconds), false
     end
 end
 
@@ -139,8 +145,39 @@ local function getEventTypeName(eventType)
     return types[eventType] or "Unknown"
 end
 
+-- Helper function to check if event type is competitive collect
+local function isCompetitiveCollect(eventType)
+    return eventType == 3
+end
+
+-- Helper function to get collection field name for an area
+local function getCollectionFieldValue(area)
+    -- Check for collection-specific fields in order of likelihood
+    return area.clovers_captured 
+        or area.packages_delivered 
+        or area.eggs_found 
+        or area.mascots_killed 
+        or area.bosses_killed 
+        or 0
+end
+
+-- Helper function to get collection field name for display
+local function getCollectionFieldName(area)
+    if area.clovers_captured then return "clovers", area.clovers_captured end
+    if area.packages_delivered then return "packages", area.packages_delivered end
+    if area.eggs_found then return "eggs", area.eggs_found end
+    if area.mascots_killed then return "mascots", area.mascots_killed end
+    if area.bosses_killed then return "bosses", area.bosses_killed end
+    return nil, 0
+end
+
 -- Main function to display the events list
 function CharEventsList()
+    -- Clear visited link states when refreshing the events list (available in Mudlet 4.20+)
+    --if GUI.CharEventsListLabel then
+    --    clearVisitedLinks("GUI.CharEventsListLabel")
+    --end
+
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
     eventsSessionData = eventsSessionData or {}
@@ -157,6 +194,59 @@ function CharEventsList()
                     start_time = event_data.start_time,
                     end_time = event_data.end_time
                 }
+            end
+        end
+    end
+    
+    -- Also check gmcp.Char.Events.Session for session data (alternative location)
+    -- As of server update, this is now an ARRAY of session objects (one per active event)
+    if gmcp and gmcp.Char and gmcp.Char.Events and gmcp.Char.Events.Session then
+        local charEventSessions = gmcp.Char.Events.Session
+        -- Handle both old format (single object) and new format (array)
+        if type(charEventSessions) == "table" then
+            -- Check if it's an array (new format) or single object (old format)
+            if charEventSessions[1] or #charEventSessions > 0 then
+                -- New array format - store for later lookup by event_id
+                eventsSessionData = charEventSessions
+            elseif charEventSessions.event_id then
+                -- Old single object format - wrap in array for consistency
+                eventsSessionData = {charEventSessions}
+            end
+            
+            -- Also add any events from session data to activeEvents if not already present
+            -- This handles cases where Game.Events.Active might not include all events with session data
+            for _, session in ipairs(eventsSessionData) do
+                if session.event_id and not activeEvents[session.event_id] then
+                    -- Try to get additional event info from Game.Events.Active first
+                    local eventInfo = nil
+                    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+                        for _, evt in ipairs(gmcp.Game.Events.Active) do
+                            if evt.id == session.event_id then
+                                eventInfo = evt
+                                break
+                            end
+                        end
+                    end
+                    
+                    -- If not found in Active, check Game.Events.List
+                    if not eventInfo and gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.List then
+                        for _, evt in ipairs(gmcp.Game.Events.List) do
+                            if evt.id == session.event_id then
+                                eventInfo = evt
+                                break
+                            end
+                        end
+                    end
+                    
+                    -- Create event entry with whatever data we have
+                    activeEvents[session.event_id] = {
+                        event_id = session.event_id,
+                        event_name = session.event_name or (eventInfo and eventInfo.name) or session.event_id,
+                        event_type = eventInfo and eventInfo.type or 0,
+                        start_time = eventInfo and eventInfo.start_time or 0,
+                        end_time = eventInfo and eventInfo.end_time or 0
+                    }
+                end
             end
         end
     end
@@ -179,8 +269,39 @@ function CharEventsList()
     if not hasActiveEvents then
         eventsList = eventsList .. "<tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">No active events</font></center></td></tr>"
     else
-        -- Display each active event
+        -- Convert activeEvents table to sorted array
+        local sortedEvents = {}
         for eventId, eventData in pairs(activeEvents) do
+            table.insert(sortedEvents, eventData)
+        end
+        
+        -- Sort events: those with end_time > 0 first (by nearest end_time), then others
+        table.sort(sortedEvents, function(a, b)
+            local aHasEndTime = a.end_time and a.end_time > 0
+            local bHasEndTime = b.end_time and b.end_time > 0
+            
+            -- Both have end times - sort by nearest first
+            if aHasEndTime and bHasEndTime then
+                return a.end_time < b.end_time
+            end
+            
+            -- Only a has end time - a comes first
+            if aHasEndTime then
+                return true
+            end
+            
+            -- Only b has end time - b comes first
+            if bHasEndTime then
+                return false
+            end
+            
+            -- Neither has end time - maintain alphabetical order by name
+            return a.event_name < b.event_name
+        end)
+        
+        -- Display each active event in sorted order
+        for _, eventData in ipairs(sortedEvents) do
+            local eventId = eventData.event_id
             eventsList = eventsList .. "<tr><td>"
             
             -- Event name and type
@@ -198,7 +319,7 @@ function CharEventsList()
             )
             
             -- Time remaining
-            local timeText = formatTimeRemaining(eventData.end_time)
+            local timeText, hasEnded = formatTimeRemaining(eventData.end_time)
             eventsList = eventsList .. string.format(
                 "<font size=\"%d\">%s</font><br>",
                 eventsCurrentFontSize,
@@ -206,7 +327,39 @@ function CharEventsList()
             )
 
             -- Add session data if available for this event
-            if eventsSessionData and eventsSessionData.event_id == eventId then
+            -- Match by event_id or by event_name (fallback for events that use different ID formats)
+            local sessionMatches = false
+            local currentSessionData = nil
+            
+            -- First, check if this event has session data embedded in Game.Events.Active
+            if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+                for _, activeEvent in ipairs(gmcp.Game.Events.Active) do
+                    if activeEvent.id == eventId and activeEvent.session then
+                        currentSessionData = activeEvent.session
+                        sessionMatches = true
+                        break
+                    end
+                end
+            end
+            
+            -- Fallback to Char.Events.Session if not found in Active
+            -- Note: eventsSessionData is now an array of session objects
+            if not sessionMatches and eventsSessionData and type(eventsSessionData) == "table" then
+                -- Search through the array of sessions
+                for _, session in ipairs(eventsSessionData) do
+                    if session.event_id == eventId then
+                        currentSessionData = session
+                        sessionMatches = true
+                        break
+                    elseif session.event_name and session.event_name == eventData.event_name then
+                        currentSessionData = session
+                        sessionMatches = true
+                        break
+                    end
+                end
+            end
+            
+            if sessionMatches and currentSessionData then
                 eventsList = eventsList .. "<br>"
                 eventsList = eventsList .. string.format(
                     "<font size=\"%d\" color=\"white\"><b>Your Progress:</b></font><br>",
@@ -214,94 +367,222 @@ function CharEventsList()
                 )
                 
                 -- Display summary stats
-                if eventsSessionData.areas_completed and eventsSessionData.areas_total then
-                    local progress_pct = math.floor((eventsSessionData.areas_completed / eventsSessionData.areas_total) * 100)
+                if currentSessionData.areas_completed and currentSessionData.areas_total then
+                    local progress_pct = math.floor((currentSessionData.areas_completed / currentSessionData.areas_total) * 100)
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d/%d</font> <font size=\"%d\" color=\"cyan\">(%d%%)</font><br>",
                         eventsCurrentFontSize, eventsCurrentFontSize, 
-                        eventsSessionData.areas_completed, eventsSessionData.areas_total,
+                        currentSessionData.areas_completed, currentSessionData.areas_total,
                         eventsCurrentFontSize, progress_pct
                     )
                 end
                 
-                if eventsSessionData.rank then
-                    eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank
-                    )
+                if currentSessionData.rank then
+                    local totalParticipants = currentSessionData.total_participants or 0
+                    if totalParticipants > 0 then
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><font size=\"%d\" color=\"gray\"> / %d</font><br>",
+                            eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.rank,
+                            eventsCurrentFontSize, totalParticipants
+                        )
+                    else
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
+                            eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.rank
+                        )
+                    end
                 end
                 
-                if eventsSessionData.kills then
+                if currentSessionData.kills then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Kills: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.kills
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.kills
                     )
                 end
                 
-                if eventsSessionData.points then
+                -- Display clover-specific fields
+                if currentSessionData.clovers then
                     eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Points: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.points
+                        "<font size=\"%d\" color=\"gray\">Clovers Captured: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.clovers
+                    )
+                end
+                
+                if currentSessionData.four_leaf_clovers and currentSessionData.four_leaf_clovers > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Four Leaf Clovers: </font><font size=\"%d\" color=\"green\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.four_leaf_clovers
+                    )
+                end
+                
+                if currentSessionData.points then
+                    local pointsLabel = "Points"
+                    -- For Competitive Collect events, points represent collected items
+                    if isCompetitiveCollect(eventData.event_type) then
+                        pointsLabel = "Items Collected"
+                    end
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">%s: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, pointsLabel, eventsCurrentFontSize, currentSessionData.points
                     )
                 end
                 
                 -- Display detailed area progress if available
-                if eventsSessionData.progress and type(eventsSessionData.progress) == "table" then
+                if currentSessionData.progress and type(currentSessionData.progress) == "table" then
                     eventsList = eventsList .. "<br>"
                     eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
+                        "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font>",
                         eventsCurrentFontSize
                     )
+                    eventsList = eventsList .. "<br>"
                     
                     -- Count completed and in-progress areas
                     local completed_areas = {}
                     local in_progress_areas = {}
                     
-                    for _, area in ipairs(eventsSessionData.progress) do
+                    for _, area in ipairs(currentSessionData.progress) do
                         if area.completed == 1 then
                             table.insert(completed_areas, area)
-                        elseif area.bosses_killed > 0 or (area.bosses_total and area.bosses_total > 0) then
-                            table.insert(in_progress_areas, area)
-                        end
-                    end
-                    
-                    -- Show completed areas
-                    if #completed_areas > 0 then
-                        eventsList = eventsList .. string.format(
-                            "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
-                            eventsCurrentFontSize, #completed_areas
-                        )
-                        for _, area in ipairs(completed_areas) do
-                            eventsList = eventsList .. string.format(
-                                "<font size=\"%d\" color=\"gray\">  • %s</font>",
-                                eventsCurrentFontSize - 1, area.area_name
-                            )
-                            if area.bosses_killed > 0 then
-                                eventsList = eventsList .. string.format(
-                                    " <font size=\"%d\" color=\"yellow\">(%d boss%s)</font>",
-                                    eventsCurrentFontSize - 1, area.bosses_killed,
-                                    area.bosses_killed > 1 and "es" or ""
-                                )
+                        else
+                            -- Check for any collection activity
+                            local collection_value = getCollectionFieldValue(area)
+                            local total_value = area.bosses_total or 0
+                            
+                            -- For Kill events: show if bosses_total > 0 (available bosses to kill)
+                            -- For Collect events: show all incomplete areas (where collection is possible)
+                            if isCompetitiveCollect(eventData.event_type) then
+                                -- Collect events: show all areas that aren't completed
+                                -- (all areas are collectable until marked complete)
+                                table.insert(in_progress_areas, area)
+                            else
+                                -- Kill events: show areas with bosses to kill OR already started
+                                if total_value > 0 or collection_value > 0 then
+                                    table.insert(in_progress_areas, area)
+                                end
                             end
-                            eventsList = eventsList .. "<br>"
                         end
                     end
                     
-                    -- Show in-progress areas
+                    -- Sort areas by name
+                    table.sort(completed_areas, function(a, b) return a.area_name < b.area_name end)
+                    table.sort(in_progress_areas, function(a, b) return a.area_name < b.area_name end)
+                    
+                    -- Show in-progress areas first (more important)
                     if #in_progress_areas > 0 then
-                        if #completed_areas > 0 then
-                            eventsList = eventsList .. "<br>"
-                        end
+                        -- Use event-type-specific label
+                        local inProgressLabel = isCompetitiveCollect(eventData.event_type) and "Collecting" or "In Progress"
                         eventsList = eventsList .. string.format(
-                            "<font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font><br>",
-                            eventsCurrentFontSize, #in_progress_areas
+                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ %s (%d):</font></td></tr>",
+                            eventsCurrentFontSize, inProgressLabel, #in_progress_areas
                         )
                         for _, area in ipairs(in_progress_areas) do
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
-                                "<font size=\"%d\" color=\"gray\">  • %s: </font><font size=\"%d\" color=\"yellow\">%d/%d bosses</font><br>",
-                                eventsCurrentFontSize - 1, area.area_name,
-                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
+                                "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
+                                area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
+                            
+                            -- Display appropriate progress indicator
+                            local field_name, field_value = getCollectionFieldName(area)
+                            if field_name == "bosses" then
+                                local bosses_total = area.bosses_total or 0
+                                eventsList = eventsList .. string.format(
+                                    " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
+                                    eventsCurrentFontSize - 1, field_value, bosses_total
+                                )
+                            elseif field_name and field_value > 0 then
+                                -- For collection events, show details if available instead of just count
+                                local details = {}
+                                
+                                -- Capture the Clover: four_leaf field (0 or 1)
+                                if area.four_leaf and area.four_leaf == 1 then
+                                    table.insert(details, "4-leaf")
+                                end
+                                
+                                -- Easter Egg Hunt: egg_type field (string or 0)
+                                if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
+                                    table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Deliver the Package: package_type and to_npc fields
+                                if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
+                                    local package_desc = area.package_type .. " package"
+                                    if area.to_npc and area.to_npc == 1 then
+                                        package_desc = package_desc .. " to NPC"
+                                    end
+                                    table.insert(details, package_desc)
+                                end
+                                
+                                if #details > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%s)</font>",
+                                        eventsCurrentFontSize - 1, table.concat(details, ", ")
+                                    )
+                                end
+                            end
+                            eventsList = eventsList .. "</td></tr>"
+                        end
+                    end
+                    
+                    -- Show completed areas below in-progress
+                    if #completed_areas > 0 then
+                        if #in_progress_areas > 0 then
+                            eventsList = eventsList .. "<tr><td width=\"100%\">&nbsp;</td></tr>"
+                        end
+                        eventsList = eventsList .. "<tr><td width=\"100%\">"
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font>",
+                            eventsCurrentFontSize, #completed_areas
+                        )
+                        eventsList = eventsList .. "</td></tr>"
+                        for _, area in ipairs(completed_areas) do
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
+                            eventsList = eventsList .. string.format(
+                                "<font size=\"%d\" color=\"gray\">  %s</font>",
+                                eventsCurrentFontSize - 1, area.area_name
+                            )
+                            
+                            -- Show collection details for completed areas
+                            local field_name, field_value = getCollectionFieldName(area)
+                            if field_name == "bosses" then
+                                local bosses_total = area.bosses_total or 0
+                                if field_value > 0 or bosses_total > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
+                                        eventsCurrentFontSize - 1, field_value, bosses_total
+                                    )
+                                end
+                            elseif field_name and field_value > 0 then
+                                -- For collection events, show details if available instead of just count
+                                local details = {}
+                                
+                                -- Capture the Clover: four_leaf field (0 or 1)
+                                if area.four_leaf and area.four_leaf == 1 then
+                                    table.insert(details, "4-leaf")
+                                end
+                                
+                                -- Easter Egg Hunt: egg_type field (string or 0)
+                                if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
+                                    table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Deliver the Package: package_type and to_npc fields
+                                if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
+                                    local package_desc = area.package_type .. " package"
+                                    if area.to_npc and area.to_npc == 1 then
+                                        package_desc = package_desc .. " to NPC"
+                                    end
+                                    table.insert(details, package_desc)
+                                end
+                                
+                                if #details > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%s)</font>",
+                                        eventsCurrentFontSize - 1, table.concat(details, ", ")
+                                    )
+                                end
+                            end
+                            eventsList = eventsList .. "</td></tr>"
                         end
                     end
                 end
@@ -320,12 +601,35 @@ function CharEventsList()
         x = 0,
         y = "25px",
         width = "100%",
-        height = "400%"
+        height = "2000%"
     }, GUI.EventsScrollBox)
 
     GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
     setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+    --setLinkStyle("GUI.CharEventsListLabel", "cyan", "blue", true)   -- Uncomment after Mudlet 4.20 release
     GUI.CharEventsListLabel:echo(eventsList)
+    
+    -- Set up countdown timer if there are active events with end times
+    if eventsCountdownTimer then
+        killTimer(eventsCountdownTimer)
+        eventsCountdownTimer = nil
+    end
+    
+    -- Check if we need a countdown timer (any active event with non-zero end_time)
+    local needsCountdown = false
+    for _, eventData in pairs(activeEvents) do
+        if eventData.end_time and eventData.end_time > 0 and eventData.end_time > os.time() then
+            needsCountdown = true
+            break
+        end
+    end
+    
+    -- Start a timer to update the countdown every second
+    if needsCountdown then
+        eventsCountdownTimer = tempTimer(1, function()
+            CharEventsList()
+        end, true)  -- true means repeating timer
+    end
 end
 
 -- Initialize the font adjustment panel and create the display label
@@ -337,9 +641,10 @@ GUI.CharEventsListLabel = Geyser.Label:new({
     x = 0,
     y = "25px",
     width = "100%",
-    height = "400%"
+    height = "2000%"
 }, GUI.EventsScrollBox)
 
 GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
 setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+-- setLinkStyle("GUI.CharEventsListLabel", "cyan", "blue", true) -- Uncomment after Mudlet 4.20 release
 GUI.CharEventsListLabel:echo("<table><tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">Click to load events...</font></center></td></tr></table>")
