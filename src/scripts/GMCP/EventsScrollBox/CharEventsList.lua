@@ -254,15 +254,31 @@ function CharEventsList()
             -- Add session data if available for this event
             -- Match by event_id or by event_name (fallback for events that use different ID formats)
             local sessionMatches = false
-            if eventsSessionData then
+            local currentSessionData = nil
+            
+            -- First, check if this event has session data embedded in Game.Events.Active
+            if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+                for _, activeEvent in ipairs(gmcp.Game.Events.Active) do
+                    if activeEvent.id == eventId and activeEvent.session then
+                        currentSessionData = activeEvent.session
+                        sessionMatches = true
+                        break
+                    end
+                end
+            end
+            
+            -- Fallback to Char.Events.Session if not found in Active
+            if not sessionMatches and eventsSessionData then
                 if eventsSessionData.event_id == eventId then
+                    currentSessionData = eventsSessionData
                     sessionMatches = true
                 elseif eventsSessionData.event_name and eventsSessionData.event_name == eventData.event_name then
+                    currentSessionData = eventsSessionData
                     sessionMatches = true
                 end
             end
             
-            if sessionMatches then
+            if sessionMatches and currentSessionData then
                 eventsList = eventsList .. "<br>"
                 eventsList = eventsList .. string.format(
                     "<font size=\"%d\" color=\"white\"><b>Your Progress:</b></font><br>",
@@ -270,55 +286,55 @@ function CharEventsList()
                 )
                 
                 -- Display summary stats
-                if eventsSessionData.areas_completed and eventsSessionData.areas_total then
-                    local progress_pct = math.floor((eventsSessionData.areas_completed / eventsSessionData.areas_total) * 100)
+                if currentSessionData.areas_completed and currentSessionData.areas_total then
+                    local progress_pct = math.floor((currentSessionData.areas_completed / currentSessionData.areas_total) * 100)
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d/%d</font> <font size=\"%d\" color=\"cyan\">(%d%%)</font><br>",
                         eventsCurrentFontSize, eventsCurrentFontSize, 
-                        eventsSessionData.areas_completed, eventsSessionData.areas_total,
+                        currentSessionData.areas_completed, currentSessionData.areas_total,
                         eventsCurrentFontSize, progress_pct
                     )
                 end
                 
-                if eventsSessionData.rank then
-                    local totalParticipants = eventsSessionData.total_participants or 0
+                if currentSessionData.rank then
+                    local totalParticipants = currentSessionData.total_participants or 0
                     if totalParticipants > 0 then
                         eventsList = eventsList .. string.format(
                             "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><font size=\"%d\" color=\"gray\"> / %d</font><br>",
-                            eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank,
+                            eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.rank,
                             eventsCurrentFontSize, totalParticipants
                         )
                     else
                         eventsList = eventsList .. string.format(
                             "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
-                            eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.rank
+                            eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.rank
                         )
                     end
                 end
                 
-                if eventsSessionData.kills then
+                if currentSessionData.kills then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Kills: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.kills
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.kills
                     )
                 end
                 
                 -- Display clover-specific fields
-                if eventsSessionData.clovers then
+                if currentSessionData.clovers then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Clovers Captured: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.clovers
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.clovers
                     )
                 end
                 
-                if eventsSessionData.four_leaf_clovers and eventsSessionData.four_leaf_clovers > 0 then
+                if currentSessionData.four_leaf_clovers and currentSessionData.four_leaf_clovers > 0 then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Four Leaf Clovers: </font><font size=\"%d\" color=\"green\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.four_leaf_clovers
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.four_leaf_clovers
                     )
                 end
                 
-                if eventsSessionData.points then
+                if currentSessionData.points then
                     local pointsLabel = "Points"
                     -- For Competitive Collect events, points represent collected items
                     if isCompetitiveCollect(eventData.event_type) then
@@ -326,12 +342,12 @@ function CharEventsList()
                     end
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">%s: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, pointsLabel, eventsCurrentFontSize, eventsSessionData.points
+                        eventsCurrentFontSize, pointsLabel, eventsCurrentFontSize, currentSessionData.points
                     )
                 end
                 
                 -- Display detailed area progress if available
-                if eventsSessionData.progress and type(eventsSessionData.progress) == "table" then
+                if currentSessionData.progress and type(currentSessionData.progress) == "table" then
                     eventsList = eventsList .. "<br>"
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
