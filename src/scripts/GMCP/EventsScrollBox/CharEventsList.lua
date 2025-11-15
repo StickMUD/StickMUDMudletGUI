@@ -150,6 +150,27 @@ local function isCompetitiveCollect(eventType)
     return eventType == 3
 end
 
+-- Helper function to get collection field name for an area
+local function getCollectionFieldValue(area)
+    -- Check for collection-specific fields in order of likelihood
+    return area.clovers_captured 
+        or area.packages_delivered 
+        or area.eggs_found 
+        or area.mascots_killed 
+        or area.bosses_killed 
+        or 0
+end
+
+-- Helper function to get collection field name for display
+local function getCollectionFieldName(area)
+    if area.clovers_captured then return "clovers", area.clovers_captured end
+    if area.packages_delivered then return "packages", area.packages_delivered end
+    if area.eggs_found then return "eggs", area.eggs_found end
+    if area.mascots_killed then return "mascots", area.mascots_killed end
+    if area.bosses_killed then return "bosses", area.bosses_killed end
+    return nil, 0
+end
+
 -- Main function to display the events list
 function CharEventsList()
     -- Clear visited link states when refreshing the events list (available in Mudlet 4.20+)
@@ -178,9 +199,10 @@ function CharEventsList()
     end
     
     -- Also check gmcp.Char.Events.Session for session data (alternative location)
+    -- This takes precedence over eventsSessionData as it's more current
     if gmcp and gmcp.Char and gmcp.Char.Events and gmcp.Char.Events.Session then
         local charEventSession = gmcp.Char.Events.Session
-        if charEventSession.event_id and not eventsSessionData.event_id then
+        if charEventSession.event_id then
             eventsSessionData = charEventSession
         end
     end
@@ -323,8 +345,13 @@ function CharEventsList()
                     for _, area in ipairs(eventsSessionData.progress) do
                         if area.completed == 1 then
                             table.insert(completed_areas, area)
-                        elseif area.bosses_killed > 0 or (area.bosses_total and area.bosses_total > 0) then
-                            table.insert(in_progress_areas, area)
+                        else
+                            -- Check for any collection activity (works for both Kill and Collect events)
+                            local collection_value = getCollectionFieldValue(area)
+                            local total_value = area.bosses_total or 0
+                            if collection_value > 0 or total_value > 0 then
+                                table.insert(in_progress_areas, area)
+                            end
                         end
                     end
                     
@@ -344,10 +371,21 @@ function CharEventsList()
                                 "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
-                            eventsList = eventsList .. string.format(
-                                " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
-                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
-                            )
+                            
+                            -- Display appropriate progress indicator
+                            local field_name, field_value = getCollectionFieldName(area)
+                            if field_name == "bosses" then
+                                local bosses_total = area.bosses_total or 0
+                                eventsList = eventsList .. string.format(
+                                    " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
+                                    eventsCurrentFontSize - 1, field_value, bosses_total
+                                )
+                            elseif field_name and field_value > 0 then
+                                eventsList = eventsList .. string.format(
+                                    " <font size=\"%d\" color=\"yellow\">(%s: %d)</font>",
+                                    eventsCurrentFontSize - 1, field_name, field_value
+                                )
+                            end
                             eventsList = eventsList .. "</td></tr>"
                         end
                     end
@@ -362,19 +400,26 @@ function CharEventsList()
                             eventsCurrentFontSize, #completed_areas
                         )
                         for _, area in ipairs(completed_areas) do
-                            local bosses_killed = area.bosses_killed or 0
-                            local bosses_total = area.bosses_total or 0
-                            
                             eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
                                 "<font size=\"%d\" color=\"gray\">  %s</font>",
                                 eventsCurrentFontSize - 1, area.area_name
                             )
-                            -- Show boss counts
-                            if bosses_killed > 0 or bosses_total > 0 then
+                            
+                            -- Show collection counts for completed areas
+                            local field_name, field_value = getCollectionFieldName(area)
+                            if field_name == "bosses" then
+                                local bosses_total = area.bosses_total or 0
+                                if field_value > 0 or bosses_total > 0 then
+                                    eventsList = eventsList .. string.format(
+                                        " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
+                                        eventsCurrentFontSize - 1, field_value, bosses_total
+                                    )
+                                end
+                            elseif field_name and field_value > 0 then
                                 eventsList = eventsList .. string.format(
-                                    " <font size=\"%d\" color=\"yellow\">(%d / %d)</font>",
-                                    eventsCurrentFontSize - 1, bosses_killed, bosses_total
+                                    " <font size=\"%d\" color=\"yellow\">(%s: %d)</font>",
+                                    eventsCurrentFontSize - 1, field_name, field_value
                                 )
                             end
                             eventsList = eventsList .. "</td></tr>"
