@@ -212,6 +212,32 @@ function CharEventsList()
                 -- Old single object format - wrap in array for consistency
                 eventsSessionData = {charEventSessions}
             end
+            
+            -- Also add any events from session data to activeEvents if not already present
+            -- This handles cases where Game.Events.Active might not include all events with session data
+            for _, session in ipairs(eventsSessionData) do
+                if session.event_id and not activeEvents[session.event_id] then
+                    -- Try to get additional event info from Game.Events.Active
+                    local eventInfo = nil
+                    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Active then
+                        for _, evt in ipairs(gmcp.Game.Events.Active) do
+                            if evt.id == session.event_id then
+                                eventInfo = evt
+                                break
+                            end
+                        end
+                    end
+                    
+                    -- Create event entry with whatever data we have
+                    activeEvents[session.event_id] = {
+                        event_id = session.event_id,
+                        event_name = session.event_name or (eventInfo and eventInfo.name) or session.event_id,
+                        event_type = eventInfo and eventInfo.type or 0,
+                        start_time = eventInfo and eventInfo.start_time or 0,
+                        end_time = eventInfo and eventInfo.end_time or 0
+                    }
+                end
+            end
         end
     end
 
