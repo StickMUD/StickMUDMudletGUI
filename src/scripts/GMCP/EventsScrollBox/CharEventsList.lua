@@ -306,7 +306,7 @@ function CharEventsList()
                             eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
                         end
                         eventsList = eventsList .. string.format(
-                            "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
+                            "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font>",
                             eventsCurrentFontSize, #completed_areas
                         )
                         for _, area in ipairs(completed_areas) do
