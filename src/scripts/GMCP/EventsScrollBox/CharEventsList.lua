@@ -269,8 +269,39 @@ function CharEventsList()
     if not hasActiveEvents then
         eventsList = eventsList .. "<tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">No active events</font></center></td></tr>"
     else
-        -- Display each active event
+        -- Convert activeEvents table to sorted array
+        local sortedEvents = {}
         for eventId, eventData in pairs(activeEvents) do
+            table.insert(sortedEvents, eventData)
+        end
+        
+        -- Sort events: those with end_time > 0 first (by nearest end_time), then others
+        table.sort(sortedEvents, function(a, b)
+            local aHasEndTime = a.end_time and a.end_time > 0
+            local bHasEndTime = b.end_time and b.end_time > 0
+            
+            -- Both have end times - sort by nearest first
+            if aHasEndTime and bHasEndTime then
+                return a.end_time < b.end_time
+            end
+            
+            -- Only a has end time - a comes first
+            if aHasEndTime then
+                return true
+            end
+            
+            -- Only b has end time - b comes first
+            if bHasEndTime then
+                return false
+            end
+            
+            -- Neither has end time - maintain alphabetical order by name
+            return a.event_name < b.event_name
+        end)
+        
+        -- Display each active event in sorted order
+        for _, eventData in ipairs(sortedEvents) do
+            local eventId = eventData.event_id
             eventsList = eventsList .. "<tr><td>"
             
             -- Event name and type
