@@ -279,6 +279,10 @@ function CharEventsList()
                         for _, area in ipairs(completed_areas) do
                             local bosses_killed = area.bosses_killed or 0
                             local bosses_total = area.bosses_total or 0
+                            -- Debug
+                            cecho(string.format("\n<cyan>DEBUG Completed: %s - killed=%s, total=%s</cyan>", 
+                                area.area_name, tostring(bosses_killed), tostring(bosses_total)))
+                            
                             eventsList = eventsList .. "<tr>"
                             eventsList = eventsList .. "<td width=\"3%\"></td>"
                             eventsList = eventsList .. string.format(
@@ -310,10 +314,14 @@ function CharEventsList()
                         )
                         eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">"
                         for _, area in ipairs(in_progress_areas) do
+                            -- Debug
+                            cecho(string.format("\n<yellow>DEBUG In-progress: %s - killed=%d, total=%d</yellow>", 
+                                area.area_name, area.bosses_killed, area.bosses_total))
+                            
                             eventsList = eventsList .. "<tr>"
                             eventsList = eventsList .. "<td width=\"3%\"></td>"
                             eventsList = eventsList .. string.format(
-                                "<td width=\"72%%\"><a href='send([[goto %s]])'><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
+                                "<td width=\"72%%\"><a href=\"send([[goto %s]])\"><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
                             eventsList = eventsList .. string.format(
@@ -323,6 +331,12 @@ function CharEventsList()
                             eventsList = eventsList .. "</tr>"
                         end
                         eventsList = eventsList .. "</table>"
+                        
+                        -- Debug: Show raw HTML for one link
+                        if #in_progress_areas > 0 then
+                            local test_area = in_progress_areas[1].area_name
+                            cecho(string.format("\n<green>DEBUG Link HTML: <a href=\"send([[goto %s]])\">Test Link</a></green>", test_area))
+                        end
                     end
                 end
             end
