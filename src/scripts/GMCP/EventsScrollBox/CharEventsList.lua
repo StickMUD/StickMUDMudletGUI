@@ -213,6 +213,17 @@ function CharEventsList()
                     eventsCurrentFontSize
                 )
                 
+                -- Display summary stats
+                if eventsSessionData.areas_completed and eventsSessionData.areas_total then
+                    local progress_pct = math.floor((eventsSessionData.areas_completed / eventsSessionData.areas_total) * 100)
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d/%d</font> <font size=\"%d\" color=\"cyan\">(%d%%)</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, 
+                        eventsSessionData.areas_completed, eventsSessionData.areas_total,
+                        eventsCurrentFontSize, progress_pct
+                    )
+                end
+                
                 if eventsSessionData.rank then
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Rank: </font><font size=\"%d\" color=\"green\">#%d</font><br>",
@@ -234,18 +245,65 @@ function CharEventsList()
                     )
                 end
                 
-                if eventsSessionData.total_bosses then
+                -- Display detailed area progress if available
+                if eventsSessionData.progress and type(eventsSessionData.progress) == "table" then
+                    eventsList = eventsList .. "<br>"
                     eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Bosses: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.total_bosses
+                        "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
+                        eventsCurrentFontSize
                     )
-                end
-                
-                if eventsSessionData.areas_completed then
-                    eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.areas_completed
-                    )
+                    
+                    -- Count completed and in-progress areas
+                    local completed_areas = {}
+                    local in_progress_areas = {}
+                    
+                    for _, area in ipairs(eventsSessionData.progress) do
+                        if area.completed == 1 then
+                            table.insert(completed_areas, area)
+                        elseif area.bosses_killed > 0 or (area.bosses_total and area.bosses_total > 0) then
+                            table.insert(in_progress_areas, area)
+                        end
+                    end
+                    
+                    -- Show completed areas
+                    if #completed_areas > 0 then
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
+                            eventsCurrentFontSize, #completed_areas
+                        )
+                        for _, area in ipairs(completed_areas) do
+                            eventsList = eventsList .. string.format(
+                                "<font size=\"%d\" color=\"gray\">  • %s</font>",
+                                eventsCurrentFontSize - 1, area.area_name
+                            )
+                            if area.bosses_killed > 0 then
+                                eventsList = eventsList .. string.format(
+                                    " <font size=\"%d\" color=\"yellow\">(%d boss%s)</font>",
+                                    eventsCurrentFontSize - 1, area.bosses_killed,
+                                    area.bosses_killed > 1 and "es" or ""
+                                )
+                            end
+                            eventsList = eventsList .. "<br>"
+                        end
+                    end
+                    
+                    -- Show in-progress areas
+                    if #in_progress_areas > 0 then
+                        if #completed_areas > 0 then
+                            eventsList = eventsList .. "<br>"
+                        end
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font><br>",
+                            eventsCurrentFontSize, #in_progress_areas
+                        )
+                        for _, area in ipairs(in_progress_areas) do
+                            eventsList = eventsList .. string.format(
+                                "<font size=\"%d\" color=\"gray\">  • %s: </font><font size=\"%d\" color=\"yellow\">%d/%d bosses</font><br>",
+                                eventsCurrentFontSize - 1, area.area_name,
+                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
+                            )
+                        end
+                    end
                 end
             end
 
