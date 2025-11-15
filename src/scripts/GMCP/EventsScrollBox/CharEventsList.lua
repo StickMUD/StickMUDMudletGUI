@@ -364,7 +364,7 @@ function CharEventsList()
                 if currentSessionData.progress and type(currentSessionData.progress) == "table" then
                     eventsList = eventsList .. "<br>"
                     eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
+                        "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font>",
                         eventsCurrentFontSize
                     )
                     eventsList = eventsList .. "<br>"
