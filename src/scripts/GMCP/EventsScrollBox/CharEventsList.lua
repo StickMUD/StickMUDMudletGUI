@@ -206,12 +206,6 @@ function CharEventsList()
             )
 
             -- Add session data if available for this event
-            -- Debug: Check what we're comparing
-            if eventsSessionData and eventsSessionData.event_id then
-                cecho(string.format("\n<yellow>DEBUG: Comparing session event_id '%s' with active eventId '%s'</yellow>", 
-                    tostring(eventsSessionData.event_id), tostring(eventId)))
-            end
-            
             if eventsSessionData and eventsSessionData.event_id == eventId then
                 eventsList = eventsList .. "<br>"
                 eventsList = eventsList .. string.format(
