@@ -145,6 +145,11 @@ local function getEventTypeName(eventType)
     return types[eventType] or "Unknown"
 end
 
+-- Helper function to check if event type is competitive collect
+local function isCompetitiveCollect(eventType)
+    return eventType == 3
+end
+
 -- Main function to display the events list
 function CharEventsList()
     -- Clear visited link states when refreshing the events list (available in Mudlet 4.20+)
@@ -250,9 +255,14 @@ function CharEventsList()
                 end
                 
                 if eventsSessionData.points then
+                    local pointsLabel = "Points"
+                    -- For Competitive Collect events, points represent collected items
+                    if isCompetitiveCollect(eventData.event_type) then
+                        pointsLabel = "Items Collected"
+                    end
                     eventsList = eventsList .. string.format(
-                        "<font size=\"%d\" color=\"gray\">Points: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
-                        eventsCurrentFontSize, eventsCurrentFontSize, eventsSessionData.points
+                        "<font size=\"%d\" color=\"gray\">%s: </font><font size=\"%d\" color=\"yellow\">%d</font><br>",
+                        eventsCurrentFontSize, pointsLabel, eventsCurrentFontSize, eventsSessionData.points
                     )
                 end
                 
