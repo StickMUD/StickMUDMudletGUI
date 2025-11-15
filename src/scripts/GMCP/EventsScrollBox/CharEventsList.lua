@@ -2,6 +2,9 @@
 local eventsCurrentFontSize = content_preferences["GUI.EventsScrollBox"] and content_preferences["GUI.EventsScrollBox"].fontSize or 12
 local eventsMinFontSize = 1 -- Minimum allowed font size
 
+-- Timer for updating the events list countdown
+local eventsCountdownTimer = nil
+
 -- Define the CSS for the events list display with dynamic font size
 function getEventsListCSS(fontSize)
     return CSSMan.new([[
@@ -113,16 +116,19 @@ local function formatTimeRemaining(endTime)
     local remaining = endTime - now
     
     if remaining <= 0 then
-        return "<red>Ended</red>"
+        return "<red>Ended</red>", true  -- Return true to indicate event ended
     end
     
     local hours = math.floor(remaining / 3600)
     local minutes = math.floor((remaining % 3600) / 60)
+    local seconds = remaining % 60
     
     if hours > 0 then
-        return string.format("<yellow>%dh %dm remaining</yellow>", hours, minutes)
+        return string.format("<yellow>%dh %dm %ds remaining</yellow>", hours, minutes, seconds), false
+    elseif minutes > 0 then
+        return string.format("<yellow>%dm %ds remaining</yellow>", minutes, seconds), false
     else
-        return string.format("<yellow>%dm remaining</yellow>", minutes)
+        return string.format("<yellow>%ds remaining</yellow>", seconds), false
     end
 end
 
@@ -141,6 +147,11 @@ end
 
 -- Main function to display the events list
 function CharEventsList()
+    -- Clear visited link states when refreshing the events list
+    if GUI.CharEventsListLabel then
+        clearVisitedLinks("GUI.CharEventsListLabel")
+    end
+
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
     eventsSessionData = eventsSessionData or {}
@@ -198,7 +209,7 @@ function CharEventsList()
             )
             
             -- Time remaining
-            local timeText = formatTimeRemaining(eventData.end_time)
+            local timeText, hasEnded = formatTimeRemaining(eventData.end_time)
             eventsList = eventsList .. string.format(
                 "<font size=\"%d\">%s</font><br>",
                 eventsCurrentFontSize,
@@ -307,7 +318,7 @@ function CharEventsList()
                         for _, area in ipairs(in_progress_areas) do
                             eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
-                                "  <a href=\"send([[goto %s]])\"><font size=\"%d\" color=\"cyan\">%s</font></a>",
+                                "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
                             eventsList = eventsList .. string.format(
@@ -338,7 +349,30 @@ function CharEventsList()
 
     GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
     setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+    --setLinkStyle("GUI.CharEventsListLabel", "cyan", "blue", true)   -- Uncomment after Mudlet 4.20 release
     GUI.CharEventsListLabel:echo(eventsList)
+    
+    -- Set up countdown timer if there are active events with end times
+    if eventsCountdownTimer then
+        killTimer(eventsCountdownTimer)
+        eventsCountdownTimer = nil
+    end
+    
+    -- Check if we need a countdown timer (any active event with non-zero end_time)
+    local needsCountdown = false
+    for _, eventData in pairs(activeEvents) do
+        if eventData.end_time and eventData.end_time > 0 and eventData.end_time > os.time() then
+            needsCountdown = true
+            break
+        end
+    end
+    
+    -- Start a timer to update the countdown every second
+    if needsCountdown then
+        eventsCountdownTimer = tempTimer(1, function()
+            CharEventsList()
+        end, true)  -- true means repeating timer
+    end
 end
 
 -- Initialize the font adjustment panel and create the display label
@@ -355,4 +389,5 @@ GUI.CharEventsListLabel = Geyser.Label:new({
 
 GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
 setBackgroundColor("GUI.CharEventsListLabel", 0, 0, 0)
+-- setLinkStyle("GUI.CharEventsListLabel", "cyan", "blue", true) -- Uncomment after Mudlet 4.20 release
 GUI.CharEventsListLabel:echo("<table><tr><td><center><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">Click to load events...</font></center></td></tr></table>")
