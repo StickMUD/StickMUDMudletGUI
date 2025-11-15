@@ -146,8 +146,29 @@ local function getEventTypeName(eventType)
 end
 
 -- Helper function to check if event type is competitive collect
-local function isCompetitiveCollect(eventType)
-    return eventType == 3
+-- Also checks event_id as fallback when event_type is missing or 0
+local function isCompetitiveCollect(eventType, eventId)
+    if eventType == 3 then
+        return true
+    end
+    
+    -- Fallback: detect collection events by their event_id
+    -- when event_type is missing or unknown
+    if eventId then
+        local collectEventIds = {
+            "CAPTURETHECLOVER",
+            "CAPTURETHEFLAG",
+            "EASTEREGGHUNT",
+            "DELIVERTHEPACKAGE"
+        }
+        for _, collectId in ipairs(collectEventIds) do
+            if eventId == collectId then
+                return true
+            end
+        end
+    end
+    
+    return false
 end
 
 -- Helper function to get collection field name for an area
@@ -418,7 +439,7 @@ function CharEventsList()
                 if currentSessionData.points then
                     local pointsLabel = "Points"
                     -- For Competitive Collect events, points represent collected items
-                    if isCompetitiveCollect(eventData.event_type) then
+                    if isCompetitiveCollect(eventData.event_type, eventData.event_id) then
                         pointsLabel = "Items Collected"
                     end
                     eventsList = eventsList .. string.format(
@@ -450,7 +471,7 @@ function CharEventsList()
                             
                             -- For Kill events: show if bosses_total > 0 (available bosses to kill)
                             -- For Collect events: show all incomplete areas (where collection is possible)
-                            if isCompetitiveCollect(eventData.event_type) then
+                            if isCompetitiveCollect(eventData.event_type, eventData.event_id) then
                                 -- Collect events: show all areas that aren't completed
                                 -- (all areas are collectable until marked complete)
                                 table.insert(in_progress_areas, area)
@@ -470,7 +491,7 @@ function CharEventsList()
                     -- Show in-progress areas first (more important)
                     if #in_progress_areas > 0 then
                         -- Use event-type-specific label
-                        local inProgressLabel = isCompetitiveCollect(eventData.event_type) and "Collecting" or "In Progress"
+                        local inProgressLabel = isCompetitiveCollect(eventData.event_type, eventData.event_id) and "Collecting" or "In Progress"
                         eventsList = eventsList .. string.format(
                             "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ %s (%d):</font></td></tr>",
                             eventsCurrentFontSize, inProgressLabel, #in_progress_areas
