@@ -438,10 +438,12 @@ function CharEventsList()
                         if #in_progress_areas > 0 then
                             eventsList = eventsList .. "<tr><td width=\"100%\"><br></td></tr>"
                         end
+                        eventsList = eventsList .. "<tr><td width=\"100%\">"
                         eventsList = eventsList .. string.format(
                             "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font>",
                             eventsCurrentFontSize, #completed_areas
                         )
+                        eventsList = eventsList .. "</td></tr>"
                         for _, area in ipairs(completed_areas) do
                             eventsList = eventsList .. "<tr><td width=\"100%\">"
                             eventsList = eventsList .. string.format(
@@ -484,7 +486,7 @@ function CharEventsList()
         x = 0,
         y = "25px",
         width = "100%",
-        height = "400%"
+        height = "2000%"
     }, GUI.EventsScrollBox)
 
     GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
@@ -524,7 +526,7 @@ GUI.CharEventsListLabel = Geyser.Label:new({
     x = 0,
     y = "25px",
     width = "100%",
-    height = "400%"
+    height = "2000%"
 }, GUI.EventsScrollBox)
 
 GUI.CharEventsListLabel:setStyleSheet(getEventsListCSS(eventsCurrentFontSize):getCSS())
