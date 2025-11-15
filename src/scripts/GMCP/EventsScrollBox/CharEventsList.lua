@@ -282,14 +282,24 @@ function CharEventsList()
                                 "<td width=\"5%%\"></td><td><font size=\"%d\" color=\"gray\">%s</font></td>",
                                 eventsCurrentFontSize - 1, area.area_name
                             )
-                            if area.bosses_killed > 0 then
+                            -- Show boss counts
+                            local bosses_killed = area.bosses_killed or 0
+                            local bosses_total = area.bosses_total or 0
+                            if bosses_killed > 0 or bosses_total > 0 then
                                 eventsList = eventsList .. string.format(
-                                    "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d boss%s</font></td>",
-                                    eventsCurrentFontSize - 1, area.bosses_killed,
-                                    area.bosses_killed > 1 and "es" or ""
+                                    "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
+                                    eventsCurrentFontSize - 1, bosses_killed
+                                )
+                                eventsList = eventsList .. string.format(
+                                    "<td align=\"center\"><font size=\"%d\" color=\"gray\">/</font></td>",
+                                    eventsCurrentFontSize - 1
+                                )
+                                eventsList = eventsList .. string.format(
+                                    "<td align=\"left\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
+                                    eventsCurrentFontSize - 1, bosses_total
                                 )
                             else
-                                eventsList = eventsList .. "<td></td>"
+                                eventsList = eventsList .. "<td></td><td></td><td></td>"
                             end
                             eventsList = eventsList .. "</tr>"
                         end
@@ -312,9 +322,18 @@ function CharEventsList()
                                 "<td width=\"5%%\"></td><td><a href=\"send(goto %s)\"><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
+                            -- Show boss counts
                             eventsList = eventsList .. string.format(
-                                "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d/%d bosses</font></td>",
-                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
+                                "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
+                                eventsCurrentFontSize - 1, area.bosses_killed
+                            )
+                            eventsList = eventsList .. string.format(
+                                "<td align=\"center\"><font size=\"%d\" color=\"gray\">/</font></td>",
+                                eventsCurrentFontSize - 1
+                            )
+                            eventsList = eventsList .. string.format(
+                                "<td align=\"left\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
+                                eventsCurrentFontSize - 1, area.bosses_total
                             )
                             eventsList = eventsList .. "</tr>"
                         end
