@@ -367,6 +367,7 @@ function CharEventsList()
                         "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
                         eventsCurrentFontSize
                     )
+                    eventsList = eventsList .. "<br>"
                     
                     -- Count completed and in-progress areas
                     local completed_areas = {}
@@ -391,9 +392,11 @@ function CharEventsList()
                     
                     -- Show in-progress areas first (more important)
                     if #in_progress_areas > 0 then
+                        -- Use event-type-specific label
+                        local inProgressLabel = isCompetitiveCollect(eventData.event_type) and "Collecting" or "In Progress"
                         eventsList = eventsList .. string.format(
-                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font></td></tr>",
-                            eventsCurrentFontSize, #in_progress_areas
+                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">◐ %s (%d):</font></td></tr>",
+                            eventsCurrentFontSize, inProgressLabel, #in_progress_areas
                         )
                         for _, area in ipairs(in_progress_areas) do
                             eventsList = eventsList .. "<tr><td width=\"100%\">"
