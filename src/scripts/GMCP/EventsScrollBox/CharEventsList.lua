@@ -265,26 +265,35 @@ function CharEventsList()
                         end
                     end
                     
+                    -- Sort areas by name
+                    table.sort(completed_areas, function(a, b) return a.area_name < b.area_name end)
+                    table.sort(in_progress_areas, function(a, b) return a.area_name < b.area_name end)
+                    
                     -- Show completed areas
                     if #completed_areas > 0 then
                         eventsList = eventsList .. string.format(
                             "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
                             eventsCurrentFontSize, #completed_areas
                         )
+                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\">"
                         for _, area in ipairs(completed_areas) do
+                            eventsList = eventsList .. "<tr>"
                             eventsList = eventsList .. string.format(
-                                "<font size=\"%d\" color=\"gray\">  • %s</font>",
+                                "<td width=\"5%%\"></td><td><font size=\"%d\" color=\"gray\">%s</font></td>",
                                 eventsCurrentFontSize - 1, area.area_name
                             )
                             if area.bosses_killed > 0 then
                                 eventsList = eventsList .. string.format(
-                                    " <font size=\"%d\" color=\"yellow\">(%d boss%s)</font>",
+                                    "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d boss%s</font></td>",
                                     eventsCurrentFontSize - 1, area.bosses_killed,
                                     area.bosses_killed > 1 and "es" or ""
                                 )
+                            else
+                                eventsList = eventsList .. "<td></td>"
                             end
-                            eventsList = eventsList .. "<br>"
+                            eventsList = eventsList .. "</tr>"
                         end
+                        eventsList = eventsList .. "</table>"
                     end
                     
                     -- Show in-progress areas
@@ -296,13 +305,20 @@ function CharEventsList()
                             "<font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font><br>",
                             eventsCurrentFontSize, #in_progress_areas
                         )
+                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\">"
                         for _, area in ipairs(in_progress_areas) do
+                            eventsList = eventsList .. "<tr>"
                             eventsList = eventsList .. string.format(
-                                "<font size=\"%d\" color=\"gray\">  • %s: </font><font size=\"%d\" color=\"yellow\">%d/%d bosses</font><br>",
-                                eventsCurrentFontSize - 1, area.area_name,
+                                "<td width=\"5%%\"></td><td><a href=\"send(goto %s)\"><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
+                                area.area_name, eventsCurrentFontSize - 1, area.area_name
+                            )
+                            eventsList = eventsList .. string.format(
+                                "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d/%d bosses</font></td>",
                                 eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
                             )
+                            eventsList = eventsList .. "</tr>"
                         end
+                        eventsList = eventsList .. "</table>"
                     end
                 end
             end
