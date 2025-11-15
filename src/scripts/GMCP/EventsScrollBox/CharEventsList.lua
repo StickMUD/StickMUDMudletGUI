@@ -275,31 +275,24 @@ function CharEventsList()
                             "<font size=\"%d\" color=\"green\">✓ Completed (%d):</font><br>",
                             eventsCurrentFontSize, #completed_areas
                         )
-                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\">"
+                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">"
                         for _, area in ipairs(completed_areas) do
+                            local bosses_killed = area.bosses_killed or 0
+                            local bosses_total = area.bosses_total or 0
                             eventsList = eventsList .. "<tr>"
+                            eventsList = eventsList .. "<td width=\"3%\"></td>"
                             eventsList = eventsList .. string.format(
-                                "<td width=\"5%%\"></td><td><font size=\"%d\" color=\"gray\">%s</font></td>",
+                                "<td width=\"72%%\"><font size=\"%d\" color=\"gray\">%s</font></td>",
                                 eventsCurrentFontSize - 1, area.area_name
                             )
                             -- Show boss counts
-                            local bosses_killed = area.bosses_killed or 0
-                            local bosses_total = area.bosses_total or 0
                             if bosses_killed > 0 or bosses_total > 0 then
                                 eventsList = eventsList .. string.format(
-                                    "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
-                                    eventsCurrentFontSize - 1, bosses_killed
-                                )
-                                eventsList = eventsList .. string.format(
-                                    "<td align=\"center\"><font size=\"%d\" color=\"gray\">/</font></td>",
-                                    eventsCurrentFontSize - 1
-                                )
-                                eventsList = eventsList .. string.format(
-                                    "<td align=\"left\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
-                                    eventsCurrentFontSize - 1, bosses_total
+                                    "<td width=\"25%%\" align=\"right\"><font size=\"%d\" color=\"yellow\">%d / %d</font></td>",
+                                    eventsCurrentFontSize - 1, bosses_killed, bosses_total
                                 )
                             else
-                                eventsList = eventsList .. "<td></td><td></td><td></td>"
+                                eventsList = eventsList .. "<td width=\"25%\"></td>"
                             end
                             eventsList = eventsList .. "</tr>"
                         end
@@ -315,25 +308,17 @@ function CharEventsList()
                             "<font size=\"%d\" color=\"yellow\">◐ In Progress (%d):</font><br>",
                             eventsCurrentFontSize, #in_progress_areas
                         )
-                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\">"
+                        eventsList = eventsList .. "<table width=\"100%\" cellpadding=\"2\" cellspacing=\"0\">"
                         for _, area in ipairs(in_progress_areas) do
                             eventsList = eventsList .. "<tr>"
+                            eventsList = eventsList .. "<td width=\"3%\"></td>"
                             eventsList = eventsList .. string.format(
-                                "<td width=\"5%%\"></td><td><a href=\"send(goto %s)\"><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
+                                "<td width=\"72%%\"><a href='send([[goto %s]])'><font size=\"%d\" color=\"cyan\">%s</font></a></td>",
                                 area.area_name, eventsCurrentFontSize - 1, area.area_name
                             )
-                            -- Show boss counts
                             eventsList = eventsList .. string.format(
-                                "<td align=\"right\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
-                                eventsCurrentFontSize - 1, area.bosses_killed
-                            )
-                            eventsList = eventsList .. string.format(
-                                "<td align=\"center\"><font size=\"%d\" color=\"gray\">/</font></td>",
-                                eventsCurrentFontSize - 1
-                            )
-                            eventsList = eventsList .. string.format(
-                                "<td align=\"left\"><font size=\"%d\" color=\"yellow\">%d</font></td>",
-                                eventsCurrentFontSize - 1, area.bosses_total
+                                "<td width=\"25%%\" align=\"right\"><font size=\"%d\" color=\"yellow\">%d / %d</font></td>",
+                                eventsCurrentFontSize - 1, area.bosses_killed, area.bosses_total
                             )
                             eventsList = eventsList .. "</tr>"
                         end
