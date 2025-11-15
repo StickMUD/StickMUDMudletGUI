@@ -124,11 +124,11 @@ local function formatTimeRemaining(endTime)
     local seconds = remaining % 60
     
     if hours > 0 then
-        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">h</font> <font color=\"cyan\">%d</font><font color=\"white\">m</font> <font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", hours, minutes, seconds), false
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">h</font> <font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", hours, minutes, seconds), false
     elseif minutes > 0 then
-        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">m</font> <font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", minutes, seconds), false
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", minutes, seconds), false
     else
-        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", seconds), false
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", seconds), false
     end
 end
 
