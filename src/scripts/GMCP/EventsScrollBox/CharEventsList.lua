@@ -109,14 +109,14 @@ end
 local function formatTimeRemaining(endTime)
     -- If end_time is 0, the event has no end time (ongoing/permanent)
     if endTime == 0 then
-        return "<green>Ongoing</green>"
+        return "<font color=\"lime\">Ongoing</font>"
     end
     
     local now = os.time()
     local remaining = endTime - now
     
     if remaining <= 0 then
-        return "<red>Ended</red>", true  -- Return true to indicate event ended
+        return "<font color=\"red\">Ended</font>", true  -- Return true to indicate event ended
     end
     
     local hours = math.floor(remaining / 3600)
@@ -124,11 +124,11 @@ local function formatTimeRemaining(endTime)
     local seconds = remaining % 60
     
     if hours > 0 then
-        return string.format("<white>%d</white><yellow>h</yellow> <white>%d</white><yellow>m</yellow> <white>%d</white><yellow>s remaining</yellow>", hours, minutes, seconds), false
+        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">h</font> <font color=\"cyan\">%d</font><font color=\"white\">m</font> <font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", hours, minutes, seconds), false
     elseif minutes > 0 then
-        return string.format("<white>%d</white><yellow>m</yellow> <white>%d</white><yellow>s remaining</yellow>", minutes, seconds), false
+        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">m</font> <font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", minutes, seconds), false
     else
-        return string.format("<white>%d</white><yellow>s remaining</yellow>", seconds), false
+        return string.format("<font color=\"cyan\">%d</font><font color=\"white\">s remaining</font>", seconds), false
     end
 end
 
