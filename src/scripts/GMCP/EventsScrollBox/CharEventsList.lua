@@ -147,10 +147,10 @@ end
 
 -- Main function to display the events list
 function CharEventsList()
-    -- Clear visited link states when refreshing the events list
-    if GUI.CharEventsListLabel then
-        clearVisitedLinks("GUI.CharEventsListLabel")
-    end
+    -- Clear visited link states when refreshing the events list (available in Mudlet 4.20+)
+    --if GUI.CharEventsListLabel then
+    --    clearVisitedLinks("GUI.CharEventsListLabel")
+    --end
 
     -- Initialize the active events table if it doesn't exist
     activeEvents = activeEvents or {}
