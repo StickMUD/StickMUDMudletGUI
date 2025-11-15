@@ -367,7 +367,6 @@ function CharEventsList()
                         "<font size=\"%d\" color=\"white\"><b>Area Progress:</b></font><br>",
                         eventsCurrentFontSize
                     )
-                    eventsList = eventsList .. "<br>"
                     
                     -- Count completed and in-progress areas
                     local completed_areas = {}
@@ -377,11 +376,22 @@ function CharEventsList()
                         if area.completed == 1 then
                             table.insert(completed_areas, area)
                         else
-                            -- Check for any collection activity (works for both Kill and Collect events)
+                            -- Check for any collection activity
                             local collection_value = getCollectionFieldValue(area)
                             local total_value = area.bosses_total or 0
-                            if collection_value > 0 or total_value > 0 then
-                                table.insert(in_progress_areas, area)
+                            
+                            -- For Kill events: show if bosses_total > 0 (available bosses to kill)
+                            -- For Collect events: show if collection_value > 0 (items collected)
+                            if isCompetitiveCollect(eventData.event_type) then
+                                -- Collect events: only show areas where you've collected something
+                                if collection_value > 0 then
+                                    table.insert(in_progress_areas, area)
+                                end
+                            else
+                                -- Kill events: show areas with bosses to kill OR already started
+                                if total_value > 0 or collection_value > 0 then
+                                    table.insert(in_progress_areas, area)
+                                end
                             end
                         end
                     end
