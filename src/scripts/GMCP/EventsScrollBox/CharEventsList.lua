@@ -192,6 +192,44 @@ local function getCollectionFieldName(area)
     return nil, 0
 end
 
+-- Helper function to detect if area has kill event progress data
+local function hasKillEventData(area)
+    return area.has_werewolves ~= nil or area.werewolves_remaining ~= nil or area.werewolf_rank ~= nil
+end
+
+-- Helper function to get enemy name based on event_id
+local function getEnemyName(eventId, plural)
+    local enemies = {
+        WEREWOLFAPOC = plural and "wolves" or "wolf",
+        ZOMBIEAPOC = plural and "zombies" or "zombie",
+        TURKEYAPOC = plural and "turkeys" or "turkey",
+        TROOPERAPOC = plural and "troopers" or "trooper"
+    }
+    return enemies[eventId] or (plural and "enemies" or "enemy")
+end
+
+-- Helper function to get difficulty color for kill events
+local function getDifficultyColor(rank)
+    local colors = {
+        mini = "gray",
+        legendary = "yellow",
+        epic = "orange",
+        ultimate = "red"
+    }
+    return colors[rank] or "white"
+end
+
+-- Helper function to get difficulty rank value for sorting
+local function getDifficultyRank(rank)
+    local ranks = {
+        mini = 1,
+        legendary = 2,
+        epic = 3,
+        ultimate = 4
+    }
+    return ranks[rank] or 0
+end
+
 -- Main function to display the events list
 function CharEventsList()
     -- Clear visited link states when refreshing the events list (available in Mudlet 4.20+)
@@ -448,6 +486,25 @@ function CharEventsList()
                     )
                 end
                 
+                -- Display kill event summary stats
+                if currentSessionData.areas_total and currentSessionData.areas_cleared then
+                    local total = currentSessionData.areas_total
+                    local cleared = currentSessionData.areas_cleared
+                    local percent = total > 0 and math.floor((cleared / total) * 100) or 0
+                    
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Areas: </font><font size=\"%d\" color=\"yellow\">%d/%d</font><font size=\"%d\" color=\"gray\"> (%d%% cleared)</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, cleared, total, eventsCurrentFontSize, percent
+                    )
+                end
+                
+                if currentSessionData.areas_with_werewolves and currentSessionData.areas_with_werewolves > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Active Combat: </font><font size=\"%d\" color=\"yellow\">%d areas</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.areas_with_werewolves
+                    )
+                end
+                
                 -- Display detailed area progress if available
                 if currentSessionData.progress and type(currentSessionData.progress) == "table" then
                     eventsList = eventsList .. "<br>"
@@ -460,36 +517,97 @@ function CharEventsList()
                     -- Count completed and in-progress areas
                     local completed_areas = {}
                     local in_progress_areas = {}
+                    local active_combat_areas = {}
+                    local cleared_areas = {}
+                    local available_areas = {}
+                    
+                    -- Detect if this is a kill event with new progress data
+                    local isKillEvent = currentSessionData.progress[1] and hasKillEventData(currentSessionData.progress[1])
                     
                     for _, area in ipairs(currentSessionData.progress) do
-                        if area.completed == 1 then
-                            table.insert(completed_areas, area)
+                        if isKillEvent then
+                            -- New kill event data structure
+                            if area.cleared == 1 then
+                                -- Area fully cleared - all enemies dead
+                                table.insert(cleared_areas, area)
+                            elseif area.has_werewolves == 1 and (area.werewolves_remaining or 0) > 0 then
+                                -- Area has active enemies to fight
+                                table.insert(active_combat_areas, area)
+                            elseif area.has_werewolves == 1 and (area.werewolves_remaining or 0) == 0 then
+                                -- Area announced but all enemies killed (transitioning to cleared)
+                                table.insert(cleared_areas, area)
+                            end
                         else
-                            -- Check for any collection activity
-                            local collection_value = getCollectionFieldValue(area)
-                            local total_value = area.bosses_total or 0
-                            
-                            -- For Kill events: show if bosses_total > 0 (available bosses to kill)
-                            -- For Collect events: show all incomplete areas (where collection is possible)
-                            if isCompetitiveCollect(eventData.event_type, eventData.event_id) then
-                                -- Collect events: show all areas that aren't completed
-                                -- (all areas are collectable until marked complete)
-                                table.insert(in_progress_areas, area)
+                            -- Legacy collection/kill event data structure
+                            if area.completed == 1 then
+                                table.insert(completed_areas, area)
                             else
-                                -- Kill events: show areas with bosses to kill OR already started
-                                if total_value > 0 or collection_value > 0 then
+                                -- Check for any collection activity
+                                local collection_value = getCollectionFieldValue(area)
+                                local total_value = area.bosses_total or 0
+                                
+                                -- For Kill events: show if bosses_total > 0 (available bosses to kill)
+                                -- For Collect events: show all incomplete areas (where collection is possible)
+                                if isCompetitiveCollect(eventData.event_type, eventData.event_id) then
+                                    -- Collect events: show all areas that aren't completed
+                                    -- (all areas are collectable until marked complete)
                                     table.insert(in_progress_areas, area)
+                                else
+                                    -- Kill events: show areas with bosses to kill OR already started
+                                    if total_value > 0 or collection_value > 0 then
+                                        table.insert(in_progress_areas, area)
+                                    end
                                 end
                             end
                         end
                     end
                     
-                    -- Sort areas by name
-                    table.sort(completed_areas, function(a, b) return a.area_name < b.area_name end)
-                    table.sort(in_progress_areas, function(a, b) return a.area_name < b.area_name end)
+                    -- Sort areas
+                    if isKillEvent then
+                        -- Sort active combat by difficulty (ultimate first) then alphabetically
+                        table.sort(active_combat_areas, function(a, b)
+                            local rankA = getDifficultyRank(a.werewolf_rank)
+                            local rankB = getDifficultyRank(b.werewolf_rank)
+                            if rankA ~= rankB then
+                                return rankA > rankB  -- Higher difficulty first
+                            end
+                            return a.area_name < b.area_name
+                        end)
+                        table.sort(cleared_areas, function(a, b) return a.area_name < b.area_name end)
+                    else
+                        -- Sort legacy areas by name
+                        table.sort(completed_areas, function(a, b) return a.area_name < b.area_name end)
+                        table.sort(in_progress_areas, function(a, b) return a.area_name < b.area_name end)
+                    end
                     
-                    -- Show in-progress areas first (more important)
-                    if #in_progress_areas > 0 then
+                    -- Show active combat areas for kill events
+                    if isKillEvent and #active_combat_areas > 0 then
+                        local enemyName = getEnemyName(eventData.event_id, true)
+                        eventsList = eventsList .. string.format(
+                            "<tr><td width=\"100%%\"><font size=\"%d\" color=\"yellow\">⚔️ Active Combat (%d):</font></td></tr>",
+                            eventsCurrentFontSize, #active_combat_areas
+                        )
+                        for _, area in ipairs(active_combat_areas) do
+                            local remaining = area.werewolves_remaining or 0
+                            local rank = area.werewolf_rank or ""
+                            local rankColor = getDifficultyColor(rank)
+                            local rankText = rank ~= "" and rank .. " " or ""
+                            
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
+                            eventsList = eventsList .. string.format(
+                                "  <a href=\"send:goto %s\"><font size=\"%d\">%s</font></a>",
+                                area.area_name, eventsCurrentFontSize - 1, area.area_name
+                            )
+                            eventsList = eventsList .. string.format(
+                                " <font size=\"%d\" color=\"%s\">(%d %s%s)</font>",
+                                eventsCurrentFontSize - 1, rankColor, remaining, rankText, enemyName
+                            )
+                            eventsList = eventsList .. "</td></tr>"
+                        end
+                    end
+                    
+                    -- Show in-progress areas first (more important) - legacy format
+                    if not isKillEvent and #in_progress_areas > 0 then
                         -- Use event-type-specific label
                         local inProgressLabel = isCompetitiveCollect(eventData.event_type, eventData.event_id) and "Collecting" or "In Progress"
                         eventsList = eventsList .. string.format(
@@ -545,8 +663,29 @@ function CharEventsList()
                         end
                     end
                     
-                    -- Show completed areas below in-progress
-                    if #completed_areas > 0 then
+                    -- Show cleared areas for kill events
+                    if isKillEvent and #cleared_areas > 0 then
+                        if #active_combat_areas > 0 then
+                            eventsList = eventsList .. "<tr><td width=\"100%\">&nbsp;</td></tr>"
+                        end
+                        eventsList = eventsList .. "<tr><td width=\"100%\">"
+                        eventsList = eventsList .. string.format(
+                            "<font size=\"%d\" color=\"green\">✓ Cleared (%d):</font>",
+                            eventsCurrentFontSize, #cleared_areas
+                        )
+                        eventsList = eventsList .. "</td></tr>"
+                        for _, area in ipairs(cleared_areas) do
+                            eventsList = eventsList .. "<tr><td width=\"100%\">"
+                            eventsList = eventsList .. string.format(
+                                "<font size=\"%d\" color=\"gray\">  %s</font>",
+                                eventsCurrentFontSize - 1, area.area_name
+                            )
+                            eventsList = eventsList .. "</td></tr>"
+                        end
+                    end
+                    
+                    -- Show completed areas below in-progress - legacy format
+                    if not isKillEvent and #completed_areas > 0 then
                         if #in_progress_areas > 0 then
                             eventsList = eventsList .. "<tr><td width=\"100%\">&nbsp;</td></tr>"
                         end
