@@ -519,6 +519,7 @@ function CharEventsList()
                     local in_progress_areas = {}
                     local active_combat_areas = {}
                     local cleared_areas = {}
+                    local available_areas = {}
                     
                     -- Detect if this is a kill event with new progress data
                     local isKillEvent = currentSessionData.progress[1] and hasKillEventData(currentSessionData.progress[1])
@@ -527,9 +528,14 @@ function CharEventsList()
                         if isKillEvent then
                             -- New kill event data structure
                             if area.cleared == 1 then
+                                -- Area fully cleared - all enemies dead
                                 table.insert(cleared_areas, area)
                             elseif area.has_werewolves == 1 and (area.werewolves_remaining or 0) > 0 then
+                                -- Area has active enemies to fight
                                 table.insert(active_combat_areas, area)
+                            elseif area.has_werewolves == 1 and (area.werewolves_remaining or 0) == 0 then
+                                -- Area announced but all enemies killed (transitioning to cleared)
+                                table.insert(cleared_areas, area)
                             end
                         else
                             -- Legacy collection/kill event data structure
