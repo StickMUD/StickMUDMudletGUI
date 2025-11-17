@@ -132,6 +132,35 @@ local function formatTimeRemaining(endTime)
     end
 end
 
+-- Helper function to format time until event starts
+local function formatTimeUntilStart(startTime)
+    if not startTime or startTime == 0 then
+        return "<font color=\"gray\">Unknown</font>"
+    end
+    
+    local now = os.time()
+    local remaining = startTime - now
+    
+    if remaining <= 0 then
+        return "<font color=\"lime\">Starting now!</font>"
+    end
+    
+    local days = math.floor(remaining / 86400)
+    local hours = math.floor((remaining % 86400) / 3600)
+    local minutes = math.floor((remaining % 3600) / 60)
+    local seconds = remaining % 60
+    
+    if days > 0 then
+        return string.format("<font color=\"cyan\">Starts in</font> <font color=\"yellow\">%dd</font> <font color=\"yellow\">%dh</font> <font color=\"yellow\">%dm</font>", days, hours, minutes)
+    elseif hours > 0 then
+        return string.format("<font color=\"cyan\">Starts in</font> <font color=\"yellow\">%dh</font> <font color=\"yellow\">%dm</font> <font color=\"yellow\">%ds</font>", hours, minutes, seconds)
+    elseif minutes > 0 then
+        return string.format("<font color=\"cyan\">Starts in</font> <font color=\"yellow\">%dm</font> <font color=\"yellow\">%ds</font>", minutes, seconds)
+    else
+        return string.format("<font color=\"cyan\">Starts in</font> <font color=\"yellow\">%ds</font>", seconds)
+    end
+end
+
 -- Helper function to get event type name
 local function getEventTypeName(eventType)
     local types = {
@@ -753,6 +782,73 @@ function CharEventsList()
         end
     end
 
+    -- Display upcoming events if any exist
+    upcomingEvents = upcomingEvents or {}
+    
+    -- Also refresh from GMCP data if available
+    if gmcp and gmcp.Game and gmcp.Game.Events and gmcp.Game.Events.Upcoming and type(gmcp.Game.Events.Upcoming) == "table" then
+        upcomingEvents = {}
+        for _, event_data in ipairs(gmcp.Game.Events.Upcoming) do
+            if event_data.event_id then
+                table.insert(upcomingEvents, {
+                    event_id = event_data.event_id,
+                    event_name = event_data.event_name,
+                    event_type = event_data.event_type,
+                    start_time = event_data.start_time,
+                    end_time = event_data.end_time,
+                    description = event_data.description
+                })
+            end
+        end
+        
+        -- Sort by start_time in ascending order
+        table.sort(upcomingEvents, function(a, b)
+            return a.start_time < b.start_time
+        end)
+    end
+    
+    if #upcomingEvents > 0 then
+        -- Display each upcoming event
+        for _, eventData in ipairs(upcomingEvents) do
+            eventsList = eventsList .. "<tr><td>"
+            
+            -- Event name
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\" color=\"white\"><b>%s</b></font><br>",
+                eventsCurrentFontSize + 1,
+                eventData.event_name
+            )
+            
+            -- Event type
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\" color=\"gray\">Type: </font><font size=\"%d\" color=\"cyan\">%s</font><br>",
+                eventsCurrentFontSize,
+                eventsCurrentFontSize,
+                getEventTypeName(eventData.event_type)
+            )
+            
+            -- Time until start
+            local timeUntilStartText = formatTimeUntilStart(eventData.start_time)
+            eventsList = eventsList .. string.format(
+                "<font size=\"%d\">%s</font><br>",
+                eventsCurrentFontSize,
+                timeUntilStartText
+            )
+            
+            -- Description if available
+            if eventData.description and eventData.description ~= "" then
+                eventsList = eventsList .. string.format(
+                    "<font size=\"%d\" color=\"gray\">%s</font><br>",
+                    eventsCurrentFontSize - 1,
+                    eventData.description
+                )
+            end
+            
+            eventsList = eventsList .. "<br><font size=\"" .. eventsCurrentFontSize .. "\" color=\"gray\">" .. string.rep("─", 50) .. "</font><br>"
+            eventsList = eventsList .. "</td></tr>"
+        end
+    end
+
     eventsList = eventsList .. "</table>"
 
     -- Display the events list in the GUI
@@ -775,13 +871,18 @@ function CharEventsList()
         eventsCountdownTimer = nil
     end
     
-    -- Check if we need a countdown timer (any active event with non-zero end_time)
+    -- Check if we need a countdown timer (any active event with non-zero end_time or any upcoming events)
     local needsCountdown = false
     for _, eventData in pairs(activeEvents) do
         if eventData.end_time and eventData.end_time > 0 and eventData.end_time > os.time() then
             needsCountdown = true
             break
         end
+    end
+    
+    -- Also check if there are upcoming events
+    if not needsCountdown and upcomingEvents and #upcomingEvents > 0 then
+        needsCountdown = true
     end
     
     -- Start a timer to update the countdown every second

@@ -29,6 +29,15 @@
        {
               "isActive": "yes",
               "isFolder": "no",
+              "name": "GameEventsUpcoming",
+              "eventHandlerList": [
+                     "gmcp.Game.Events.Upcoming"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
               "name": "CharEventsSession",
               "eventHandlerList": [
                      "gmcp.Char.Events.Session"
