@@ -675,6 +675,11 @@ function CharEventsList()
                                     table.insert(details, area.egg_type .. " egg")
                                 end
                                 
+                                -- Capture the Flag: flag_color field (string)
+                                if area.flag_color and area.flag_color ~= 0 and area.flag_color ~= "" then
+                                    table.insert(details, area.flag_color .. " flag")
+                                end
+                                
                                 -- Deliver the Package: package_type and to_npc fields
                                 if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
                                     local package_desc = area.package_type .. " package"
@@ -756,6 +761,11 @@ function CharEventsList()
                                 -- Easter Egg Hunt: egg_type field (string or 0)
                                 if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
                                     table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Capture the Flag: flag_color field (string)
+                                if area.flag_color and area.flag_color ~= 0 and area.flag_color ~= "" then
+                                    table.insert(details, area.flag_color .. " flag")
                                 end
                                 
                                 -- Deliver the Package: package_type and to_npc fields
