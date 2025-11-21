@@ -209,6 +209,7 @@ local function getCollectionFieldValue(area)
     return area.clovers_captured 
         or area.packages_delivered 
         or area.eggs_found 
+        or area.flags_captured 
         or area.mascots_killed 
         or area.bosses_killed 
         or 0
@@ -219,6 +220,7 @@ local function getCollectionFieldName(area)
     if area.clovers_captured then return "clovers", area.clovers_captured end
     if area.packages_delivered then return "packages", area.packages_delivered end
     if area.eggs_found then return "eggs", area.eggs_found end
+    if area.flags_captured then return "flags", area.flags_captured end
     if area.mascots_killed then return "mascots", area.mascots_killed end
     if area.bosses_killed then return "bosses", area.bosses_killed end
     return nil, 0
@@ -503,6 +505,28 @@ function CharEventsList()
                     eventsList = eventsList .. string.format(
                         "<font size=\"%d\" color=\"gray\">Four Leaf Clovers: </font><font size=\"%d\" color=\"green\">%d</font><br>",
                         eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.four_leaf_clovers
+                    )
+                end
+                
+                -- Display flag-specific fields
+                if currentSessionData.white_flags then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">White Flags: </font><font size=\"%d\" color=\"white\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.white_flags
+                    )
+                end
+                
+                if currentSessionData.blue_flags and currentSessionData.blue_flags > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Blue Flags: </font><font size=\"%d\" color=\"cyan\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.blue_flags
+                    )
+                end
+                
+                if currentSessionData.red_flags and currentSessionData.red_flags > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Red Flags: </font><font size=\"%d\" color=\"red\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.red_flags
                     )
                 end
                 
