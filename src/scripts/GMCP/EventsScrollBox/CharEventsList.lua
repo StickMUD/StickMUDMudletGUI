@@ -209,6 +209,7 @@ local function getCollectionFieldValue(area)
     return area.clovers_captured 
         or area.packages_delivered 
         or area.eggs_found 
+        or area.flags_captured 
         or area.mascots_killed 
         or area.bosses_killed 
         or 0
@@ -219,6 +220,7 @@ local function getCollectionFieldName(area)
     if area.clovers_captured then return "clovers", area.clovers_captured end
     if area.packages_delivered then return "packages", area.packages_delivered end
     if area.eggs_found then return "eggs", area.eggs_found end
+    if area.flags_captured then return "flags", area.flags_captured end
     if area.mascots_killed then return "mascots", area.mascots_killed end
     if area.bosses_killed then return "bosses", area.bosses_killed end
     return nil, 0
@@ -506,6 +508,28 @@ function CharEventsList()
                     )
                 end
                 
+                -- Display flag-specific fields
+                if currentSessionData.white_flags then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">White Flags: </font><font size=\"%d\" color=\"white\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.white_flags
+                    )
+                end
+                
+                if currentSessionData.blue_flags and currentSessionData.blue_flags > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Blue Flags: </font><font size=\"%d\" color=\"cyan\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.blue_flags
+                    )
+                end
+                
+                if currentSessionData.red_flags and currentSessionData.red_flags > 0 then
+                    eventsList = eventsList .. string.format(
+                        "<font size=\"%d\" color=\"gray\">Red Flags: </font><font size=\"%d\" color=\"red\">%d</font><br>",
+                        eventsCurrentFontSize, eventsCurrentFontSize, currentSessionData.red_flags
+                    )
+                end
+                
                 if currentSessionData.points then
                     local pointsLabel = "Points"
                     -- For Competitive Collect events, points represent collected items
@@ -675,6 +699,11 @@ function CharEventsList()
                                     table.insert(details, area.egg_type .. " egg")
                                 end
                                 
+                                -- Capture the Flag: flag_color field (string)
+                                if area.flag_color and area.flag_color ~= 0 and area.flag_color ~= "" then
+                                    table.insert(details, area.flag_color .. " flag")
+                                end
+                                
                                 -- Deliver the Package: package_type and to_npc fields
                                 if area.package_type and area.package_type ~= 0 and area.package_type ~= "" then
                                     local package_desc = area.package_type .. " package"
@@ -756,6 +785,11 @@ function CharEventsList()
                                 -- Easter Egg Hunt: egg_type field (string or 0)
                                 if area.egg_type and area.egg_type ~= 0 and area.egg_type ~= "" then
                                     table.insert(details, area.egg_type .. " egg")
+                                end
+                                
+                                -- Capture the Flag: flag_color field (string)
+                                if area.flag_color and area.flag_color ~= 0 and area.flag_color ~= "" then
+                                    table.insert(details, area.flag_color .. " flag")
                                 end
                                 
                                 -- Deliver the Package: package_type and to_npc fields
