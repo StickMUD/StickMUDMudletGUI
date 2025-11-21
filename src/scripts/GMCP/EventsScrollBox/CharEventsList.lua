@@ -119,11 +119,14 @@ local function formatTimeRemaining(endTime)
         return "<font color=\"red\">Ended</font>", true  -- Return true to indicate event ended
     end
     
-    local hours = math.floor(remaining / 3600)
+    local days = math.floor(remaining / 86400)
+    local hours = math.floor((remaining % 86400) / 3600)
     local minutes = math.floor((remaining % 3600) / 60)
     local seconds = remaining % 60
     
-    if hours > 0 then
+    if days > 0 then
+        return string.format("<font color=\"yellow\">%d</font><font color=\"white\">d</font> <font color=\"yellow\">%d</font><font color=\"white\">h</font> <font color=\"yellow\">%d</font><font color=\"white\">m remaining</font>", days, hours, minutes), false
+    elseif hours > 0 then
         return string.format("<font color=\"yellow\">%d</font><font color=\"white\">h</font> <font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", hours, minutes, seconds), false
     elseif minutes > 0 then
         return string.format("<font color=\"yellow\">%d</font><font color=\"white\">m</font> <font color=\"yellow\">%d</font><font color=\"white\">s remaining</font>", minutes, seconds), false
