@@ -1,8 +1,34 @@
--- Define CSS for Game Players List
-GUI.GamePlayersListCSS = CSSMan.new([[
-	qproperty-wordWrap: true;
-	qproperty-alignment: 'AlignTop';
-]])
+-- Store player row labels
+GUI.GamePlayersListRows = GUI.GamePlayersListRows or {}
+
+-- Create background container if it doesn't exist
+if not GUI.PlayersListContainer then
+    GUI.PlayersListContainer = Geyser.Label:new({
+        name = "GUI.PlayersListContainer",
+        x = 0, y = 0,
+        width = "100%", height = "100%"
+    }, GUI.PlayersScrollBox)
+    GUI.PlayersListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+end
+
+-- Hover event handlers
+function GamePlayersRowHoverEnter(index)
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(40,40,40,255);
+        ]])
+    end
+end
+
+function GamePlayersRowHoverLeave(index)
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(0,0,0,255);
+        ]])
+    end
+end
 
 -- Check if a value is a number
 local function isNumber(value) return type(value) == 'number' end
@@ -39,39 +65,98 @@ local function getGuildImagePath(guild, gender)
     return basePath .. (images[guild] or images.default)
 end
 
--- Generate player entry HTML
-local function generatePlayerEntry(player)
-    local entry = string.format(
-        "<tr><td width=\"20%%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src=\"%s\"></font></td>" ..
+-- Generate player row HTML content
+local function generatePlayerRowContent(player)
+    local content = string.format(
+        "<table width=\"100%%\"><tr><td width=\"20%%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src=\"%s\"></font></td>" ..
         "<td width=\"80%%\" valign=\"center\" align=\"left\"><font size=\"4\">%s</font>",
         getGuildImagePath(player.guild, player.gender), firstToUpper(player.name)
     )
-    entry = entry .. string.format(
+    content = content .. string.format(
         "<br><font size=\"3\" color=\"silver\">%s %s - Level %d</font>",
         firstToUpper(player.race), player.guild, player.level
     )
     if player.exprate_hour > 0 then
-        entry = entry .. string.format(
+        content = content .. string.format(
             "<br><font size=\"3\" color=\"orange\"><i>%s/h exp</i></font>",
             readableNumber(player.exprate_hour)
         )
     end
-    return entry .. "</td></tr>"
+    return content .. "</td></tr></table>"
 end
 
--- Create the Game Players List HTML
+-- Create or update a player row label
+local function createPlayerRow(index, yPos, player)
+    local rowName = "GUI.GamePlayersRow_" .. index
+    local rowHeight = player.exprate_hour > 0 and 55 or 43
+    
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
+        GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
+        GUI.GamePlayersListRows[index]:echo(generatePlayerRowContent(player))
+        GUI.GamePlayersListRows[index]:echo(content)
+    else
+        GUI.GamePlayersListRows[index] = Geyser.Label:new({
+            name = rowName,
+            x = 0, y = yPos .. "px",
+            width = "100%", height = rowHeight .. "px"
+        }, GUI.PlayersListContainer)
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(0,0,0,255);
+        ]])
+        GUI.GamePlayersListRows[index]:echo(generatePlayerRowContent(player))
+        
+        -- Add hover effect
+        GUI.GamePlayersListRows[index]:setOnEnter("GamePlayersRowHoverEnter", index)
+        GUI.GamePlayersListRows[index]:setOnLeave("GamePlayersRowHoverLeave", index)
+    end
+    
+    return rowHeight
+end
+
+-- Create or update a section header label
+local function createSectionHeader(index, yPos, title)
+    local rowName = "GUI.GamePlayersRow_" .. index
+    local rowHeight = 25
+    local content = string.format("<font size=\"3\" color=\"gray\">%s</font>", title)
+    
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
+        GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
+        GUI.GamePlayersListRows[index]:echo(content)
+    else
+        GUI.GamePlayersListRows[index] = Geyser.Label:new({
+            name = rowName,
+            x = 0, y = yPos .. "px",
+            width = "100%", height = rowHeight .. "px"
+        }, GUI.PlayersListContainer)
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(0,0,0,255);
+        ]])
+        GUI.GamePlayersListRows[index]:echo(content)
+    end
+    
+    return rowHeight
+end
+
+-- Create the Game Players List using individual labels
 function GamePlayersList()
-    local gamePlayersList = "<table>"
     local game_players_list = gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List or {}
+    local yPos = 0
+    local rowIndex = 1
 
     -- Immortals Section
     local coders = table.n_filter(game_players_list, filterByCoder)
     if #coders > 0 then
         table.sort(coders, function(a, b) return a.coder > b.coder end)
-        gamePlayersList = gamePlayersList ..
-            string.format("<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">IMMORTALS - %d</font></td></tr>", #coders)
+        yPos = yPos + createSectionHeader(rowIndex, yPos, string.format("IMMORTALS - %d", #coders))
+        rowIndex = rowIndex + 1
+        
         for _, player in ipairs(coders) do
-            gamePlayersList = gamePlayersList .. generatePlayerEntry(player)
+            yPos = yPos + createPlayerRow(rowIndex, yPos, player)
+            rowIndex = rowIndex + 1
         end
     end
 
@@ -79,26 +164,20 @@ function GamePlayersList()
     local players = table.n_filter(game_players_list, filterByPlayer)
     if #players > 0 then
         table.sort(players, function(a, b) return a.level > b.level end)
-        gamePlayersList = gamePlayersList ..
-            string.format("<tr><td colspan=\"2\"><font size=\"3\" color=\"gray\">PLAYERS - %d</font></td></tr>", #players)
+        yPos = yPos + createSectionHeader(rowIndex, yPos, string.format("PLAYERS - %d", #players))
+        rowIndex = rowIndex + 1
+        
         for _, player in ipairs(players) do
-            gamePlayersList = gamePlayersList .. generatePlayerEntry(player)
+            yPos = yPos + createPlayerRow(rowIndex, yPos, player)
+            rowIndex = rowIndex + 1
         end
     end
-
-    gamePlayersList = gamePlayersList .. "</table>"
-
-    -- Display the player list in the GUI
-    if GUI.GamePlayersListLabel then
-        GUI.GamePlayersListLabel:echo(gamePlayersList)
-    else
-        GUI.GamePlayersListLabel = Geyser.Label:new({
-            name = "GUI.GamePlayersListLabel",
-            x = 0, y = 0, width = "100%", height = "400%"
-        }, GUI.PlayersScrollBox)
-        GUI.GamePlayersListLabel:setStyleSheet(GUI.GamePlayersListCSS:getCSS())
-        setBackgroundColor("GUI.GamePlayersListLabel", 0, 0, 0)
-        GUI.GamePlayersListLabel:echo(gamePlayersList)
+    
+    -- Hide any unused row labels from previous renders
+    for i = rowIndex, #GUI.GamePlayersListRows do
+        if GUI.GamePlayersListRows[i] then
+            GUI.GamePlayersListRows[i]:hide()
+        end
     end
 end
 
