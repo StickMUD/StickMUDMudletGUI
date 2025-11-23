@@ -94,7 +94,7 @@ local function createPlayerRow(index, yPos, player)
         GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
         GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
         GUI.GamePlayersListRows[index]:echo(generatePlayerRowContent(player))
-        GUI.GamePlayersListRows[index]:echo(content)
+        GUI.GamePlayersListRows[index]:show()
     else
         GUI.GamePlayersListRows[index] = Geyser.Label:new({
             name = rowName,
