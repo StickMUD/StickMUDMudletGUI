@@ -125,6 +125,7 @@ local function createSectionHeader(index, yPos, title)
         GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
         GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
         GUI.GamePlayersListRows[index]:echo(content)
+        GUI.GamePlayersListRows[index]:show()
     else
         GUI.GamePlayersListRows[index] = Geyser.Label:new({
             name = rowName,
