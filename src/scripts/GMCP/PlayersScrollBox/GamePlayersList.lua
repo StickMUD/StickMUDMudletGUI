@@ -54,7 +54,6 @@ function ShowPlayerDetailPopup(index, player)
     local popupHeight = 150
     
     -- Calculate position relative to GUI.Right
-    -- MenuBox is at x="50%" within GUI.Right, so popup goes to the left of that
     local rightX = GUI.Right:get_x()
     local rightY = GUI.Right:get_y()
     local menuBoxX = GUI.MenuBox:get_x()
@@ -62,15 +61,18 @@ function ShowPlayerDetailPopup(index, player)
     -- Position popup to the left of MenuBox, relative to GUI.Right
     local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
     
-    -- Position vertically near the clicked row, relative to GUI.Right
-    local rowY = GUI.GamePlayersListRows[index] and GUI.GamePlayersListRows[index]:get_y() or GUI.MenuBox:get_y()
+    -- Align popup top with the clicked row's top
+    local rowY = GUI.GamePlayersListRows[index]:get_y()
     local popupY = rowY - rightY
     
-    -- Constrain to stay within GUI.Right bounds
-    local menuBoxRelativeY = GUI.MenuBox:get_y() - rightY
-    local menuBoxBottom = menuBoxRelativeY + GUI.MenuBox:get_height()
-    popupY = math.max(popupY, menuBoxRelativeY)  -- Don't go above MenuBox
-    popupY = math.min(popupY, menuBoxBottom - popupHeight)  -- Don't go below MenuBox
+    -- Check if popup would extend beyond PlayersListContainer bottom
+    local containerBottom = GUI.PlayersListContainer:get_y() + GUI.PlayersListContainer:get_height()
+    local popupBottom = rowY + popupHeight
+    
+    if popupBottom > containerBottom then
+        -- Adjust so popup bottom aligns with container bottom
+        popupY = (containerBottom - rightY) - popupHeight
+    end
     
     GUI.PlayerDetailPopup = Geyser.Label:new({
         name = "GUI.PlayerDetailPopup",
