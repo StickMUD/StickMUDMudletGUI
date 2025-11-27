@@ -20,74 +20,80 @@ function GamePlayersInfo()
     end
     
     -- Height calculation constants
-    local avatarHeight = 64      -- Avatar image
-    local topPadding = 10        -- Padding above avatar
-    local avatarMargin = 8       -- Space between avatar and text
-    local nameLineHeight = 20    -- Name (font size 4)
-    local infoLineHeight = 16    -- Info lines (font size 3)
-    local smallLineHeight = 14   -- Small lines (font size 2)
-    local bottomPadding = 12     -- Padding at bottom
+    local avatarHeight = 74      -- Avatar row (64px image + padding)
+    local nameLineHeight = 24    -- Name (font size 4)
+    local infoLineHeight = 18    -- Info lines (font size 3)
+    local smallLineHeight = 16   -- Small lines (font size 2)
+    local padding = 8            -- Top/bottom padding
     
-    -- Start with base elements: avatar + name + race/guild/level line
-    local totalHeight = topPadding + avatarHeight + avatarMargin + nameLineHeight + infoLineHeight
+    -- Build list of content rows to determine height
+    local rows = {}
     
-    -- Add height for each optional field
-    if info.alignment then totalHeight = totalHeight + infoLineHeight end
-    if info.age then totalHeight = totalHeight + infoLineHeight end
-    if info.clan_name then totalHeight = totalHeight + infoLineHeight end
-    if info.noble_title then totalHeight = totalHeight + infoLineHeight end
-    if info.deity then totalHeight = totalHeight + infoLineHeight end
-    if info.top_rankings and next(info.top_rankings) then 
-        totalHeight = totalHeight + smallLineHeight 
-    end
+    -- Avatar row
+    table.insert(rows, {
+        height = avatarHeight,
+        content = string.format(
+            [[<center><img src="%s" width="64" height="64"></center>]],
+            getGuildImagePath(info.guild, info.gender)
+        )
+    })
     
-    totalHeight = totalHeight + bottomPadding
+    -- Name row
+    table.insert(rows, {
+        height = nameLineHeight,
+        content = string.format(
+            [[<center><font size="4" color="white"><b>%s</b></font></center>]],
+            firstToUpper(info.name)
+        )
+    })
     
-    GUI.PlayerDetailPopup:resize(nil, totalHeight)
+    -- Race/Guild/Level row
+    table.insert(rows, {
+        height = infoLineHeight,
+        content = string.format(
+            [[<center><font size="3" color="silver">%s %s - Level %d</font></center>]],
+            firstToUpper(info.race),
+            firstToUpper(info.guild),
+            info.level
+        )
+    })
     
-    -- Build the popup content with additional details
-    local popupContent = string.format([[
-        <table width="100%%" height="100%%">
-            <tr>
-                <td colspan="2" valign="middle" align="center">
-                    <img src="%s" width="64" height="64">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" valign="top" align="center">
-                    <font size="4" color="white"><b>%s</b></font>
-                    <br><font size="3" color="silver">%s %s - Level %d</font>
-    ]], getGuildImagePath(info.guild, info.gender),
-        firstToUpper(info.name),
-        firstToUpper(info.race),
-        firstToUpper(info.guild),
-        info.level)
-    
-    -- Add alignment if present
+    -- Alignment row
     if info.alignment then
-        popupContent = popupContent .. string.format(
-            [[<br><font size="3" color="gray">%s</font>]],
-            firstToUpper(info.alignment)
-        )
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center><font size="3" color="gray">%s</font></center>]],
+                firstToUpper(info.alignment)
+            )
+        })
     end
     
-    -- Add age if present
+    -- Age row
     if info.age then
-        popupContent = popupContent .. string.format(
-            [[<br><font size="3" color="gray">Age: %s</font>]],
-            info.age
-        )
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center><font size="3" color="gray">Age: %s</font></center>]],
+                info.age
+            )
+        })
     end
     
-    -- Add clan info if present
+    -- Clan row (clickable link)
     if info.clan_name then
-        popupContent = popupContent .. string.format(
-            [[<br><font size="3" color="cyan">%s</font>]],
-            info.clan_name
-        )
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center><a href="send:clan members %s"><font size="3" color="cyan">%s</font></a></center>]],
+                info.clan,
+                info.clan_name
+            ),
+            linkStyle = {"cyan", "cyan", false}
+        })
     end
     
-    -- Add noble title and kingdom if present
+    -- Noble title row
     if info.noble_title then
         local kingdomText = ""
         if info.kingdom then
@@ -97,22 +103,28 @@ function GamePlayersInfo()
                 kingdomText = " of " .. firstToUpper(info.kingdom)
             end
         end
-        popupContent = popupContent .. string.format(
-            [[<br><font size="3" color="gold">%s%s</font>]],
-            info.noble_title,
-            kingdomText
-        )
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center><font size="3" color="gold">%s%s</font></center>]],
+                info.noble_title,
+                kingdomText
+            )
+        })
     end
     
-    -- Add deity if present
+    -- Deity row
     if info.deity then
-        popupContent = popupContent .. string.format(
-            [[<br><font size="3" color="magenta">Follower of %s</font>]],
-            info.deity
-        )
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center><font size="3" color="magenta">Follower of %s</font></center>]],
+                info.deity
+            )
+        })
     end
     
-    -- Add top rankings if present
+    -- Top rankings row
     if info.top_rankings and next(info.top_rankings) then
         local rankings = {}
         for skill, rank in pairs(info.top_rankings) do
@@ -122,17 +134,63 @@ function GamePlayersInfo()
                 rankColor, rank, skill
             ))
         end
-        popupContent = popupContent .. string.format(
-            [[<br><font size="2" color="orange">%s</font>]],
-            table.concat(rankings, ", ")
-        )
+        table.insert(rows, {
+            height = smallLineHeight,
+            content = string.format(
+                [[<center><font size="2" color="orange">%s</font></center>]],
+                table.concat(rankings, ", ")
+            )
+        })
     end
     
-    popupContent = popupContent .. [[
-                </td>
-            </tr>
-        </table>
-    ]]
+    -- Calculate total height
+    local totalHeight = padding
+    for _, row in ipairs(rows) do
+        totalHeight = totalHeight + row.height
+    end
+    totalHeight = totalHeight + padding
     
-    GUI.PlayerDetailPopup:echo(popupContent)
+    -- Resize popup
+    GUI.PlayerDetailPopup:resize(nil, totalHeight)
+    
+    -- Clear existing VBox if present
+    if GUI.PlayerDetailPopupVBox then
+        GUI.PlayerDetailPopupVBox:hide()
+        GUI.PlayerDetailPopupVBox = nil
+    end
+    
+    -- Create VBox container
+    GUI.PlayerDetailPopupVBox = Geyser.VBox:new({
+        name = "GUI.PlayerDetailPopupVBox",
+        x = 0, y = padding,
+        width = "100%",
+        height = totalHeight - (padding * 2),
+    }, GUI.PlayerDetailPopup)
+    
+    -- Store row labels for potential future reference
+    GUI.PlayerDetailPopupLabels = {}
+    
+    -- Create individual labels for each row
+    for i, row in ipairs(rows) do
+        local labelName = "GUI.PlayerDetailPopupRow" .. i
+        local label = Geyser.Label:new({
+            name = labelName,
+            h_policy = Geyser.Fixed,
+            h_stretch_factor = row.height,
+        }, GUI.PlayerDetailPopupVBox)
+        
+        label:setStyleSheet([[
+            background-color: transparent;
+            qproperty-alignment: 'AlignCenter';
+        ]])
+        
+        label:echo(row.content)
+        
+        -- Apply link style if specified
+        if row.linkStyle then
+            label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+        end
+        
+        GUI.PlayerDetailPopupLabels[i] = label
+    end
 end

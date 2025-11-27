@@ -28,6 +28,13 @@ function ClosePlayerDetailPopup()
         GUI.PlayerPopupClickHandler = nil
     end
     
+    -- Clean up VBox and labels
+    if GUI.PlayerDetailPopupVBox then
+        GUI.PlayerDetailPopupVBox:hide()
+        GUI.PlayerDetailPopupVBox = nil
+    end
+    GUI.PlayerDetailPopupLabels = nil
+    
     if GUI.PlayerDetailPopup then
         GUI.PlayerDetailPopup:hide()
         GUI.PlayerDetailPopup = nil
@@ -148,29 +155,96 @@ function ShowPlayerDetailPopup(index, player)
         border-radius: 8px;
     ]])
     
-    -- Generate popup content with avatar and name
-    local popupContent = string.format([[
-        <table width="100%%" height="100%%">
-            <tr>
-                <td colspan="2" valign="middle" align="center">
-                    <img src="%s" width="64" height="64">
-                </td>
-            </tr>
-            <tr>
-                <td colspan="2" valign="top" align="center">
-                    <font size="4" color="white"><b>%s</b></font>
-                    <br><font size="3" color="silver">%s %s</font>
-                    <br><font size="3" color="gray">Level %d</font>
-                </td>
-            </tr>
-        </table>
-    ]], getGuildImagePath(player.guild, player.gender),
-        firstToUpper(player.name),
-        firstToUpper(player.race),
-        firstToUpper(player.guild),
-        player.level)
+    -- Height calculation constants (same as GamePlayersInfo.lua)
+    local avatarHeight = 74      -- Avatar row (64px image + padding)
+    local nameLineHeight = 24    -- Name (font size 4)
+    local infoLineHeight = 18    -- Info lines (font size 3)
+    local padding = 8            -- Top/bottom padding
     
-    GUI.PlayerDetailPopup:echo(popupContent)
+    -- Build initial rows with available data
+    local rows = {}
+    
+    -- Avatar row
+    table.insert(rows, {
+        height = avatarHeight,
+        content = string.format(
+            [[<center><img src="%s" width="64" height="64"></center>]],
+            getGuildImagePath(player.guild, player.gender)
+        )
+    })
+    
+    -- Name row
+    table.insert(rows, {
+        height = nameLineHeight,
+        content = string.format(
+            [[<center><font size="4" color="white"><b>%s</b></font></center>]],
+            firstToUpper(player.name)
+        )
+    })
+    
+    -- Race/Guild row
+    table.insert(rows, {
+        height = infoLineHeight,
+        content = string.format(
+            [[<center><font size="3" color="silver">%s %s</font></center>]],
+            firstToUpper(player.race),
+            firstToUpper(player.guild)
+        )
+    })
+    
+    -- Level row
+    table.insert(rows, {
+        height = infoLineHeight,
+        content = string.format(
+            [[<center><font size="3" color="gray">Level %d</font></center>]],
+            player.level
+        )
+    })
+    
+    -- Calculate total height
+    local totalHeight = padding
+    for _, row in ipairs(rows) do
+        totalHeight = totalHeight + row.height
+    end
+    totalHeight = totalHeight + padding
+    
+    -- Resize popup to fit initial content
+    GUI.PlayerDetailPopup:resize(nil, totalHeight)
+    
+    -- Create VBox container
+    GUI.PlayerDetailPopupVBox = Geyser.VBox:new({
+        name = "GUI.PlayerDetailPopupVBox",
+        x = 0, y = padding,
+        width = "100%",
+        height = totalHeight - (padding * 2),
+    }, GUI.PlayerDetailPopup)
+    
+    -- Store row labels for potential future reference
+    GUI.PlayerDetailPopupLabels = {}
+    
+    -- Create individual labels for each row
+    for i, row in ipairs(rows) do
+        local labelName = "GUI.PlayerDetailPopupRow" .. i
+        local label = Geyser.Label:new({
+            name = labelName,
+            h_policy = Geyser.Fixed,
+            h_stretch_factor = row.height,
+        }, GUI.PlayerDetailPopupVBox)
+        
+        label:setStyleSheet([[
+            background-color: transparent;
+            qproperty-alignment: 'AlignCenter';
+        ]])
+        
+        label:echo(row.content)
+        
+        -- Apply link style if specified
+        if row.linkStyle then
+            label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+        end
+        
+        GUI.PlayerDetailPopupLabels[i] = label
+    end
     
     -- Set an empty click callback to prevent clicks from propagating to parent
     GUI.PlayerDetailPopup:setClickCallback(function() end)
