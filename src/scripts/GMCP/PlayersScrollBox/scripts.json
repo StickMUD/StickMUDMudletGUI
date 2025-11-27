@@ -7,5 +7,14 @@
                      "gmcp.Game.Players.List"
               ],
               "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "GamePlayersInfo",
+              "eventHandlerList": [
+                     "gmcp.Game.Players.Info"
+              ],
+              "script": ""
        }
 ]

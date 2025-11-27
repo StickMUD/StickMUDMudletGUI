@@ -1,6 +1,13 @@
 -- Store player row labels
 GUI.GamePlayersListRows = GUI.GamePlayersListRows or {}
 
+-- Store row Y positions for popup alignment
+GUI.GamePlayersListRowYPos = GUI.GamePlayersListRowYPos or {}
+
+-- Track selected player row and popup
+GUI.SelectedPlayerRowIndex = nil
+GUI.PlayerDetailPopup = nil
+
 -- Create background container if it doesn't exist
 if not GUI.PlayersListContainer then
     GUI.PlayersListContainer = Geyser.Label:new({
@@ -9,10 +16,182 @@ if not GUI.PlayersListContainer then
         width = "100%", height = "100%"
     }, GUI.PlayersScrollBox)
     GUI.PlayersListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+    -- Click on container background closes the popup
+    GUI.PlayersListContainer:setClickCallback("ClosePlayerDetailPopup")
+end
+
+-- Close the player detail popup
+function ClosePlayerDetailPopup()
+    -- Unregister global click handler
+    if GUI.PlayerPopupClickHandler then
+        killAnonymousEventHandler(GUI.PlayerPopupClickHandler)
+        GUI.PlayerPopupClickHandler = nil
+    end
+    
+    if GUI.PlayerDetailPopup then
+        GUI.PlayerDetailPopup:hide()
+        GUI.PlayerDetailPopup = nil
+    end
+    -- Reset previously selected row
+    if GUI.SelectedPlayerRowIndex and GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex] then
+        GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(0,0,0,255);
+        ]])
+    end
+    GUI.SelectedPlayerRowIndex = nil
+end
+
+-- Check if a click is inside the popup bounds
+function IsClickInsidePopup(x, y)
+    if not GUI.PlayerDetailPopup then return false end
+    
+    local popupX = GUI.PlayerDetailPopup:get_x()
+    local popupY = GUI.PlayerDetailPopup:get_y()
+    local popupWidth = GUI.PlayerDetailPopup:get_width()
+    local popupHeight = GUI.PlayerDetailPopup:get_height()
+    
+    return x >= popupX and x <= popupX + popupWidth and
+           y >= popupY and y <= popupY + popupHeight
+end
+
+-- Check if a click is inside the selected player row
+function IsClickInsideSelectedRow(x, y)
+    if not GUI.SelectedPlayerRowIndex or not GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex] then
+        return false
+    end
+    
+    local row = GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex]
+    local rowX = row:get_x()
+    local rowY = row:get_y()
+    local rowWidth = row:get_width()
+    local rowHeight = row:get_height()
+    
+    return x >= rowX and x <= rowX + rowWidth and
+           y >= rowY and y <= rowY + rowHeight
+end
+
+-- Global click handler to close popup when clicking outside
+function HandleGlobalClickForPopup(event, x, y)
+    -- Small delay to allow the click to be processed by the popup first
+    tempTimer(0.05, function()
+        if GUI.PlayerDetailPopup then
+            -- Close if click is outside both popup and selected row
+            if not IsClickInsidePopup(x, y) and not IsClickInsideSelectedRow(x, y) then
+                ClosePlayerDetailPopup()
+            end
+        end
+    end)
+end
+
+-- Show player detail popup
+function ShowPlayerDetailPopup(index, player)
+    -- Close any existing popup first
+    ClosePlayerDetailPopup()
+    
+    -- Mark this row as selected
+    GUI.SelectedPlayerRowIndex = index
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(60,60,60,255);
+        ]])
+    end
+    
+    -- Store player data for the popup
+    GUI.SelectedPlayerData = player
+    
+    -- Request detailed player info via GMCP
+    sendGMCP("Game.Players.Info {\"name\": \"" .. player.name .. "\"}")
+    
+    -- Create the popup container to the LEFT of PlayersScrollBox
+    -- Position it in GUI.Right so it can extend beyond the PlayersScrollBox bounds
+    local popupWidth = 200
+    local popupHeight = 150
+    
+    -- Calculate position relative to GUI.Right
+    local rightX = GUI.Right:get_x()
+    local rightY = GUI.Right:get_y()
+    local menuBoxX = GUI.MenuBox:get_x()
+    local menuBoxY = GUI.MenuBox:get_y()
+    
+    -- Position popup to the left of MenuBox, relative to GUI.Right
+    local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
+    
+    -- Get the row's stored Y position (we store this when creating/updating rows)
+    local rowYWithinContainer = GUI.GamePlayersListRowYPos and GUI.GamePlayersListRowYPos[index] or 0
+    
+    -- Calculate popup Y relative to GUI.Right
+    -- MenuBox Y relative to Right + row Y within the scroll container
+    local popupY = (menuBoxY - rightY) + rowYWithinContainer
+    
+    -- Check if popup would extend beyond MenuBox bottom
+    local menuBoxBottom = (menuBoxY - rightY) + GUI.MenuBox:get_height()
+    local popupBottom = popupY + popupHeight
+    
+    if popupBottom > menuBoxBottom then
+        -- Adjust so popup bottom aligns with MenuBox bottom
+        popupY = menuBoxBottom - popupHeight
+    end
+    
+    GUI.PlayerDetailPopup = Geyser.Label:new({
+        name = "GUI.PlayerDetailPopup",
+        x = popupX,
+        y = popupY,
+        width = popupWidth,
+        height = popupHeight
+    }, GUI.Right)
+    
+    GUI.PlayerDetailPopup:setStyleSheet([[
+        background-color: rgba(30,30,35,255);
+        border: 2px solid rgba(80,80,90,255);
+        border-radius: 8px;
+    ]])
+    
+    -- Generate popup content with avatar and name
+    local popupContent = string.format([[
+        <table width="100%%" height="100%%">
+            <tr>
+                <td colspan="2" valign="middle" align="center">
+                    <img src="%s" width="64" height="64">
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2" valign="top" align="center">
+                    <font size="4" color="white"><b>%s</b></font>
+                    <br><font size="3" color="silver">%s %s</font>
+                    <br><font size="3" color="gray">Level %d</font>
+                </td>
+            </tr>
+        </table>
+    ]], getGuildImagePath(player.guild, player.gender),
+        firstToUpper(player.name),
+        firstToUpper(player.race),
+        firstToUpper(player.guild),
+        player.level)
+    
+    GUI.PlayerDetailPopup:echo(popupContent)
+    
+    -- Set an empty click callback to prevent clicks from propagating to parent
+    GUI.PlayerDetailPopup:setClickCallback(function() end)
+    
+    GUI.PlayerDetailPopup:show()
+    GUI.PlayerDetailPopup:raise()
+    
+    -- Register global click handler to close popup when clicking anywhere outside
+    if GUI.PlayerPopupClickHandler then
+        killAnonymousEventHandler(GUI.PlayerPopupClickHandler)
+    end
+    GUI.PlayerPopupClickHandler = registerAnonymousEventHandler(
+        "sysWindowMousePressEvent",
+        "HandleGlobalClickForPopup"
+    )
 end
 
 -- Hover event handlers
 function GamePlayersRowHoverEnter(index)
+    -- Don't change hover style if this row is selected
+    if GUI.SelectedPlayerRowIndex == index then return end
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:setStyleSheet([[
             qproperty-wordWrap: true;
@@ -22,11 +201,23 @@ function GamePlayersRowHoverEnter(index)
 end
 
 function GamePlayersRowHoverLeave(index)
+    -- Don't change hover style if this row is selected
+    if GUI.SelectedPlayerRowIndex == index then return end
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:setStyleSheet([[
             qproperty-wordWrap: true;
             background-color: rgba(0,0,0,255);
         ]])
+    end
+end
+
+-- Click handler for player rows
+function GamePlayersRowClick(index, player)
+    -- If clicking the same row, close the popup
+    if GUI.SelectedPlayerRowIndex == index then
+        ClosePlayerDetailPopup()
+    else
+        ShowPlayerDetailPopup(index, player)
     end
 end
 
@@ -48,8 +239,8 @@ local function readableNumber(num, places)
     else return tostring(num) end
 end
 
--- Get image path based on guild and gender
-local function getGuildImagePath(guild, gender)
+-- Get image path based on guild and gender (global for popup access)
+function getGuildImagePath(guild, gender)
     local basePath = getMudletHomeDir() .. "/StickMUD/"
     local images = {
         bard = gender == "female" and "066-musician.png" or "056-bard.png",
@@ -90,11 +281,16 @@ local function createPlayerRow(index, yPos, player)
     local rowName = "GUI.GamePlayersRow_" .. index
     local rowHeight = player.exprate_hour > 0 and 55 or 43
     
+    -- Store the Y position for popup alignment
+    GUI.GamePlayersListRowYPos[index] = yPos
+    
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
         GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
         GUI.GamePlayersListRows[index]:echo(generatePlayerRowContent(player))
         GUI.GamePlayersListRows[index]:show()
+        -- Update click callback with current player data
+        GUI.GamePlayersListRows[index]:setClickCallback("GamePlayersRowClick", index, player)
     else
         GUI.GamePlayersListRows[index] = Geyser.Label:new({
             name = rowName,
@@ -110,6 +306,9 @@ local function createPlayerRow(index, yPos, player)
         -- Add hover effect
         GUI.GamePlayersListRows[index]:setOnEnter("GamePlayersRowHoverEnter", index)
         GUI.GamePlayersListRows[index]:setOnLeave("GamePlayersRowHoverLeave", index)
+        
+        -- Add click handler
+        GUI.GamePlayersListRows[index]:setClickCallback("GamePlayersRowClick", index, player)
     end
     
     return rowHeight
