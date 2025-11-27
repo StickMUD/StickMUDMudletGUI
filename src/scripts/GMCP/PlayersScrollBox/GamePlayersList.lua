@@ -57,28 +57,28 @@ function ShowPlayerDetailPopup(index, player)
     local rightX = GUI.Right:get_x()
     local rightY = GUI.Right:get_y()
     local menuBoxX = GUI.MenuBox:get_x()
+    local menuBoxY = GUI.MenuBox:get_y()
     
     -- Position popup to the left of MenuBox, relative to GUI.Right
     local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
     
-    -- Get the absolute Y position of the clicked row
-    -- The row's get_y() returns absolute screen coordinates
-    local rowY = GUI.GamePlayersListRows[index]:get_y()
+    -- Get the row's Y position within the PlayersListContainer
+    -- The row is positioned with y = yPos .. "px" relative to PlayersListContainer
+    -- We need to add MenuBox's position to get the correct absolute position
+    local rowYWithinContainer = GUI.GamePlayersListRows[index].y or 0
     
-    -- Convert to position relative to GUI.Right
-    local popupY = rowY - rightY
+    -- Calculate popup Y relative to GUI.Right
+    -- MenuBox Y relative to Right + row Y within the scroll container
+    local popupY = (menuBoxY - rightY) + rowYWithinContainer
     
-    -- Check if popup would extend beyond PlayersListContainer bottom
-    local containerBottom = GUI.PlayersListContainer:get_y() + GUI.PlayersListContainer:get_height()
-    local popupBottom = rowY + popupHeight
+    -- Check if popup would extend beyond MenuBox bottom
+    local menuBoxBottom = (menuBoxY - rightY) + GUI.MenuBox:get_height()
+    local popupBottom = popupY + popupHeight
     
-    if popupBottom > containerBottom then
-        -- Adjust so popup bottom aligns with container bottom
-        popupY = (containerBottom - rightY) - popupHeight
+    if popupBottom > menuBoxBottom then
+        -- Adjust so popup bottom aligns with MenuBox bottom
+        popupY = menuBoxBottom - popupHeight
     end
-    
-    -- Debug output to see what's happening
-    echo("\n[DEBUG] rowY=" .. rowY .. " rightY=" .. rightY .. " popupY=" .. popupY .. "\n")
     
     GUI.PlayerDetailPopup = Geyser.Label:new({
         name = "GUI.PlayerDetailPopup",
