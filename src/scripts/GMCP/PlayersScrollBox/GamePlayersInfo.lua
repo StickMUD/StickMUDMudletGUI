@@ -186,6 +186,9 @@ function GamePlayersInfo()
             label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
         end
         
+        -- Prevent clicks from closing the popup
+        label:setClickCallback(function() end)
+        
         label:show()
         label:raise()
         
