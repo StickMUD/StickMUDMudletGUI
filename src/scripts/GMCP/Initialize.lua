@@ -8,6 +8,7 @@ tempTimer(
     if InitializeVitals then InitializeVitals() end
     if InitializeStatus then InitializeStatus() end
     if InitializeRoomInfo then InitializeRoomInfo() end
+    if InitializeInventoryConsoles then InitializeInventoryConsoles() end
   end
 )
 

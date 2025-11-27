@@ -1,4 +1,9 @@
 function CharItemsUpdateLocationInv()
+  -- Check if GMCP Char.Items.Update data is available
+  if not gmcp or not gmcp.Char or not gmcp.Char.Items or not gmcp.Char.Items.Update then
+    return
+  end
+  
   if gmcp.Char.Items.Update.location == "inv" then
     local value = gmcp.Char.Items.Update.item
 		local itemKey = gmcp.Char.Items.Update.item.id

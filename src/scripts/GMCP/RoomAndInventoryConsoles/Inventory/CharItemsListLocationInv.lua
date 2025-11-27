@@ -1,4 +1,9 @@
 function CharItemsListLocationInv()
+  -- Check if GMCP Char.Items.List data is available
+  if not gmcp or not gmcp.Char or not gmcp.Char.Items or not gmcp.Char.Items.List then
+    return
+  end
+  
   if gmcp.Char.Items.List.location == "inv" then
     wornArmour = {}
     wieldedWeapons = {}
