@@ -16,6 +16,8 @@ if not GUI.PlayersListContainer then
         width = "100%", height = "100%"
     }, GUI.PlayersScrollBox)
     GUI.PlayersListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+    -- Click on container background closes the popup
+    GUI.PlayersListContainer:setClickCallback("ClosePlayerDetailPopup")
 end
 
 -- Close the player detail popup
