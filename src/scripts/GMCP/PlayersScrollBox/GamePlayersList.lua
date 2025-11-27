@@ -61,8 +61,11 @@ function ShowPlayerDetailPopup(index, player)
     -- Position popup to the left of MenuBox, relative to GUI.Right
     local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
     
-    -- Align popup top with the clicked row's top
+    -- Get the absolute Y position of the clicked row
+    -- The row's get_y() returns absolute screen coordinates
     local rowY = GUI.GamePlayersListRows[index]:get_y()
+    
+    -- Convert to position relative to GUI.Right
     local popupY = rowY - rightY
     
     -- Check if popup would extend beyond PlayersListContainer bottom
@@ -73,6 +76,9 @@ function ShowPlayerDetailPopup(index, player)
         -- Adjust so popup bottom aligns with container bottom
         popupY = (containerBottom - rightY) - popupHeight
     end
+    
+    -- Debug output to see what's happening
+    echo("\n[DEBUG] rowY=" .. rowY .. " rightY=" .. rightY .. " popupY=" .. popupY .. "\n")
     
     GUI.PlayerDetailPopup = Geyser.Label:new({
         name = "GUI.PlayerDetailPopup",
