@@ -53,6 +53,9 @@ function ShowPlayerDetailPopup(index, player)
     -- Store player data for the popup
     GUI.SelectedPlayerData = player
     
+    -- Request detailed player info via GMCP
+    sendGMCP("Game.Players.Info {\"name\": \"" .. player.name .. "\"}")
+    
     -- Create the popup container to the LEFT of PlayersScrollBox
     -- Position it in GUI.Right so it can extend beyond the PlayersScrollBox bounds
     local popupWidth = 200
