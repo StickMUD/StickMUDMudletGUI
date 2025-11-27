@@ -153,35 +153,30 @@ function GamePlayersInfo()
     -- Resize popup
     GUI.PlayerDetailPopup:resize(nil, totalHeight)
     
-    -- Clear existing VBox if present
-    if GUI.PlayerDetailPopupVBox then
-        GUI.PlayerDetailPopupVBox:hide()
-        GUI.PlayerDetailPopupVBox = nil
+    -- Clear existing labels
+    if GUI.PlayerDetailPopupLabels then
+        for _, label in ipairs(GUI.PlayerDetailPopupLabels) do
+            if label then
+                label:hide()
+            end
+        end
     end
-    
-    -- Create VBox container
-    GUI.PlayerDetailPopupVBox = Geyser.VBox:new({
-        name = "GUI.PlayerDetailPopupVBox",
-        x = 0, y = padding,
-        width = "100%",
-        height = totalHeight - (padding * 2),
-    }, GUI.PlayerDetailPopup)
-    
-    -- Store row labels for potential future reference
     GUI.PlayerDetailPopupLabels = {}
     
-    -- Create individual labels for each row
+    -- Create individual labels for each row with absolute positioning
+    local currentY = padding
     for i, row in ipairs(rows) do
         local labelName = "GUI.PlayerDetailPopupRow" .. i
         local label = Geyser.Label:new({
             name = labelName,
-            v_policy = Geyser.Fixed,
-            v_stretch_factor = row.height,
-        }, GUI.PlayerDetailPopupVBox)
+            x = 0,
+            y = currentY,
+            width = "100%",
+            height = row.height,
+        }, GUI.PlayerDetailPopup)
         
         label:setStyleSheet([[
             background-color: transparent;
-            qproperty-alignment: 'AlignCenter';
         ]])
         
         label:echo(row.content)
@@ -192,5 +187,6 @@ function GamePlayersInfo()
         end
         
         GUI.PlayerDetailPopupLabels[i] = label
+        currentY = currentY + row.height
     end
 end
