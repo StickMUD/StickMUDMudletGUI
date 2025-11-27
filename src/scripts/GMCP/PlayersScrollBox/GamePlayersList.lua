@@ -22,6 +22,12 @@ end
 
 -- Close the player detail popup
 function ClosePlayerDetailPopup()
+    -- Unregister global click handler
+    if GUI.PlayerPopupClickHandler then
+        killAnonymousEventHandler(GUI.PlayerPopupClickHandler)
+        GUI.PlayerPopupClickHandler = nil
+    end
+    
     if GUI.PlayerDetailPopup then
         GUI.PlayerDetailPopup:hide()
         GUI.PlayerDetailPopup = nil
@@ -34,6 +40,48 @@ function ClosePlayerDetailPopup()
         ]])
     end
     GUI.SelectedPlayerRowIndex = nil
+end
+
+-- Check if a click is inside the popup bounds
+function IsClickInsidePopup(x, y)
+    if not GUI.PlayerDetailPopup then return false end
+    
+    local popupX = GUI.PlayerDetailPopup:get_x()
+    local popupY = GUI.PlayerDetailPopup:get_y()
+    local popupWidth = GUI.PlayerDetailPopup:get_width()
+    local popupHeight = GUI.PlayerDetailPopup:get_height()
+    
+    return x >= popupX and x <= popupX + popupWidth and
+           y >= popupY and y <= popupY + popupHeight
+end
+
+-- Check if a click is inside the selected player row
+function IsClickInsideSelectedRow(x, y)
+    if not GUI.SelectedPlayerRowIndex or not GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex] then
+        return false
+    end
+    
+    local row = GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex]
+    local rowX = row:get_x()
+    local rowY = row:get_y()
+    local rowWidth = row:get_width()
+    local rowHeight = row:get_height()
+    
+    return x >= rowX and x <= rowX + rowWidth and
+           y >= rowY and y <= rowY + rowHeight
+end
+
+-- Global click handler to close popup when clicking outside
+function HandleGlobalClickForPopup(event, x, y)
+    -- Small delay to allow the click to be processed by the popup first
+    tempTimer(0.05, function()
+        if GUI.PlayerDetailPopup then
+            -- Close if click is outside both popup and selected row
+            if not IsClickInsidePopup(x, y) and not IsClickInsideSelectedRow(x, y) then
+                ClosePlayerDetailPopup()
+            end
+        end
+    end)
 end
 
 -- Show player detail popup
@@ -129,6 +177,15 @@ function ShowPlayerDetailPopup(index, player)
     
     GUI.PlayerDetailPopup:show()
     GUI.PlayerDetailPopup:raise()
+    
+    -- Register global click handler to close popup when clicking anywhere outside
+    if GUI.PlayerPopupClickHandler then
+        killAnonymousEventHandler(GUI.PlayerPopupClickHandler)
+    end
+    GUI.PlayerPopupClickHandler = registerAnonymousEventHandler(
+        "sysWindowMousePressEvent",
+        "HandleGlobalClickForPopup"
+    )
 end
 
 -- Hover event handlers
