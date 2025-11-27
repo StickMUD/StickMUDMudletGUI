@@ -240,6 +240,8 @@ function ShowPlayerDetailPopup(index, player)
             label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
         end
         
+        label:show()
+        
         GUI.PlayerDetailPopupLabels[i] = label
         currentY = currentY + row.height
     end
