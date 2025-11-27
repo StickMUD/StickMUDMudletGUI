@@ -4,7 +4,7 @@
 function GamePlayersInfo()
     local info = gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.Info or {}
     
-    -- Check if we have a popup open and the info is for the selected player
+    -- Check if we have a popup open and the info is for the selected player 
     if not GUI.PlayerDetailPopup or not GUI.SelectedPlayerData then
         return
     end
