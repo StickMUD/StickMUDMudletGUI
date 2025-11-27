@@ -1,6 +1,10 @@
 -- Store player row labels
 GUI.GamePlayersListRows = GUI.GamePlayersListRows or {}
 
+-- Track selected player row and popup
+GUI.SelectedPlayerRowIndex = nil
+GUI.PlayerDetailPopup = nil
+
 -- Create background container if it doesn't exist
 if not GUI.PlayersListContainer then
     GUI.PlayersListContainer = Geyser.Label:new({
@@ -11,8 +15,85 @@ if not GUI.PlayersListContainer then
     GUI.PlayersListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 end
 
+-- Close the player detail popup
+function ClosePlayerDetailPopup()
+    if GUI.PlayerDetailPopup then
+        GUI.PlayerDetailPopup:hide()
+        GUI.PlayerDetailPopup = nil
+    end
+    -- Reset previously selected row
+    if GUI.SelectedPlayerRowIndex and GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex] then
+        GUI.GamePlayersListRows[GUI.SelectedPlayerRowIndex]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(0,0,0,255);
+        ]])
+    end
+    GUI.SelectedPlayerRowIndex = nil
+end
+
+-- Show player detail popup
+function ShowPlayerDetailPopup(index, player)
+    -- Close any existing popup first
+    ClosePlayerDetailPopup()
+    
+    -- Mark this row as selected
+    GUI.SelectedPlayerRowIndex = index
+    if GUI.GamePlayersListRows[index] then
+        GUI.GamePlayersListRows[index]:setStyleSheet([[
+            qproperty-wordWrap: true;
+            background-color: rgba(60,60,60,255);
+        ]])
+    end
+    
+    -- Store player data for the popup
+    GUI.SelectedPlayerData = player
+    
+    -- Create the popup container
+    GUI.PlayerDetailPopup = Geyser.Label:new({
+        name = "GUI.PlayerDetailPopup",
+        x = "5%", y = "10%",
+        width = "90%", height = "150px"
+    }, GUI.PlayersListContainer)
+    
+    GUI.PlayerDetailPopup:setStyleSheet([[
+        background-color: rgba(30,30,35,255);
+        border: 2px solid rgba(80,80,90,255);
+        border-radius: 8px;
+    ]])
+    
+    -- Generate popup content with avatar and name
+    local popupContent = string.format([[
+        <table width="100%%" height="100%%">
+            <tr>
+                <td width="30%%" valign="middle" align="center">
+                    <img src="%s" width="64" height="64">
+                </td>
+                <td width="70%%" valign="middle" align="left">
+                    <font size="5" color="white"><b>%s</b></font>
+                    <br><font size="3" color="silver">%s %s</font>
+                    <br><font size="3" color="gray">Level %d</font>
+                </td>
+            </tr>
+        </table>
+    ]], getGuildImagePath(player.guild, player.gender),
+        firstToUpper(player.name),
+        firstToUpper(player.race),
+        firstToUpper(player.guild),
+        player.level)
+    
+    GUI.PlayerDetailPopup:echo(popupContent)
+    
+    -- Click on popup closes it
+    GUI.PlayerDetailPopup:setClickCallback("ClosePlayerDetailPopup")
+    
+    GUI.PlayerDetailPopup:show()
+    GUI.PlayerDetailPopup:raise()
+end
+
 -- Hover event handlers
 function GamePlayersRowHoverEnter(index)
+    -- Don't change hover style if this row is selected
+    if GUI.SelectedPlayerRowIndex == index then return end
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:setStyleSheet([[
             qproperty-wordWrap: true;
@@ -22,11 +103,23 @@ function GamePlayersRowHoverEnter(index)
 end
 
 function GamePlayersRowHoverLeave(index)
+    -- Don't change hover style if this row is selected
+    if GUI.SelectedPlayerRowIndex == index then return end
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:setStyleSheet([[
             qproperty-wordWrap: true;
             background-color: rgba(0,0,0,255);
         ]])
+    end
+end
+
+-- Click handler for player rows
+function GamePlayersRowClick(index, player)
+    -- If clicking the same row, close the popup
+    if GUI.SelectedPlayerRowIndex == index then
+        ClosePlayerDetailPopup()
+    else
+        ShowPlayerDetailPopup(index, player)
     end
 end
 
@@ -48,8 +141,8 @@ local function readableNumber(num, places)
     else return tostring(num) end
 end
 
--- Get image path based on guild and gender
-local function getGuildImagePath(guild, gender)
+-- Get image path based on guild and gender (global for popup access)
+function getGuildImagePath(guild, gender)
     local basePath = getMudletHomeDir() .. "/StickMUD/"
     local images = {
         bard = gender == "female" and "066-musician.png" or "056-bard.png",
@@ -95,6 +188,8 @@ local function createPlayerRow(index, yPos, player)
         GUI.GamePlayersListRows[index]:move(0, yPos .. "px")
         GUI.GamePlayersListRows[index]:echo(generatePlayerRowContent(player))
         GUI.GamePlayersListRows[index]:show()
+        -- Update click callback with current player data
+        GUI.GamePlayersListRows[index]:setClickCallback("GamePlayersRowClick", index, player)
     else
         GUI.GamePlayersListRows[index] = Geyser.Label:new({
             name = rowName,
@@ -110,6 +205,9 @@ local function createPlayerRow(index, yPos, player)
         -- Add hover effect
         GUI.GamePlayersListRows[index]:setOnEnter("GamePlayersRowHoverEnter", index)
         GUI.GamePlayersListRows[index]:setOnLeave("GamePlayersRowHoverLeave", index)
+        
+        -- Add click handler
+        GUI.GamePlayersListRows[index]:setClickCallback("GamePlayersRowClick", index, player)
     end
     
     return rowHeight
