@@ -53,17 +53,24 @@ function ShowPlayerDetailPopup(index, player)
     local popupWidth = 200
     local popupHeight = 150
     
-    -- Get the left edge of MenuBox (which contains PlayersScrollBox)
+    -- Calculate position relative to GUI.Right
+    -- MenuBox is at x="50%" within GUI.Right, so popup goes to the left of that
+    local rightX = GUI.Right:get_x()
+    local rightY = GUI.Right:get_y()
     local menuBoxX = GUI.MenuBox:get_x()
-    local popupX = menuBoxX - popupWidth - 10  -- 10px gap from the edge
     
-    -- Position vertically near the clicked row
+    -- Position popup to the left of MenuBox, relative to GUI.Right
+    local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
+    
+    -- Position vertically near the clicked row, relative to GUI.Right
     local rowY = GUI.GamePlayersListRows[index] and GUI.GamePlayersListRows[index]:get_y() or GUI.MenuBox:get_y()
-    local popupY = math.max(rowY, GUI.MenuBox:get_y())  -- Don't go above MenuBox
+    local popupY = rowY - rightY
     
-    -- Make sure popup doesn't go below the screen
-    local maxY = GUI.MenuBox:get_y() + GUI.MenuBox:get_height() - popupHeight
-    popupY = math.min(popupY, maxY)
+    -- Constrain to stay within GUI.Right bounds
+    local menuBoxRelativeY = GUI.MenuBox:get_y() - rightY
+    local menuBoxBottom = menuBoxRelativeY + GUI.MenuBox:get_height()
+    popupY = math.max(popupY, menuBoxRelativeY)  -- Don't go above MenuBox
+    popupY = math.min(popupY, menuBoxBottom - popupHeight)  -- Don't go below MenuBox
     
     GUI.PlayerDetailPopup = Geyser.Label:new({
         name = "GUI.PlayerDetailPopup",
