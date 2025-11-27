@@ -2,10 +2,38 @@ function round(n)
 	return n % 1 >= 0.5 and math.ceil(n) or math.floor(n)
 end
 
+-- Initialize vitals display to default/empty state
+function InitializeVitals()
+	if GUI.HitPoints then
+		GUI.HitPoints:setValue(0, 100, "<center><b>Hit Points</b></center>")
+	end
+	if GUI.SpellPoints then
+		GUI.SpellPoints:setValue(0, 100, "<center><b>Spell Points</b></center>")
+	end
+	if GUI.FatiguePoints then
+		GUI.FatiguePoints:setValue(0, 100, "<span style='color: black'><center><b>Fatigue Points</b></center></span>")
+	end
+	if GUI.EnemyHealth then
+		GUI.EnemyHealth:setValue(0, 100, "<center><b>Enemy Health</b></center>")
+	end
+end
+
 function CharVitals()
+	-- Check if GMCP Char.Vitals data is available
+	if not gmcp or not gmcp.Char or not gmcp.Char.Vitals then
+		InitializeVitals()
+		return
+	end
+
 	local current_hp, max_hp = tonumber(gmcp.Char.Vitals.hp), tonumber(gmcp.Char.Vitals.maxhp)
 	local current_sp, max_sp = tonumber(gmcp.Char.Vitals.sp), tonumber(gmcp.Char.Vitals.maxsp)
 	local current_fp, max_fp = tonumber(gmcp.Char.Vitals.fp), tonumber(gmcp.Char.Vitals.maxfp)
+
+	-- If any values are nil, show default state
+	if not current_hp or not max_hp or not current_sp or not max_sp or not current_fp or not max_fp then
+		InitializeVitals()
+		return
+	end
 	local percent_hp = round(tonumber(current_hp / max_hp * 100))
 	local percent_sp = round(tonumber(current_sp / max_sp * 100))
 	local percent_fp = round(tonumber(current_fp / max_fp * 100))

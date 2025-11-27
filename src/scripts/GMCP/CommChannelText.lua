@@ -1,6 +1,17 @@
 function CommChannelText()
+    -- Check if GMCP Comm.Channel.Text data is available
+    if not gmcp or not gmcp.Comm or not gmcp.Comm.Channel or not gmcp.Comm.Channel.Text then
+        return
+    end
+    
     local channel = gmcp.Comm.Channel.Text.channel
     local text = gmcp.Comm.Channel.Text.text
+    
+    -- Exit if channel or text is missing
+    if not channel or not text then
+        return
+    end
+    
     local timeStamp = os.date("%I:%M ")
 
     -- Fallback function to get preferences safely

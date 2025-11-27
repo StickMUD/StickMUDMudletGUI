@@ -1,4 +1,9 @@
 function CharAbilitiesMonitorWarn()
+    -- Check if GMCP Char.Abilities.Update data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Abilities or not gmcp.Char.Abilities.Update then
+        return
+    end
+    
     local char_abilities_update = gmcp.Char.Abilities.Update
   
     --for index = 19, 2, -1 do
@@ -11,6 +16,6 @@ function CharAbilitiesMonitorWarn()
     --GUI[gauge_name]:flash()
     --end
   
-    if char_abilities_update.monitor.warn ~= nil and char_abilities_update.monitor.warn == 1 then
+    if char_abilities_update.monitor and char_abilities_update.monitor.warn ~= nil and char_abilities_update.monitor.warn == 1 then
     end
   end

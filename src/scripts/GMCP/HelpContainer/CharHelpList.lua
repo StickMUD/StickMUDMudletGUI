@@ -6,6 +6,13 @@ function on_helplabel_press(category)
 end
 
 function CharHelpList()
+    -- Check if GMCP Char.Help.List data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Help or not gmcp.Char.Help.List then
+        clearWindow("GUI.HelpConsole")
+        cecho("GUI.HelpConsole", "<gray>Waiting for help data...\n")
+        return
+    end
+
     local help_list = gmcp.Char.Help.List
     local num_topics = 0
     local console_height = 0

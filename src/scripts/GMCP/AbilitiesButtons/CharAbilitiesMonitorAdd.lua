@@ -1,4 +1,9 @@
 function CharAbilitiesMonitorAdd()
+    -- Check if GMCP Char.Abilities.Add data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Abilities or not gmcp.Char.Abilities.Add then
+        return
+    end
+    
     local char_abilities_add = gmcp.Char.Abilities.Add
   
     --for index = 19, 2, -1 do
@@ -8,7 +13,7 @@ function CharAbilitiesMonitorAdd()
     --GUI[gauge_name]:show()
     --end
   
-    if char_abilities_add.monitor.expires ~= nil and char_abilities_add.monitor.expires > 0 then
+    if char_abilities_add.monitor and char_abilities_add.monitor.expires ~= nil and char_abilities_add.monitor.expires > 0 then
       abilitiesTimers[char_abilities_add.monitor.id] =
         tempTimer(
           char_abilities_add.monitor.expires,

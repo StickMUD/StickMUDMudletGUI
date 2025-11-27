@@ -1,4 +1,9 @@
 function CharAbilitiesMonitorRemove()
+    -- Check if GMCP Char.Abilities.Remove data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Abilities or not gmcp.Char.Abilities.Remove then
+        return
+    end
+    
     local char_abilities_remove = gmcp.Char.Abilities.Remove
   
     --for index = 19, 2, -1 do
@@ -12,6 +17,7 @@ function CharAbilitiesMonitorRemove()
     --end
   
     if
+      char_abilities_remove.monitor and
       char_abilities_remove.monitor.id ~= nil and
       abilitiesTimers[char_abilities_remove.monitor.id] ~= nil
     then
