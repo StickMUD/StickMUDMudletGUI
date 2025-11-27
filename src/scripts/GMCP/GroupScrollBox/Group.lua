@@ -151,9 +151,9 @@ end
 function Group()
     local groupListHTML = "<table>"
 
-    if not gmcp.Group or not gmcp.Group.members then
+    if not gmcp or not gmcp.Group or not gmcp.Group.members then
         groupListHTML = groupListHTML .. string.format(
-            "<tr><td><font size=\"%d\" color=\"red\">No group data available.</font></td></tr>",
+            "<tr><td><font size=\"%d\" color=\"gray\">Waiting for group data...</font></td></tr>",
             groupCurrentFontSize
         )
     else
@@ -198,14 +198,17 @@ function Group()
     groupListHTML = groupListHTML .. "</table>"
 
     -- Display the group list in the GUI
-    GUI.GroupListLabel = GUI.GroupListLabel or Geyser.Label:new({
-        name = "GUI.GroupListLabel",
-        x = 0,
-        y = "25px",
-        width = "100%",
-        height = "400%"
-    }, GUI.GroupScrollBox)
+    if not GUI.GroupListLabel then
+        GUI.GroupListLabel = Geyser.Label:new({
+            name = "GUI.GroupListLabel",
+            x = 0,
+            y = "25px",
+            width = "100%",
+            height = "400%"
+        }, GUI.GroupScrollBox)
+    end
 
+    -- Always update style and background
     GUI.GroupListLabel:setStyleSheet(getGroupListCSS(groupCurrentFontSize):getCSS())
     setBackgroundColor("GUI.GroupListLabel", 0, 0, 0)
     GUI.GroupListLabel:echo(groupListHTML)

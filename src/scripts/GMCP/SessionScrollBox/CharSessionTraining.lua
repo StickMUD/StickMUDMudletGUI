@@ -140,9 +140,12 @@ end
 -- Function to display the character session training list
 function CharSessionTraining()
     local training_session = nil
+    local sessionList = ""
 
     -- Check if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training exist
-    if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
+    if not gmcp or not gmcp.Char then
+        sessionList = "<table width=\"100%\"><tr><td><font size=\"" .. sessionCurrentFontSize .. "\" color=\"gray\">Waiting for session data...</font></td></tr></table>"
+    elseif gmcp.Char.Session and gmcp.Char.Session.Training then
         training_session = gmcp.Char.Session.Training
     end
 
@@ -154,7 +157,9 @@ function CharSessionTraining()
                    function(v1, v2) return v1.skill < v2.skill end)
     end
 
-    local sessionList = "<table width=\"100%\">"
+    if sessionList == "" then
+        sessionList = "<table width=\"100%\">"
+    end
 
     -- Calculate maximum lengths and counts for alignment
     if training_session then
@@ -217,6 +222,10 @@ function CharSessionTraining()
     sessionList = sessionList .. "</table>"
 
     if GUI.CharSessionTrainingLabel then
+        -- Always update style and background
+        GUI.CharSessionTrainingLabel:setStyleSheet(
+            getSessionTrainingCSS(sessionCurrentFontSize):getCSS())
+        setBackgroundColor("GUI.CharSessionTrainingLabel", 0, 0, 0)
         GUI.CharSessionTrainingLabel:echo(sessionList)
     else
         -- Create the ScrollBox and populate it with the session training list
@@ -232,6 +241,7 @@ function CharSessionTraining()
         GUI.CharSessionTrainingLabel:setStyleSheet(
             getSessionTrainingCSS(sessionCurrentFontSize):getCSS())
         setBackgroundColor("GUI.CharSessionTrainingLabel", 0, 0, 0)
+        GUI.CharSessionTrainingLabel:echo(sessionList)
     end
 end
 
