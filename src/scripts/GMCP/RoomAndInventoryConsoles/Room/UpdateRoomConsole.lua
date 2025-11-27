@@ -8,9 +8,16 @@ local function setupRoomConsole()
     setMiniConsoleFontSize("GUI.RoomConsole", content_preferences["GUI.RoomConsole"].fontSize)
 
     GUI.RoomConsole:resetAutoWrap()
+    
+    -- Check if GMCP Room.Info data is available
+    local roomName = "Unknown"
+    if gmcp and gmcp.Room and gmcp.Room.Info and gmcp.Room.Info.name then
+        roomName = gmcp.Room.Info.name
+    end
+    
     cecho("GUI.RoomConsole",
           "\n<light_blue:black>Your Location: <green_yellow:black>" ..
-              gmcp.Room.Info.name .. "\n\n")
+              roomName .. "\n\n")
 end
 
 local function updateRoomSection(consoleName, header, dataTable, getAction)

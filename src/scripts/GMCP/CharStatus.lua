@@ -1,4 +1,20 @@
+-- Initialize status display to default/empty state
+function InitializeStatus()
+    if GUI.BoxGold then
+        GUI.BoxGold:echo("<center><font size=\"3\">💰</font> <b><font size=\"4\">-</font></b></center>")
+    end
+    if GUI.BoxBank then
+        GUI.BoxBank:echo("<center><font size=\"3\">🏦</font> <b><font size=\"4\">-</font></b></center>")
+    end
+end
+
 function CharStatus()
+    -- Check if GMCP Char.Status data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Status then
+        InitializeStatus()
+        return
+    end
+
     local gold = gmcp.Char.Status.gold or "?"
     local bank = gmcp.Char.Status.bank or "?"
 

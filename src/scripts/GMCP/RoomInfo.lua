@@ -1,4 +1,23 @@
+-- Initialize room display to default/empty state
+function InitializeRoomInfo()
+    if GUI.BoxRoom then
+        GUI.BoxRoom:echo("<center><font size=\"4\">📍</font> <b><font size=\"3\">-</font></b></center>")
+    end
+    if GUI.BoxArea then
+        GUI.BoxArea:echo("<center><font size=\"4\">🏰</font> <b><font size=\"3\">-</font></b></center>")
+    end
+    if GUI.BoxExits then
+        GUI.BoxExits:echo("<center><font size=\"4\">🚪</font> <b><font size=\"3\">-</font></b></center>")
+    end
+end
+
 function RoomInfo()
+    -- Check if GMCP Room.Info data is available
+    if not gmcp or not gmcp.Room or not gmcp.Room.Info then
+        InitializeRoomInfo()
+        return
+    end
+
     local name = gmcp.Room.Info.name or "Room"
     local area = gmcp.Room.Info.area or "Area"
     local exits = gmcp.Room.Info.exits or {}

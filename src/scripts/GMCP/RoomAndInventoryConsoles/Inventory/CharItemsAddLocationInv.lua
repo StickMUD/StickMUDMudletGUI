@@ -1,4 +1,9 @@
 function CharItemsAddLocationInv()
+  -- Check if GMCP Char.Items.Add data is available
+  if not gmcp or not gmcp.Char or not gmcp.Char.Items or not gmcp.Char.Items.Add then
+    return
+  end
+  
   if gmcp.Char.Items.Add.location == "inv" then
     local value = gmcp.Char.Items.Add.item
     local highlight = getItemHighlight(value) or ""

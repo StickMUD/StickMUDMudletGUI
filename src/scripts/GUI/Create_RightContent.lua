@@ -3,7 +3,7 @@ nextContentBox = "BoxMap";
 -- Content items data structure
 local content_items = {
     { section = "BoxWieldedWeapons", icon = "044-swords.png", tooltip = "Weapon", console = "WieldedWeaponsConsole" },
-    { section = "BoxWornArmour", icon = "045-knight-1.png", tooltip = "Armour️", console = "WornArmourConsole" },
+    { section = "BoxWornArmour", icon = "045-knight-1.png", tooltip = "Armour", console = "WornArmourConsole" },
     { section = "BoxInventory", icon = "040-school-bag.png", tooltip = "Carry", console = "InventoryConsole" },
     { section = "BoxRoomInv", icon = "041-location.png", tooltip = "Room", console = "RoomConsole" },
     { section = "BoxMap", icon = "042-treasure-map.png", tooltip = "Map", console = "MapperConsole" },

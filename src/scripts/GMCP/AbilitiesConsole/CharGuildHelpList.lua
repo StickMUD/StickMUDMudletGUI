@@ -1,4 +1,11 @@
 function CharGuildHelpList()
+    -- Check if GMCP Char.Guild.Help.List data is available
+    if not gmcp or not gmcp.Char or not gmcp.Char.Guild or not gmcp.Char.Guild.Help or not gmcp.Char.Guild.Help.List then
+        clearWindow("GUI.AbilitiesConsole")
+        cecho("GUI.AbilitiesConsole", "<gray>Waiting for abilities data...\n")
+        return
+    end
+
     local guild_help_list = gmcp.Char.Guild.Help.List
     local tkeys = {}
     local t2 = {}
