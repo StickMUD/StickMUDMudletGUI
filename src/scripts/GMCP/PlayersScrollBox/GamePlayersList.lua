@@ -224,9 +224,9 @@ function ShowPlayerDetailPopup(index, player)
         local label = Geyser.Label:new({
             name = labelName,
             x = 0,
-            y = currentY,
+            y = currentY .. "px",
             width = "100%",
-            height = row.height,
+            height = row.height .. "px",
         }, GUI.PlayerDetailPopup)
         
         label:setStyleSheet([[
@@ -241,6 +241,7 @@ function ShowPlayerDetailPopup(index, player)
         end
         
         label:show()
+        label:raise()
         
         GUI.PlayerDetailPopupLabels[i] = label
         currentY = currentY + row.height
