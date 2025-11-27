@@ -160,13 +160,19 @@ end
 function CharTrainingList()
     local training_total = nil
     local session_training = nil
+    local trainingList = ""
 
-    if gmcp.Char and gmcp.Char.Training and gmcp.Char.Training.List then
-        training_total = gmcp.Char.Training.List
-    end
+    -- Check if GMCP data is available
+    if not gmcp or not gmcp.Char then
+        trainingList = "<table width=\"100%\"><tr><td><font size=\"" .. currentFontSize .. "\" color=\"gray\">Waiting for training data...</font></td></tr></table>"
+    else
+        if gmcp.Char.Training and gmcp.Char.Training.List then
+            training_total = gmcp.Char.Training.List
+        end
 
-    if gmcp.Char and gmcp.Char.Session and gmcp.Char.Session.Training then
-        session_training = gmcp.Char.Session.Training
+        if gmcp.Char.Session and gmcp.Char.Session.Training then
+            session_training = gmcp.Char.Session.Training
+        end
     end
 
     local skill_max_length = 0
@@ -241,6 +247,9 @@ function CharTrainingList()
             "\" color=\"white\">*Trained this session</font></p>"
 
     if GUI.CharTrainingListLabel then
+        GUI.CharTrainingListLabel:setStyleSheet(
+            getCharTrainingListCSS(currentFontSize):getCSS())
+        setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
         GUI.CharTrainingListLabel:echo(trainingList)
     else
         GUI.CharTrainingListLabel = Geyser.Label:new({
@@ -250,12 +259,11 @@ function CharTrainingList()
             width = "100%",
             height = "400%"
         }, GUI.TrainingScrollBox)
+        GUI.CharTrainingListLabel:setStyleSheet(
+            getCharTrainingListCSS(currentFontSize):getCSS())
+        setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
+        GUI.CharTrainingListLabel:echo(trainingList)
     end
-
-    GUI.CharTrainingListLabel:setStyleSheet(
-        getCharTrainingListCSS(currentFontSize):getCSS())
-    setBackgroundColor("GUI.CharTrainingListLabel", 0, 0, 0)
-    GUI.CharTrainingListLabel:echo(trainingList)
 end
 
 -- Initialize the panel and the training list
