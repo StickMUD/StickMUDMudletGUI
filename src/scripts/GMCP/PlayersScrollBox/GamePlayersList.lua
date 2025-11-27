@@ -1,6 +1,9 @@
 -- Store player row labels
 GUI.GamePlayersListRows = GUI.GamePlayersListRows or {}
 
+-- Store row Y positions for popup alignment
+GUI.GamePlayersListRowYPos = GUI.GamePlayersListRowYPos or {}
+
 -- Track selected player row and popup
 GUI.SelectedPlayerRowIndex = nil
 GUI.PlayerDetailPopup = nil
@@ -62,10 +65,8 @@ function ShowPlayerDetailPopup(index, player)
     -- Position popup to the left of MenuBox, relative to GUI.Right
     local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
     
-    -- Get the row's Y position within the PlayersListContainer
-    -- The row is positioned with y = yPos .. "px" relative to PlayersListContainer
-    -- We need to add MenuBox's position to get the correct absolute position
-    local rowYWithinContainer = GUI.GamePlayersListRows[index].y or 0
+    -- Get the row's stored Y position (we store this when creating/updating rows)
+    local rowYWithinContainer = GUI.GamePlayersListRowYPos and GUI.GamePlayersListRowYPos[index] or 0
     
     -- Calculate popup Y relative to GUI.Right
     -- MenuBox Y relative to Right + row Y within the scroll container
@@ -217,6 +218,9 @@ end
 local function createPlayerRow(index, yPos, player)
     local rowName = "GUI.GamePlayersRow_" .. index
     local rowHeight = player.exprate_hour > 0 and 55 or 43
+    
+    -- Store the Y position for popup alignment
+    GUI.GamePlayersListRowYPos[index] = yPos
     
     if GUI.GamePlayersListRows[index] then
         GUI.GamePlayersListRows[index]:resize("100%", rowHeight .. "px")
