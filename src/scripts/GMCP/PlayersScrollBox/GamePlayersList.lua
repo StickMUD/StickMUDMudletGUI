@@ -227,8 +227,8 @@ function ShowPlayerDetailPopup(index, player)
         local labelName = "GUI.PlayerDetailPopupRow" .. i
         local label = Geyser.Label:new({
             name = labelName,
-            h_policy = Geyser.Fixed,
-            h_stretch_factor = row.height,
+            v_policy = Geyser.Fixed,
+            v_stretch_factor = row.height,
         }, GUI.PlayerDetailPopupVBox)
         
         label:setStyleSheet([[
