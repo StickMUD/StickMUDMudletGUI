@@ -68,13 +68,13 @@ local function initializeConsole(item)
     local console_type = item.console:find("Console") and "MiniConsole" or item.console:find("Container") and "Container" or "ScrollBox"
     local console_settings = {
         name = "GUI." .. item.console,
-        x = GUI.MenuBox:get_x(),
-        y = GUI.MenuBox:get_y(),
-        height = GUI.MenuBox:get_height(),
-        width = GUI.MenuBox:get_width()
+        x = 0,
+        y = 0,
+        height = "100%",
+        width = "100%"
     }
 
-    GUI[item.console] = Geyser[console_type]:new(console_settings)
+    GUI[item.console] = Geyser[console_type]:new(console_settings, GUI.MenuBox)
     setBackgroundColor("GUI." .. item.console, 0, 0, 0, 255)
 
     if console_type == "MiniConsole" then

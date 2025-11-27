@@ -82,11 +82,11 @@ local function initializeConsole(item)
 
     GUI[item.console] = Geyser.MiniConsole:new({
         name = "GUI." .. item.console,
-        x = GUI.ChatBox:get_x(),
-        y = GUI.ChatBox:get_y(),
-        height = GUI.ChatBox:get_height(),
-        width = GUI.ChatBox:get_width()
-    })
+        x = 0,
+        y = 0,
+        height = "100%",
+        width = "100%"
+    }, GUI.ChatBox)
     
     local consoleName = "GUI." .. item.console
     setBackgroundColor(consoleName, 0, 0, 0, 0)
