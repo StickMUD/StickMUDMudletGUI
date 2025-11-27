@@ -121,8 +121,8 @@ function ShowPlayerDetailPopup(index, player)
     
     GUI.PlayerDetailPopup:echo(popupContent)
     
-    -- Click on popup closes it
-    GUI.PlayerDetailPopup:setClickCallback("ClosePlayerDetailPopup")
+    -- Set an empty click callback to prevent clicks from propagating to parent
+    GUI.PlayerDetailPopup:setClickCallback(function() end)
     
     GUI.PlayerDetailPopup:show()
     GUI.PlayerDetailPopup:raise()
