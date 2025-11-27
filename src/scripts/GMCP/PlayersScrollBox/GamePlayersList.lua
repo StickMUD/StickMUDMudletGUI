@@ -48,12 +48,30 @@ function ShowPlayerDetailPopup(index, player)
     -- Store player data for the popup
     GUI.SelectedPlayerData = player
     
-    -- Create the popup container
+    -- Create the popup container to the LEFT of PlayersScrollBox
+    -- Position it in GUI.Right so it can extend beyond the PlayersScrollBox bounds
+    local popupWidth = 200
+    local popupHeight = 150
+    
+    -- Get the left edge of MenuBox (which contains PlayersScrollBox)
+    local menuBoxX = GUI.MenuBox:get_x()
+    local popupX = menuBoxX - popupWidth - 10  -- 10px gap from the edge
+    
+    -- Position vertically near the clicked row
+    local rowY = GUI.GamePlayersListRows[index] and GUI.GamePlayersListRows[index]:get_y() or GUI.MenuBox:get_y()
+    local popupY = math.max(rowY, GUI.MenuBox:get_y())  -- Don't go above MenuBox
+    
+    -- Make sure popup doesn't go below the screen
+    local maxY = GUI.MenuBox:get_y() + GUI.MenuBox:get_height() - popupHeight
+    popupY = math.min(popupY, maxY)
+    
     GUI.PlayerDetailPopup = Geyser.Label:new({
         name = "GUI.PlayerDetailPopup",
-        x = "5%", y = "10%",
-        width = "90%", height = "150px"
-    }, GUI.PlayersListContainer)
+        x = popupX,
+        y = popupY,
+        width = popupWidth,
+        height = popupHeight
+    }, GUI.Right)
     
     GUI.PlayerDetailPopup:setStyleSheet([[
         background-color: rgba(30,30,35,255);
@@ -65,11 +83,13 @@ function ShowPlayerDetailPopup(index, player)
     local popupContent = string.format([[
         <table width="100%%" height="100%%">
             <tr>
-                <td width="30%%" valign="middle" align="center">
+                <td colspan="2" valign="middle" align="center">
                     <img src="%s" width="64" height="64">
                 </td>
-                <td width="70%%" valign="middle" align="left">
-                    <font size="5" color="white"><b>%s</b></font>
+            </tr>
+            <tr>
+                <td colspan="2" valign="top" align="center">
+                    <font size="4" color="white"><b>%s</b></font>
                     <br><font size="3" color="silver">%s %s</font>
                     <br><font size="3" color="gray">Level %d</font>
                 </td>
