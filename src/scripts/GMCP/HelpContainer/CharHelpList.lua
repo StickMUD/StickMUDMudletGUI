@@ -87,7 +87,7 @@ function CharHelpList()
                 x = 0,
                 y = (current_y .. "%"),
                 height = (console_height .. "%"),
-                width = GUI.HelpContainer:get_width()
+                width = "100%"
             }, GUI.HelpContainer)
             setBackgroundColor("GUI.HelpConsole", 0, 0, 0, 0)
             setFont("GUI.HelpConsole", getFont())
