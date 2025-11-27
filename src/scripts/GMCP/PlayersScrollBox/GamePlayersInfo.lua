@@ -19,6 +19,32 @@ function GamePlayersInfo()
         GUI.SelectedPlayerData[k] = v
     end
     
+    -- Height calculation constants
+    local avatarHeight = 64      -- Avatar image
+    local topPadding = 10        -- Padding above avatar
+    local avatarMargin = 8       -- Space between avatar and text
+    local nameLineHeight = 20    -- Name (font size 4)
+    local infoLineHeight = 16    -- Info lines (font size 3)
+    local smallLineHeight = 14   -- Small lines (font size 2)
+    local bottomPadding = 12     -- Padding at bottom
+    
+    -- Start with base elements: avatar + name + race/guild/level line
+    local totalHeight = topPadding + avatarHeight + avatarMargin + nameLineHeight + infoLineHeight
+    
+    -- Add height for each optional field
+    if info.alignment then totalHeight = totalHeight + infoLineHeight end
+    if info.age then totalHeight = totalHeight + infoLineHeight end
+    if info.clan_name then totalHeight = totalHeight + infoLineHeight end
+    if info.noble_title then totalHeight = totalHeight + infoLineHeight end
+    if info.deity then totalHeight = totalHeight + infoLineHeight end
+    if info.top_rankings and next(info.top_rankings) then 
+        totalHeight = totalHeight + smallLineHeight 
+    end
+    
+    totalHeight = totalHeight + bottomPadding
+    
+    GUI.PlayerDetailPopup:resize(nil, totalHeight)
+    
     -- Build the popup content with additional details
     local popupContent = string.format([[
         <table width="100%%" height="100%%">
@@ -30,13 +56,28 @@ function GamePlayersInfo()
             <tr>
                 <td colspan="2" valign="top" align="center">
                     <font size="4" color="white"><b>%s</b></font>
-                    <br><font size="3" color="silver">%s %s</font>
-                    <br><font size="3" color="gray">Level %d</font>
+                    <br><font size="3" color="silver">%s %s - Level %d</font>
     ]], getGuildImagePath(info.guild, info.gender),
         firstToUpper(info.name),
         firstToUpper(info.race),
         firstToUpper(info.guild),
         info.level)
+    
+    -- Add alignment if present
+    if info.alignment then
+        popupContent = popupContent .. string.format(
+            [[<br><font size="3" color="gray">%s</font>]],
+            firstToUpper(info.alignment)
+        )
+    end
+    
+    -- Add age if present
+    if info.age then
+        popupContent = popupContent .. string.format(
+            [[<br><font size="3" color="gray">Age: %s</font>]],
+            info.age
+        )
+    end
     
     -- Add clan info if present
     if info.clan_name then
@@ -60,6 +101,30 @@ function GamePlayersInfo()
             [[<br><font size="3" color="gold">%s%s</font>]],
             info.noble_title,
             kingdomText
+        )
+    end
+    
+    -- Add deity if present
+    if info.deity then
+        popupContent = popupContent .. string.format(
+            [[<br><font size="3" color="magenta">Follower of %s</font>]],
+            info.deity
+        )
+    end
+    
+    -- Add top rankings if present
+    if info.top_rankings and next(info.top_rankings) then
+        local rankings = {}
+        for skill, rank in pairs(info.top_rankings) do
+            local rankColor = rank == 1 and "gold" or "silver"
+            table.insert(rankings, string.format(
+                [[<font color="%s">#%d %s</font>]],
+                rankColor, rank, skill
+            ))
+        end
+        popupContent = popupContent .. string.format(
+            [[<br><font size="2" color="orange">%s</font>]],
+            table.concat(rankings, ", ")
         )
     end
     
