@@ -140,23 +140,19 @@ function GamePlayersInfo()
         })
     end
     
-    -- Top rankings row
+    -- Top rankings rows (one per skill)
     if info.top_rankings and next(info.top_rankings) then
-        local rankings = {}
         for skill, rank in pairs(info.top_rankings) do
             local rankColor = rank == 1 and "gold" or "silver"
-            table.insert(rankings, string.format(
-                [[<font color="%s">#%d %s</font>]],
-                rankColor, rank, skill
-            ))
+            table.insert(rows, {
+                height = smallLineHeight,
+                content = string.format(
+                    [[<center><a href="send:best %s"><font size="2" color="%s">#%d %s</font></a></center>]],
+                    skill, rankColor, rank, skill
+                ),
+                linkStyle = {rankColor, rankColor, false}
+            })
         end
-        table.insert(rows, {
-            height = smallLineHeight,
-            content = string.format(
-                [[<center><font size="2" color="orange">%s</font></center>]],
-                table.concat(rankings, ", ")
-            )
-        })
     end
     
     -- Calculate total height
