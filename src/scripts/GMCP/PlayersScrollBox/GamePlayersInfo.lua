@@ -20,11 +20,11 @@ function GamePlayersInfo()
     end
     
     -- Height calculation constants
-    local avatarHeight = 74      -- Avatar row (64px image + padding)
-    local nameLineHeight = 24    -- Name (font size 4)
-    local infoLineHeight = 18    -- Info lines (font size 3)
-    local smallLineHeight = 16   -- Small lines (font size 2)
-    local padding = 8            -- Top/bottom padding
+    local avatarHeight = 68      -- Avatar row (64px image + small padding)
+    local nameLineHeight = 22    -- Name (font size 4)
+    local infoLineHeight = 16    -- Info lines (font size 3)
+    local smallLineHeight = 14   -- Small lines (font size 2)
+    local padding = 6            -- Top/bottom padding
     
     -- Build list of content rows to determine height
     local rows = {}
@@ -82,12 +82,16 @@ function GamePlayersInfo()
     
     -- Clan row (clickable link)
     if info.clan_name then
+        local clanDisplay = info.clan_name
+        if info.clan_leader == 1 then
+            clanDisplay = clanDisplay .. " (leader)"
+        end
         table.insert(rows, {
             height = infoLineHeight,
             content = string.format(
                 [[<center><a href="send:clan members %s"><font size="3" color="cyan">%s</font></a></center>]],
                 info.clan,
-                info.clan_name
+                clanDisplay
             ),
             linkStyle = {"cyan", "cyan", false}
         })
@@ -98,9 +102,20 @@ function GamePlayersInfo()
         local kingdomText = ""
         if info.kingdom then
             if type(info.kingdom) == "table" then
-                kingdomText = " of " .. table.concat(info.kingdom, ", ")
+                -- Multiple kingdoms - create links for each
+                local kingdomLinks = {}
+                for _, k in ipairs(info.kingdom) do
+                    table.insert(kingdomLinks, string.format(
+                        [[<a href="send:kingdoms %s">%s</a>]],
+                        k, firstToUpper(k)
+                    ))
+                end
+                kingdomText = " of " .. table.concat(kingdomLinks, ", ")
             else
-                kingdomText = " of " .. firstToUpper(info.kingdom)
+                kingdomText = string.format(
+                    [[ of <a href="send:kingdoms %s">%s</a>]],
+                    info.kingdom, firstToUpper(info.kingdom)
+                )
             end
         end
         table.insert(rows, {
@@ -109,7 +124,8 @@ function GamePlayersInfo()
                 [[<center><font size="3" color="gold">%s%s</font></center>]],
                 info.noble_title,
                 kingdomText
-            )
+            ),
+            linkStyle = {"gold", "gold", false}
         })
     end
     
