@@ -169,11 +169,14 @@ function GamePlayersInfo()
     -- Resize popup
     GUI.PlayerDetailPopup:resize(nil, totalHeight)
     
-    -- Clear existing labels
+    -- Clear existing labels (destroy them, not just hide)
     if GUI.PlayerDetailPopupLabels then
         for _, label in ipairs(GUI.PlayerDetailPopupLabels) do
             if label then
                 label:hide()
+                if label.delete then
+                    label:delete()
+                end
             end
         end
     end
