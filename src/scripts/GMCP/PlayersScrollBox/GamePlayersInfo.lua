@@ -190,9 +190,10 @@ function GamePlayersInfo()
             GUI.PlayerDetailPopupLabels[i]:move(0, currentY .. "px")
             GUI.PlayerDetailPopupLabels[i]:resize("100%", row.height .. "px")
             GUI.PlayerDetailPopupLabels[i]:echo(row.content)
-            if row.linkStyle then
-                GUI.PlayerDetailPopupLabels[i]:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
-            end
+            -- TODO: Uncomment when Mudlet 4.20+ is released
+            -- if row.linkStyle and GUI.PlayerDetailPopupLabels[i].setLinkStyle then
+            --     GUI.PlayerDetailPopupLabels[i]:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+            -- end
             GUI.PlayerDetailPopupLabels[i]:show()
             GUI.PlayerDetailPopupLabels[i]:raise()
         else
@@ -211,10 +212,11 @@ function GamePlayersInfo()
             
             label:echo(row.content)
             
+            -- TODO: Uncomment when Mudlet 4.20+ is released
             -- Apply link style if specified
-            if row.linkStyle then
-                label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
-            end
+            -- if row.linkStyle then
+            --     label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+            -- end
             
             -- Prevent clicks from closing the popup
             label:setClickCallback(function() end)
