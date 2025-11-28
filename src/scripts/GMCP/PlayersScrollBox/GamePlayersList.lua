@@ -235,10 +235,11 @@ function ShowPlayerDetailPopup(index, player)
         
         label:echo(row.content)
         
+        -- TODO: Uncomment when Mudlet 4.20+ is released
         -- Apply link style if specified
-        if row.linkStyle then
-            label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
-        end
+        -- if row.linkStyle then
+        --     label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+        -- end
         
         -- Prevent clicks from closing the popup
         label:setClickCallback(function() end)
