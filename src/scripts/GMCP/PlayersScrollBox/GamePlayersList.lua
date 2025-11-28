@@ -28,11 +28,14 @@ function ClosePlayerDetailPopup()
         GUI.PlayerPopupClickHandler = nil
     end
     
-    -- Clean up labels
+    -- Clean up labels (destroy them, not just hide)
     if GUI.PlayerDetailPopupLabels then
         for _, label in ipairs(GUI.PlayerDetailPopupLabels) do
             if label then
                 label:hide()
+                if label.delete then
+                    label:delete()
+                end
             end
         end
         GUI.PlayerDetailPopupLabels = nil
