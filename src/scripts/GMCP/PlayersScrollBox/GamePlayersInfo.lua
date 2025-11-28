@@ -204,6 +204,7 @@ function GamePlayersInfo()
             
             label:setStyleSheet([[
                 background-color: transparent;
+                qproperty-wordWrap: true;
             ]])
             
             label:echo(row.content)

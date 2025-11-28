@@ -116,7 +116,7 @@ function ShowPlayerDetailPopup(index, player)
     
     -- Create the popup container to the LEFT of PlayersScrollBox
     -- Position it in GUI.Right so it can extend beyond the PlayersScrollBox bounds
-    local popupWidth = 200
+    local popupWidth = 300
     local popupHeight = 150
     
     -- Calculate position relative to GUI.Right
@@ -231,6 +231,7 @@ function ShowPlayerDetailPopup(index, player)
         
         label:setStyleSheet([[
             background-color: transparent;
+            qproperty-wordWrap: true;
         ]])
         
         label:echo(row.content)
