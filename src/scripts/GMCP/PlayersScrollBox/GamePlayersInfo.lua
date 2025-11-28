@@ -169,49 +169,62 @@ function GamePlayersInfo()
     -- Resize popup
     GUI.PlayerDetailPopup:resize(nil, totalHeight)
     
-    -- Clear existing labels (destroy them, not just hide)
+    -- Hide any extra labels from previous render
     if GUI.PlayerDetailPopupLabels then
-        for _, label in ipairs(GUI.PlayerDetailPopupLabels) do
-            if label then
-                label:hide()
-                if label.delete then
-                    label:delete()
-                end
+        for i = #rows + 1, #GUI.PlayerDetailPopupLabels do
+            if GUI.PlayerDetailPopupLabels[i] then
+                GUI.PlayerDetailPopupLabels[i]:hide()
             end
         end
+    else
+        GUI.PlayerDetailPopupLabels = {}
     end
-    GUI.PlayerDetailPopupLabels = {}
     
-    -- Create individual labels for each row with absolute positioning
+    -- Create or update labels for each row with absolute positioning
     local currentY = padding
     for i, row in ipairs(rows) do
         local labelName = "GUI.PlayerDetailPopupRow" .. i
-        local label = Geyser.Label:new({
-            name = labelName,
-            x = 0,
-            y = currentY .. "px",
-            width = "100%",
-            height = row.height .. "px",
-        }, GUI.PlayerDetailPopup)
         
-        label:setStyleSheet([[
-            background-color: transparent;
-        ]])
-        
-        label:echo(row.content)
-        
-        -- Apply link style if specified
-        if row.linkStyle then
-            label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+        if GUI.PlayerDetailPopupLabels[i] then
+            -- Reuse existing label
+            GUI.PlayerDetailPopupLabels[i]:move(0, currentY .. "px")
+            GUI.PlayerDetailPopupLabels[i]:resize("100%", row.height .. "px")
+            GUI.PlayerDetailPopupLabels[i]:echo(row.content)
+            if row.linkStyle then
+                GUI.PlayerDetailPopupLabels[i]:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+            end
+            GUI.PlayerDetailPopupLabels[i]:show()
+            GUI.PlayerDetailPopupLabels[i]:raise()
+        else
+            -- Create new label
+            local label = Geyser.Label:new({
+                name = labelName,
+                x = 0,
+                y = currentY .. "px",
+                width = "100%",
+                height = row.height .. "px",
+            }, GUI.PlayerDetailPopup)
+            
+            label:setStyleSheet([[
+                background-color: transparent;
+            ]])
+            
+            label:echo(row.content)
+            
+            -- Apply link style if specified
+            if row.linkStyle then
+                label:setLinkStyle(row.linkStyle[1], row.linkStyle[2], row.linkStyle[3])
+            end
+            
+            -- Prevent clicks from closing the popup
+            label:setClickCallback(function() end)
+            
+            label:show()
+            label:raise()
+            
+            GUI.PlayerDetailPopupLabels[i] = label
         end
         
-        -- Prevent clicks from closing the popup
-        label:setClickCallback(function() end)
-        
-        label:show()
-        label:raise()
-        
-        GUI.PlayerDetailPopupLabels[i] = label
         currentY = currentY + row.height
     end
 end
