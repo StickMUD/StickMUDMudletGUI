@@ -159,10 +159,10 @@ function ShowPlayerDetailPopup(index, player)
     ]])
     
     -- Height calculation constants (same as GamePlayersInfo.lua)
-    local avatarHeight = 74      -- Avatar row (64px image + padding)
-    local nameLineHeight = 24    -- Name (font size 4)
-    local infoLineHeight = 18    -- Info lines (font size 3)
-    local padding = 8            -- Top/bottom padding
+    local avatarHeight = 68      -- Avatar row (64px image + small padding)
+    local nameLineHeight = 22    -- Name (font size 4)
+    local infoLineHeight = 16    -- Info lines (font size 3)
+    local padding = 6            -- Top/bottom padding
     
     -- Build initial rows with available data
     local rows = {}
