@@ -423,6 +423,9 @@ end
 
 -- Create the Game Players List using individual labels
 function GamePlayersList()
+    -- Close any existing popup to ensure clean state on reconnect
+    ClosePlayerDetailPopup()
+    
     local game_players_list = gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List or {}
     local yPos = 0
     local rowIndex = 1
