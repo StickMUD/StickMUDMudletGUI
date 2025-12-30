@@ -29,12 +29,24 @@ function GamePlayersInfo()
     -- Build list of content rows to determine height
     local rows = {}
     
-    -- Avatar row
+    -- Avatar row with AFK status indicator
+    local statusIndicator = ""
+    if info.afk then
+        if info.afk == 0 then
+            -- Active - green filled circle
+            statusIndicator = [[<div style="position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background-color: #00ff00; border-radius: 50%; border: 2px solid #333;"></div>]]
+        elseif info.afk == 1 then
+            -- Away - yellow/orange crescent
+            statusIndicator = [[<div style="position: absolute; top: 2px; right: 2px; font-size: 16px; text-shadow: 0 0 3px #333;">🌙</div>]]
+        end
+    end
+    
     table.insert(rows, {
         height = avatarHeight,
         content = string.format(
-            [[<center><img src="%s" width="64" height="64"></center>]],
-            getGuildImagePath(info.guild, info.gender)
+            [[<center><div style="position: relative; display: inline-block;"><img src="%s" width="64" height="64">%s</div></center>]],
+            getGuildImagePath(info.guild, info.gender),
+            statusIndicator
         )
     })
     
@@ -47,15 +59,25 @@ function GamePlayersInfo()
         )
     })
     
-    -- Race/Guild/Level row
+    -- Race/Guild/Level row with OPK tag
+    local opkTag = ""
+    if info.opt_in_pk and info.opt_in_pk == 1 then
+        opkTag = string.format(
+            [[ <a href="send:pkinfo %s"><span style="background-color: blue; color: yellow; padding: 1px 4px; font-weight: bold; border-radius: 2px;">OPK</span></a>]],
+            info.name:lower()
+        )
+    end
+    
     table.insert(rows, {
         height = infoLineHeight,
         content = string.format(
-            [[<center><font size="3" color="silver">%s %s - Level %d</font></center>]],
+            [[<center><font size="3" color="silver">%s %s - Level %d%s</font></center>]],
             firstToUpper(info.race),
             firstToUpper(info.guild),
-            info.level
-        )
+            info.level,
+            opkTag
+        ),
+        linkStyle = info.opt_in_pk == 1 and {"yellow", "yellow", false} or nil
     })
     
     -- Alignment row
