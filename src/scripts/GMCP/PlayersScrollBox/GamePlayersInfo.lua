@@ -266,14 +266,15 @@ function GamePlayersInfo()
             GUI.PlayerDetailPopupAFKStatus:resize(statusSize, statusSize)
         end
         
+        -- Always update content based on current afk status
         if info.afk == 0 then
             -- Active - green filled circle
+            GUI.PlayerDetailPopupAFKStatus:echo("")  -- Clear any emoji content first
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
                 background-color: #00ff00;
                 border: 2px solid #333;
                 border-radius: 10px;
             ]])
-            GUI.PlayerDetailPopupAFKStatus:echo("")  -- Clear any previous content
         elseif info.afk == 1 then
             -- Away - crescent moon emoji
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
