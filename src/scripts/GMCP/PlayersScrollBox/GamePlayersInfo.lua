@@ -242,23 +242,28 @@ function GamePlayersInfo()
         local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
         
         -- Calculate position (top-right corner of avatar)
-        -- Avatar is centered in popup, 64px wide, popup is likely ~200px wide
-        local avatarCenterX = "50%"
-        local statusX = "50%"  -- Center of popup
-        local statusXOffset = 22  -- Half avatar width (32px) minus half status size (10px)
+        -- Get popup dimensions to calculate proper positioning
+        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local popupHeight = GUI.PlayerDetailPopup:get_height()
+        
+        -- Avatar is 64px centered, status indicator is 20px
+        -- Position at top-right corner of avatar
+        local avatarHalfWidth = 32  -- 64px / 2
+        local statusSize = 20
+        local statusX = (popupWidth / 2) + avatarHalfWidth - statusSize
         local statusY = padding + 2  -- Just inside the avatar top edge
         
         if not GUI.PlayerDetailPopupAFKStatus then
             GUI.PlayerDetailPopupAFKStatus = Geyser.Label:new({
                 name = statusLabelName,
                 x = statusX,
-                y = statusY .. "px",
-                width = "20px",
-                height = "20px",
+                y = statusY,
+                width = statusSize,
+                height = statusSize,
             }, GUI.PlayerDetailPopup)
         else
-            GUI.PlayerDetailPopupAFKStatus:move(statusX, statusY .. "px")
-            GUI.PlayerDetailPopupAFKStatus:resize("20px", "20px")
+            GUI.PlayerDetailPopupAFKStatus:move(statusX, statusY)
+            GUI.PlayerDetailPopupAFKStatus:resize(statusSize, statusSize)
         end
         
         if info.afk == 0 then
@@ -268,6 +273,7 @@ function GamePlayersInfo()
                 border: 2px solid #333;
                 border-radius: 10px;
             ]])
+            GUI.PlayerDetailPopupAFKStatus:echo("")  -- Clear any previous content
         elseif info.afk == 1 then
             -- Away - crescent moon emoji
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
