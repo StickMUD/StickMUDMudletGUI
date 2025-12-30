@@ -29,24 +29,12 @@ function GamePlayersInfo()
     -- Build list of content rows to determine height
     local rows = {}
     
-    -- Avatar row with AFK status indicator
-    local statusIndicator = ""
-    if info.afk then
-        if info.afk == 0 then
-            -- Active - green filled circle
-            statusIndicator = [[<div style="position: absolute; top: 2px; right: 2px; width: 16px; height: 16px; background-color: #00ff00; border-radius: 50%; border: 2px solid #333;"></div>]]
-        elseif info.afk == 1 then
-            -- Away - yellow/orange crescent
-            statusIndicator = [[<div style="position: absolute; top: 2px; right: 2px; font-size: 16px; text-shadow: 0 0 3px #333;">🌙</div>]]
-        end
-    end
-    
+    -- Avatar row
     table.insert(rows, {
         height = avatarHeight,
         content = string.format(
-            [[<center><div style="position: relative; display: inline-block;"><img src="%s" width="64" height="64">%s</div></center>]],
-            getGuildImagePath(info.guild, info.gender),
-            statusIndicator
+            [[<center><img src="%s" width="64" height="64"></center>]],
+            getGuildImagePath(info.guild, info.gender)
         )
     })
     
@@ -247,5 +235,52 @@ function GamePlayersInfo()
         end
         
         currentY = currentY + row.height
+    end
+    
+    -- Create/update AFK status indicator overlay on avatar
+    if info.afk ~= nil then
+        local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
+        
+        -- Calculate position (top-right corner of avatar)
+        -- Avatar is centered in popup, 64px wide, popup is likely ~200px wide
+        local avatarCenterX = "50%"
+        local statusX = "50%"  -- Center of popup
+        local statusXOffset = 22  -- Half avatar width (32px) minus half status size (10px)
+        local statusY = padding + 2  -- Just inside the avatar top edge
+        
+        if not GUI.PlayerDetailPopupAFKStatus then
+            GUI.PlayerDetailPopupAFKStatus = Geyser.Label:new({
+                name = statusLabelName,
+                x = statusX,
+                y = statusY .. "px",
+                width = "20px",
+                height = "20px",
+            }, GUI.PlayerDetailPopup)
+        else
+            GUI.PlayerDetailPopupAFKStatus:move(statusX, statusY .. "px")
+            GUI.PlayerDetailPopupAFKStatus:resize("20px", "20px")
+        end
+        
+        if info.afk == 0 then
+            -- Active - green filled circle
+            GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
+                background-color: #00ff00;
+                border: 2px solid #333;
+                border-radius: 10px;
+            ]])
+        elseif info.afk == 1 then
+            -- Away - crescent moon emoji
+            GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
+                background-color: transparent;
+                border: none;
+                font-size: 16px;
+            ]])
+            GUI.PlayerDetailPopupAFKStatus:echo([[<center>🌙</center>]])
+        end
+        
+        GUI.PlayerDetailPopupAFKStatus:show()
+        GUI.PlayerDetailPopupAFKStatus:raise()
+    elseif GUI.PlayerDetailPopupAFKStatus then
+        GUI.PlayerDetailPopupAFKStatus:hide()
     end
 end
