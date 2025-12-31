@@ -271,11 +271,12 @@ function GamePlayersInfo()
                 border-radius: 8px;
             ]])
         elseif info.afk == 1 then
-            -- Away - crescent moon emoji
+            -- Away - dark blue circle with moon emoji
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
-                background-color: transparent;
-                border: none;
-                font-size: 14px;
+                background-color: #1a237e;
+                border: 2px solid #0d1440;
+                border-radius: 8px;
+                font-size: 10px;
             ]])
             GUI.PlayerDetailPopupAFKStatus:echo([[<center>🌙</center>]])
         end
