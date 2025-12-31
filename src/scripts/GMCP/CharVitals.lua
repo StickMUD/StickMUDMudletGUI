@@ -42,29 +42,21 @@ function CharVitals()
 	if string.cut(percent_hp, 1) == "-" then percent_hp = "0%" end
 	if current_hp > max_hp then current_hp = max_hp end
   
-	if GUI.HitPoints then
-		GUI.HitPoints:setValue(current_hp, max_hp, ("<center><b>" ..current_hp.. "/" ..max_hp.. " Hit (" ..percent_hp.. ")</b></center>"))
-	end
+	GUI.HitPoints:setValue(current_hp, max_hp, ("<center><b>" ..current_hp.. "/" ..max_hp.. " Hit (" ..percent_hp.. ")</b></center>"))	
 	
 	percent_sp = percent_sp.."%"
 	if string.cut(percent_sp, 1) == "-" then percent_sp = "0%" end
 	if current_sp > max_sp then current_sp = max_sp end
 
-	if GUI.SpellPoints then
-		GUI.SpellPoints:setValue(current_sp, max_sp, ("<center><b>" ..current_sp.. "/" ..max_sp.. " Spell (" ..percent_sp.. ")</b></center>"))
-	end
+	GUI.SpellPoints:setValue(current_sp, max_sp, ("<center><b>" ..current_sp.. "/" ..max_sp.. " Spell (" ..percent_sp.. ")</b></center>"))	
 
 	percent_fp = percent_fp.."%"
 	if string.cut(percent_fp, 1) == "-" then percent_fp = "0%" end
 	if current_fp > max_fp then current_fp = max_fp end
 
-	if GUI.FatiguePoints then
-		GUI.FatiguePoints:setValue(current_fp, max_fp, ("<center><b>" ..current_fp.. "/" ..max_fp.. " Fatigue (" ..percent_fp.. ")</b></center>"))
-	end	
+	GUI.FatiguePoints:setValue(current_fp, max_fp, ("<center><b>" ..current_fp.. "/" ..max_fp.. " Fatigue (" ..percent_fp.. ")</b></center>"))	
 
 	-- Handle enemy health (moved from CharStatus - updates every heartbeat during combat)
-	if not GUI.EnemyHealth then return end
-	
 	local enemy = gmcp.Char.Vitals.enemy or "None"
 	local current_enemy_health = gmcp.Char.Vitals.enemyhealth
 	local percent_enemy_health
