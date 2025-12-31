@@ -110,7 +110,7 @@ function CharStatus()
                                                 "rgba(255,0,0,100)")
         else
             GUI["Box" .. icons[i] .. "CSS"]:set("background-color",
-                                                "rgba(0,0,0,100)")
+                                                "rgba(0,0,0,0)")
         end
 
         GUI["Box" .. firstToUpper(icons[i])]:setStyleSheet(

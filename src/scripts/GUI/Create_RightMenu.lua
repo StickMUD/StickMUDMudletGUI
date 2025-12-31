@@ -115,9 +115,9 @@ GUI.MenuCard = Geyser.Label:new({
     x = "50%", y = "2px",
     width = "-2px", height = "7%"
 }, GUI.Right)
-GUI.MenuCard:setStyleSheet(GUI.IconCardCSS or [[
-  background-color: #1a1a1e;
-  border: 1px solid #2a2a30;
+GUI.MenuCard:setStyleSheet([[
+  background-color: #1a1c24;
+  border: 1px solid #2a2c34;
   border-radius: 6px;
 ]])
 

@@ -17,10 +17,10 @@ local header_tooltips = {
 }
 local header_stretch = {1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
--- Shared card style for icon containers
+-- Shared card style for icon containers (edge cards - subtle blue tint)
 GUI.IconCardCSS = [[
-  background-color: #1a1a1e;
-  border: 1px solid #2a2a30;
+  background-color: #1a1c24;
+  border: 1px solid #2a2c34;
   border-radius: 6px;
 ]]
 

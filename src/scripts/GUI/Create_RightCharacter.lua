@@ -39,9 +39,9 @@ GUI.CharacterCard = Geyser.Label:new({
   name = "GUI.CharacterCard",
   x = "2px", y = "93%", width = "-4px", height = "7%"
 }, GUI.Right)
-GUI.CharacterCard:setStyleSheet(GUI.IconCardCSS or [[
-  background-color: #1a1a1e;
-  border: 1px solid #2a2a30;
+GUI.CharacterCard:setStyleSheet([[
+  background-color: #1a1c24;
+  border: 1px solid #2a2c34;
   border-radius: 6px;
 ]])
 

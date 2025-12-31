@@ -53,8 +53,8 @@ GUI.ChatCard = Geyser.Label:new({
     width = "50%", height = "7%"
 }, GUI.Right)
 GUI.ChatCard:setStyleSheet([[
-  background-color: #252528;
-  border: 1px solid #3a3a3f;
+  background-color: #222226;
+  border: 1px solid #32323a;
   border-radius: 6px;
 ]])
 
