@@ -16,7 +16,7 @@ local character_data = {
 
 -- CSS for character status icons
 GUI.BoxCharacterCSS = CSSMan.new([[
-  background-color: transparent;
+  background-color: rgba(0,0,0,0);
 ]])
 
 GUI.BoxCharacterHoverCSS = CSSMan.new([[

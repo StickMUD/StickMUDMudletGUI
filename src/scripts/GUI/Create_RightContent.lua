@@ -35,19 +35,45 @@ end
 -- CSS for content buttons
 GUI.BoxContentButtonCSS = CSSMan.new([[
   background-color: rgba(0,0,0,0);
-  border-style: solid;
-  border-color: #31363b;
-  border-width: 1px;
+  border: none;
+]])
+
+GUI.BoxContentButtonHoverCSS = CSSMan.new([[
+  background-color: rgba(255,255,255,15);
+  border: none;
+]])
+
+-- Hover effect handlers for content icons
+function ContentIconEnter(label, enterMessage)
+    label:setStyleSheet(GUI.BoxContentButtonHoverCSS:getCSS())
+    enable_tooltip(label, enterMessage)
+end
+
+function ContentIconLeave(label, leaveMessage)
+    label:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
+    disable_tooltip(label, leaveMessage)
+end
+
+-- Card container for content buttons
+GUI.ContentCard = Geyser.Label:new({
+    name = "GUI.ContentCard",
+    x = "2px", y = "45%",
+    width = "50%", height = "7%"
+}, GUI.Right)
+GUI.ContentCard:setStyleSheet(GUI.IconCardCSS or [[
+  background-color: #1a1a1e;
+  border: 1px solid #2a2a30;
+  border-radius: 6px;
 ]])
 
 -- Main container for content buttons
 GUI.HBoxContent = Geyser.HBox:new({
     name = "GUI.HBoxContent",
     x = 0,
-    y = "45%",
-    width = "50%",
-    height = "7%"
-}, GUI.Right)
+    y = 0,
+    width = "100%",
+    height = "100%"
+}, GUI.ContentCard)
 
 -- Function to create labels for content items
 local function createLabel(item)
@@ -59,8 +85,8 @@ local function createLabel(item)
     
     GUI[item.section]:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
     GUI[item.section]:setClickCallback("on_content_box_press", item.section)
-    GUI[item.section]:setOnEnter("enable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
-    GUI[item.section]:setOnLeave("disable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
+    GUI[item.section]:setOnEnter("ContentIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnLeave("ContentIconLeave", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 
 -- Create labels for each content item

@@ -43,7 +43,7 @@ end
 
 -- CSS for menu buttons
 GUI.BoxMenuButtonCSS = CSSMan.new([[
-  background-color: transparent;
+  background-color: rgba(0,0,0,0);
   border: none;
 ]])
 

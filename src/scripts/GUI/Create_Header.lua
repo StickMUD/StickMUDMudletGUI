@@ -25,7 +25,7 @@ GUI.IconCardCSS = [[
 ]]
 
 GUI.BoxHeaderCSS = CSSMan.new([[
-  background-color: transparent;
+  background-color: rgba(0,0,0,0);
   qproperty-wordWrap: true;
 ]])
 
