@@ -226,4 +226,106 @@ function GamePlayersInfo()
         
         currentY = currentY + row.height
     end
+    
+    -- Create/update AFK status indicator overlay on avatar
+    if info.afk ~= nil then
+        local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
+        
+        -- Calculate position (bottom-right corner of avatar)
+        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local avatarHalfWidth = 32  -- 64px / 2
+        local avatarSize = 64
+        local statusSize = 16  -- Smaller size for less intrusion
+        local statusX = (popupWidth / 2) + avatarHalfWidth - statusSize - 2  -- Inside avatar right edge
+        local statusY = padding + avatarSize - statusSize - 2  -- Inside avatar bottom edge
+        
+        -- Always recreate the label to ensure it displays properly
+        if GUI.PlayerDetailPopupAFKStatus then
+            GUI.PlayerDetailPopupAFKStatus:hide()
+            GUI.PlayerDetailPopupAFKStatus = nil
+        end
+        
+        GUI.PlayerDetailPopupAFKStatus = Geyser.Label:new({
+            name = statusLabelName,
+            x = statusX,
+            y = statusY,
+            width = statusSize,
+            height = statusSize,
+        }, GUI.PlayerDetailPopup)
+        
+        -- Set style and content based on AFK status
+        if info.afk == 0 then
+            -- Active - green filled circle with shadow for depth
+            GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
+                background-color: #00ff00;
+                border: 2px solid #006600;
+                border-radius: 8px;
+            ]])
+        elseif info.afk == 1 then
+            -- Away - dark blue circle with moon emoji
+            GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
+                background-color: #1a237e;
+                border: 2px solid #0d1440;
+                border-radius: 8px;
+                font-size: 10px;
+            ]])
+            GUI.PlayerDetailPopupAFKStatus:echo([[<center>🌙</center>]])
+        end
+        
+        -- Prevent clicks from closing the popup
+        GUI.PlayerDetailPopupAFKStatus:setClickCallback(function() end)
+        
+        GUI.PlayerDetailPopupAFKStatus:show()
+        GUI.PlayerDetailPopupAFKStatus:raise()
+    elseif GUI.PlayerDetailPopupAFKStatus then
+        GUI.PlayerDetailPopupAFKStatus:hide()
+    end
+    
+    -- Create/update OPK indicator overlay to the right of avatar
+    if info.opt_in_pk == 1 then
+        local opkLabelName = "GUI.PlayerDetailPopupOPK"
+        
+        -- Calculate position (right of avatar, halfway to border)
+        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local avatarRightEdge = (popupWidth / 2) + 32  -- Center + half avatar width
+        local rightMargin = 10  -- Border padding
+        local availableSpace = popupWidth - avatarRightEdge - rightMargin
+        local opkWidth = 32
+        local opkHeight = 18
+        local opkX = avatarRightEdge + (availableSpace / 2) - (opkWidth / 2)  -- Centered in available space
+        local opkY = padding + 32 - (opkHeight / 2)  -- Vertically centered on avatar
+        
+        -- Always recreate the label to ensure it displays properly
+        if GUI.PlayerDetailPopupOPK then
+            GUI.PlayerDetailPopupOPK:hide()
+            GUI.PlayerDetailPopupOPK = nil
+        end
+        
+        GUI.PlayerDetailPopupOPK = Geyser.Label:new({
+            name = opkLabelName,
+            x = opkX,
+            y = opkY,
+            width = opkWidth,
+            height = opkHeight,
+        }, GUI.PlayerDetailPopup)
+        
+        GUI.PlayerDetailPopupOPK:setStyleSheet([[
+            background-color: #cc0000;
+            border: 1px solid #880000;
+            border-radius: 3px;
+        ]])
+        
+        GUI.PlayerDetailPopupOPK:echo(string.format(
+            [[<center> <a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a> </center>]],
+            info.name:lower()
+        ))
+        
+        -- Prevent clicks from closing the popup (but allow link clicks)
+        GUI.PlayerDetailPopupOPK:setClickCallback(function() end)
+        
+        GUI.PlayerDetailPopupOPK:show()
+        GUI.PlayerDetailPopupOPK:raise()
+    elseif GUI.PlayerDetailPopupOPK then
+        GUI.PlayerDetailPopupOPK:hide()
+    end
 end
