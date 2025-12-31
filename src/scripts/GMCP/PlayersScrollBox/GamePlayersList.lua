@@ -338,10 +338,42 @@ end
 
 -- Generate player row HTML content
 local function generatePlayerRowContent(player)
+    -- Build AFK indicator for avatar area
+    local afkIndicator = ""
+    if player.afk ~= nil then
+        if player.afk == 0 then
+            -- Active - green circle
+            afkIndicator = [[<span style="background-color: #00ff00; border: 1px solid #006600; border-radius: 5px; font-size: 6px;">&nbsp;&nbsp;</span>]]
+        elseif player.afk == 1 then
+            -- Away - moon on dark blue circle
+            afkIndicator = [[<span style="background-color: #1a237e; border: 1px solid #0d1440; border-radius: 5px; font-size: 8px;">🌙</span>]]
+        end
+    end
+    
+    -- Build OPK tag for after name
+    local opkTag = ""
+    if player.opt_in_pk == 1 then
+        opkTag = [[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color: #cc0000; color: white; padding: 1px 4px; font-weight: bold; border-radius: 2px; font-size: 10px;">OPK</span>]]
+    end
+    
+    -- Build avatar cell with AFK indicator in lower-right corner using nested table
+    local avatarCell
+    if afkIndicator ~= "" then
+        avatarCell = string.format(
+            [[<td width="20%%" valign="center" align="center"><table cellspacing="0" cellpadding="0"><tr><td rowspan="2" align="center"><img src="%s"></td><td width="1">&nbsp;</td></tr><tr><td valign="bottom" align="right">%s</td></tr></table></td>]],
+            getGuildImagePath(player.guild, player.gender),
+            afkIndicator
+        )
+    else
+        avatarCell = string.format(
+            [[<td width="20%%" valign="center" align="center"><font size="8"><img src="%s"></font></td>]],
+            getGuildImagePath(player.guild, player.gender)
+        )
+    end
+    
     local content = string.format(
-        "<table width=\"100%%\"><tr><td width=\"20%%\" valign=\"center\" align=\"center\"><font size=\"8\"><img src=\"%s\"></font></td>" ..
-        "<td width=\"80%%\" valign=\"center\" align=\"left\"><font size=\"4\">%s</font>",
-        getGuildImagePath(player.guild, player.gender), firstToUpper(player.name)
+        [[<table width="100%%"><tr>%s<td width="80%%" valign="center" align="left"><font size="4">%s</font>%s]],
+        avatarCell, firstToUpper(player.name), opkTag
     )
     content = content .. string.format(
         "<br><font size=\"3\" color=\"silver\">%s %s - Level %d</font>",
