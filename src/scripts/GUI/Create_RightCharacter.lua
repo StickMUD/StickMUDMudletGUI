@@ -23,9 +23,6 @@ GUI.BoxCharacterHoverCSS = CSSMan.new([[
   background-color: rgba(255,255,255,15);
 ]])
 
--- Store current background state for each icon
-GUI.IconBackgrounds = GUI.IconBackgrounds or {}
-
 -- Hover effect handlers for character status icons
 function CharacterIconEnter(label, enterMessage)
     label:setStyleSheet(GUI.BoxCharacterHoverCSS:getCSS())
@@ -65,6 +62,8 @@ local function createCharacterBox(data)
   }, GUI.HBoxCharacter)
 
   GUI[data.section]:setStyleSheet(GUI.BoxCharacterCSS:getCSS())
+  -- Store initial background for hover restoration
+  GUI.IconBackgrounds["GUI." .. data.section] = GUI.BoxCharacterCSS:getCSS()
   
   local enterMessage = string.format("<center><img src=\"%s\"><br>%s", iconPath, data.tooltip)
   local leaveMessage = string.format("<center><img src=\"%s\">", iconPath)

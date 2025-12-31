@@ -77,6 +77,8 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     }, GUI.HBoxEquipment)
     
     sectionLabel:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+    -- Store initial background for hover restoration
+    GUI.IconBackgrounds[name] = GUI.BoxHeaderCSS:getCSS()
     
     -- Tooltip configurations
     local enterMessage = isText and

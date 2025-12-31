@@ -33,9 +33,6 @@ function CharStatus()
     }
 
     local state
-    
-    -- Initialize icon backgrounds table if needed
-    GUI.IconBackgrounds = GUI.IconBackgrounds or {}
 
     for i = 1, 12 do
         state = gmcp.Char.Status[char_status[i]]
