@@ -239,6 +239,8 @@ function GamePlayersInfo()
     
     -- Create/update AFK status indicator overlay on avatar
     if info.afk ~= nil then
+        cecho(string.format("\n<green>DEBUG: Showing AFK indicator for %s, afk=%d\n", info.name, info.afk))
+        
         local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
         
         -- Calculate position (top-right corner of avatar)
@@ -254,6 +256,7 @@ function GamePlayersInfo()
         local statusY = padding + 2  -- Just inside the avatar top edge
         
         if not GUI.PlayerDetailPopupAFKStatus then
+            cecho("\n<yellow>DEBUG: Creating new AFK status label\n")
             GUI.PlayerDetailPopupAFKStatus = Geyser.Label:new({
                 name = statusLabelName,
                 x = statusX,
@@ -262,6 +265,7 @@ function GamePlayersInfo()
                 height = statusSize,
             }, GUI.PlayerDetailPopup)
         else
+            cecho("\n<cyan>DEBUG: Updating existing AFK status label\n")
             GUI.PlayerDetailPopupAFKStatus:move(statusX, statusY)
             GUI.PlayerDetailPopupAFKStatus:resize(statusSize, statusSize)
         end
@@ -269,6 +273,7 @@ function GamePlayersInfo()
         -- Always update content based on current afk status
         if info.afk == 0 then
             -- Active - green filled circle
+            cecho("\n<green>DEBUG: Setting green circle for active player\n")
             GUI.PlayerDetailPopupAFKStatus:echo("")  -- Clear any emoji content first
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
                 background-color: #00ff00;
@@ -277,6 +282,7 @@ function GamePlayersInfo()
             ]])
         elseif info.afk == 1 then
             -- Away - crescent moon emoji
+            cecho("\n<orange>DEBUG: Setting crescent moon for away player\n")
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
                 background-color: transparent;
                 border: none;
@@ -287,7 +293,9 @@ function GamePlayersInfo()
         
         GUI.PlayerDetailPopupAFKStatus:show()
         GUI.PlayerDetailPopupAFKStatus:raise()
+        cecho("\n<green>DEBUG: AFK status label shown and raised\n")
     elseif GUI.PlayerDetailPopupAFKStatus then
+        cecho("\n<red>DEBUG: Hiding AFK status label (info.afk is nil)\n")
         GUI.PlayerDetailPopupAFKStatus:hide()
     end
 end
