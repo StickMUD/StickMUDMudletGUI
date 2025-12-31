@@ -47,25 +47,15 @@ function GamePlayersInfo()
         )
     })
     
-    -- Race/Guild/Level row with OPK tag
-    local opkTag = ""
-    if info.opt_in_pk and info.opt_in_pk == 1 then
-        opkTag = string.format(
-            [[ <a href="send:pkinfo %s"><span style="background-color: blue; color: yellow; padding: 1px 4px; font-weight: bold; border-radius: 2px;">OPK</span></a>]],
-            info.name:lower()
-        )
-    end
-    
+    -- Race/Guild/Level row
     table.insert(rows, {
         height = infoLineHeight,
         content = string.format(
-            [[<center><font size="3" color="silver">%s %s - Level %d%s</font></center>]],
+            [[<center><font size="3" color="silver">%s %s - Level %d</font></center>]],
             firstToUpper(info.race),
             firstToUpper(info.guild),
-            info.level,
-            opkTag
-        ),
-        linkStyle = info.opt_in_pk == 1 and {"yellow", "yellow", false} or nil
+            info.level
+        )
     })
     
     -- Alignment row
@@ -76,6 +66,18 @@ function GamePlayersInfo()
                 [[<center><font size="3" color="gray">%s</font></center>]],
                 firstToUpper(info.alignment)
             )
+        })
+    end
+    
+    -- OPK (Opt-in Player Kill) tag row
+    if info.opt_in_pk and info.opt_in_pk == 1 then
+        table.insert(rows, {
+            height = infoLineHeight,
+            content = string.format(
+                [[<center> <a href="send:pkinfo %s"><span style="background-color: red; color: white; padding: 1px 4px; font-weight: bold; border-radius: 2px;">OPK</span></a></center>]],
+                info.name:lower()
+            ),
+            linkStyle = {"white", "white", false}
         })
     end
     
@@ -241,12 +243,13 @@ function GamePlayersInfo()
     if info.afk ~= nil then
         local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
         
-        -- Calculate position (top-right corner of avatar)
+        -- Calculate position (bottom-right corner of avatar)
         local popupWidth = GUI.PlayerDetailPopup:get_width()
         local avatarHalfWidth = 32  -- 64px / 2
+        local avatarSize = 64
         local statusSize = 20
         local statusX = (popupWidth / 2) + avatarHalfWidth - statusSize
-        local statusY = padding + 2
+        local statusY = padding + avatarSize - statusSize - 2  -- Position at bottom of avatar
         
         -- Always recreate the label to ensure it displays properly
         if GUI.PlayerDetailPopupAFKStatus then
