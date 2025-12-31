@@ -58,23 +58,14 @@ function GamePlayersInfo()
         )
     })
     
-    -- Alignment row (with optional OPK tag)
+    -- Alignment row
     if info.alignment then
-        local opkTag = ""
-        if info.opt_in_pk and info.opt_in_pk == 1 then
-            opkTag = string.format(
-                [[ <a href="send:pkinfo %s"><span style="background-color: red; color: white; padding: 1px 4px; font-weight: bold; border-radius: 2px;">OPK</span></a>]],
-                info.name:lower()
-            )
-        end
         table.insert(rows, {
             height = infoLineHeight,
             content = string.format(
-                [[<center><font size="3" color="gray">%s</font>%s</center>]],
-                firstToUpper(info.alignment),
-                opkTag
-            ),
-            linkStyle = info.opt_in_pk == 1 and {"white", "white", false} or nil
+                [[<center><font size="3" color="gray">%s</font></center>]],
+                firstToUpper(info.alignment)
+            )
         })
     end
     
@@ -288,5 +279,53 @@ function GamePlayersInfo()
         GUI.PlayerDetailPopupAFKStatus:raise()
     elseif GUI.PlayerDetailPopupAFKStatus then
         GUI.PlayerDetailPopupAFKStatus:hide()
+    end
+    
+    -- Create/update OPK indicator overlay to the right of avatar
+    if info.opt_in_pk == 1 then
+        local opkLabelName = "GUI.PlayerDetailPopupOPK"
+        
+        -- Calculate position (right of avatar, halfway to border)
+        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local avatarRightEdge = (popupWidth / 2) + 32  -- Center + half avatar width
+        local rightMargin = 10  -- Border padding
+        local availableSpace = popupWidth - avatarRightEdge - rightMargin
+        local opkWidth = 32
+        local opkHeight = 18
+        local opkX = avatarRightEdge + (availableSpace / 2) - (opkWidth / 2)  -- Centered in available space
+        local opkY = padding + 32 - (opkHeight / 2)  -- Vertically centered on avatar
+        
+        -- Always recreate the label to ensure it displays properly
+        if GUI.PlayerDetailPopupOPK then
+            GUI.PlayerDetailPopupOPK:hide()
+            GUI.PlayerDetailPopupOPK = nil
+        end
+        
+        GUI.PlayerDetailPopupOPK = Geyser.Label:new({
+            name = opkLabelName,
+            x = opkX,
+            y = opkY,
+            width = opkWidth,
+            height = opkHeight,
+        }, GUI.PlayerDetailPopup)
+        
+        GUI.PlayerDetailPopupOPK:setStyleSheet([[
+            background-color: #cc0000;
+            border: 1px solid #880000;
+            border-radius: 3px;
+        ]])
+        
+        GUI.PlayerDetailPopupOPK:echo(string.format(
+            [[<center><a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a></center>]],
+            info.name:lower()
+        ))
+        
+        -- Prevent clicks from closing the popup (but allow link clicks)
+        GUI.PlayerDetailPopupOPK:setClickCallback(function() end)
+        
+        GUI.PlayerDetailPopupOPK:show()
+        GUI.PlayerDetailPopupOPK:raise()
+    elseif GUI.PlayerDetailPopupOPK then
+        GUI.PlayerDetailPopupOPK:hide()
     end
 end
