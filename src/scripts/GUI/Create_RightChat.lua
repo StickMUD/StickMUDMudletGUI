@@ -80,7 +80,6 @@ local function createChatLabel(item)
     GUI[item.section]:setOnEnter("ChatIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
     GUI[item.section]:setOnLeave("ChatIconLeave", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
-end
 
 -- Create labels for each chat item
 for _, item in ipairs(chat_items) do
