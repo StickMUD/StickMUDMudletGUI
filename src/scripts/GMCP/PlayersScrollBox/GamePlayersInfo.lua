@@ -237,6 +237,12 @@ function GamePlayersInfo()
         currentY = currentY + row.height
     end
     
+    -- Raise AFK status label if it exists to ensure it stays on top of row labels
+    if GUI.PlayerDetailPopupAFKStatus then
+        GUI.PlayerDetailPopupAFKStatus:raise()
+        cecho("\n<magenta>DEBUG: Re-raising AFK status label after row labels\n")
+    end
+    
     -- Create/update AFK status indicator overlay on avatar
     if info.afk ~= nil then
         cecho(string.format("\n<green>DEBUG: Showing AFK indicator for %s, afk=%d\n", info.name, info.afk))
