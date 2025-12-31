@@ -58,7 +58,9 @@ function HeaderIconEnter(label, enterMessage)
 end
 
 function HeaderIconLeave(label, leaveMessage)
-    label:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+    -- Restore the stored background or default to transparent
+    local storedCSS = GUI.IconBackgrounds and GUI.IconBackgrounds[label.name] or GUI.BoxHeaderCSS:getCSS()
+    label:setStyleSheet(storedCSS)
     disable_tooltip(label, leaveMessage)
 end
 

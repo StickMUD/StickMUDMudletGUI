@@ -33,6 +33,9 @@ function CharStatus()
     }
 
     local state
+    
+    -- Initialize icon backgrounds table if needed
+    GUI.IconBackgrounds = GUI.IconBackgrounds or {}
 
     for i = 1, 12 do
         state = gmcp.Char.Status[char_status[i]]
@@ -72,9 +75,11 @@ function CharStatus()
                                                       "rgba(0,0,0,0)")
         end
 
-        GUI["Box" .. firstToUpper(char_status[i])]:setStyleSheet(GUI["Box" ..
-                                                                     char_status[i] ..
-                                                                     "CSS"]:getCSS())
+        local labelName = "GUI.Box" .. firstToUpper(char_status[i])
+        local cssValue = GUI["Box" .. char_status[i] .. "CSS"]:getCSS()
+        GUI["Box" .. firstToUpper(char_status[i])]:setStyleSheet(cssValue)
+        -- Store the current background for hover restoration
+        GUI.IconBackgrounds[labelName] = cssValue
     end
 
     local icons = {
@@ -113,7 +118,10 @@ function CharStatus()
                                                 "rgba(0,0,0,0)")
         end
 
-        GUI["Box" .. firstToUpper(icons[i])]:setStyleSheet(
-            GUI["Box" .. icons[i] .. "CSS"]:getCSS())
+        local labelName = "GUI.Box" .. firstToUpper(icons[i])
+        local cssValue = GUI["Box" .. icons[i] .. "CSS"]:getCSS()
+        GUI["Box" .. firstToUpper(icons[i])]:setStyleSheet(cssValue)
+        -- Store the current background for hover restoration
+        GUI.IconBackgrounds[labelName] = cssValue
     end
 end

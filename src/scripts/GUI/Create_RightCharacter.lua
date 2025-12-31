@@ -23,6 +23,9 @@ GUI.BoxCharacterHoverCSS = CSSMan.new([[
   background-color: rgba(255,255,255,15);
 ]])
 
+-- Store current background state for each icon
+GUI.IconBackgrounds = GUI.IconBackgrounds or {}
+
 -- Hover effect handlers for character status icons
 function CharacterIconEnter(label, enterMessage)
     label:setStyleSheet(GUI.BoxCharacterHoverCSS:getCSS())
@@ -30,7 +33,9 @@ function CharacterIconEnter(label, enterMessage)
 end
 
 function CharacterIconLeave(label, leaveMessage)
-    label:setStyleSheet(GUI.BoxCharacterCSS:getCSS())
+    -- Restore the stored background or default to transparent
+    local storedCSS = GUI.IconBackgrounds[label.name] or GUI.BoxCharacterCSS:getCSS()
+    label:setStyleSheet(storedCSS)
     disable_tooltip(label, leaveMessage)
 end
 
