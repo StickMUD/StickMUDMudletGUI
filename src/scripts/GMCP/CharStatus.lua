@@ -1,10 +1,11 @@
 -- Initialize status display to default/empty state
 function InitializeStatus()
+    local pillCSS = GUI.MoneyPillCSS or "background-color: #222230; border: 1px solid #32323f; border-radius: 10px; margin: 2px 4px;"
     if GUI.BoxGold then
-        GUI.BoxGold:echo("<center><font size=\"3\">💰</font> <b><font size=\"4\">-</font></b></center>")
+        GUI.BoxGold:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">💰</font>&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
     if GUI.BoxBank then
-        GUI.BoxBank:echo("<center><font size=\"3\">🏦</font> <b><font size=\"4\">-</font></b></center>")
+        GUI.BoxBank:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏦</font>&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
 end
 
@@ -17,13 +18,12 @@ function CharStatus()
 
     local gold = gmcp.Char.Status.gold or "?"
     local bank = gmcp.Char.Status.bank or "?"
+    local pillCSS = GUI.MoneyPillCSS or "background-color: #222230; border: 1px solid #32323f; border-radius: 10px; margin: 2px 4px;"
 
     GUI.BoxGold:echo(
-        "<center><font size=\"3\">💰</font> <b><font size=\"4\">" .. gold ..
-            "</font></b></center>")
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">💰</font>&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, gold))
     GUI.BoxBank:echo(
-        "<center><font size=\"3\">🏦</font> <b><font size=\"4\">" .. bank ..
-            "</font></b></center>")
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏦</font>&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, bank))
 
     -- Enemy health now handled in CharVitals (updates every heartbeat)
 
@@ -46,7 +46,7 @@ function CharStatus()
                                                           "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,100)")
+                                                          "rgba(0,0,0,0)")
             end
         elseif char_status[i] == "invis" then
             if state == "Yes" then
@@ -54,7 +54,7 @@ function CharStatus()
                                                           "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,100)")
+                                                          "rgba(0,0,0,0)")
             end
         elseif char_status[i] == "frog" then
             if state == "Yes" then
@@ -62,19 +62,21 @@ function CharStatus()
                                                           "rgba(0,0,255,100)")
             else
                 GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                          "rgba(0,0,0,100)")
+                                                          "rgba(0,0,0,0)")
             end
         elseif state == "Yes" then
             GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
                                                       "rgba(255,0,0,100)")
         else
             GUI["Box" .. char_status[i] .. "CSS"]:set("background-color",
-                                                      "rgba(0,0,0,100)")
+                                                      "rgba(0,0,0,0)")
         end
 
-        GUI["Box" .. firstToUpper(char_status[i])]:setStyleSheet(GUI["Box" ..
-                                                                     char_status[i] ..
-                                                                     "CSS"]:getCSS())
+        local labelName = "GUI.Box" .. firstToUpper(char_status[i])
+        local cssValue = GUI["Box" .. char_status[i] .. "CSS"]:getCSS()
+        GUI["Box" .. firstToUpper(char_status[i])]:setStyleSheet(cssValue)
+        -- Store the current background for hover restoration
+        GUI.IconBackgrounds[labelName] = cssValue
     end
 
     local icons = {
@@ -110,10 +112,13 @@ function CharStatus()
                                                 "rgba(255,0,0,100)")
         else
             GUI["Box" .. icons[i] .. "CSS"]:set("background-color",
-                                                "rgba(0,0,0,100)")
+                                                "rgba(0,0,0,0)")
         end
 
-        GUI["Box" .. firstToUpper(icons[i])]:setStyleSheet(
-            GUI["Box" .. icons[i] .. "CSS"]:getCSS())
+        local labelName = "GUI.Box" .. firstToUpper(icons[i])
+        local cssValue = GUI["Box" .. icons[i] .. "CSS"]:getCSS()
+        GUI["Box" .. firstToUpper(icons[i])]:setStyleSheet(cssValue)
+        -- Store the current background for hover restoration
+        GUI.IconBackgrounds[labelName] = cssValue
     end
 end

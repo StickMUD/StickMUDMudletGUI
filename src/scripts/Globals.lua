@@ -1,4 +1,5 @@
 GUI = GUI or {}
+GUI.IconBackgrounds = GUI.IconBackgrounds or {}
 
 -- Helper function to get default console font size
 local function getDefaultConsoleFontSize() return getFontSize() - 2 end

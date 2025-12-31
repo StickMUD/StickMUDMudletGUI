@@ -5,19 +5,15 @@ GUI.BoxFooterCSS = CSSMan.new([[
 ]])
 
 GUI.GaugeBackCSS = CSSMan.new([[
-  background-color: rgba(0,0,0,0);
-  border-style: solid;
-  border-color: white;
-  border-width: 1px;
-  border-radius: 5px;
+  background-color: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 4px;
   margin: 5px;
 ]])
 
 GUI.GaugeFrontCSS = CSSMan.new([[
-  border-style: solid;
-  border-color: white;
-  border-width: 1px;
-  border-radius: 5px;
+  border: none;
+  border-radius: 4px;
   margin: 5px;
 ]])
 
@@ -43,35 +39,54 @@ local function createIconLabel(globalName, img, tooltip, xPos)
 end
 
 -- Helper function to create globally accessible gauges
-local function createGauge(globalName, xPos, color)
+local function createGauge(globalName, xPos, fillColor, backColor)
     GUI[globalName] = Geyser.Gauge:new({
         name = "GUI." .. globalName,
         x = xPos, y = 0, width = "20%", height = "100%"
     }, GUI.FooterTop)
+    GUI.GaugeBackCSS:set("background-color", backColor)
+    GUI.GaugeBackCSS:set("border", "1px solid " .. backColor)
     GUI[globalName].back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-    GUI.GaugeFrontCSS:set("background-color", color)
+    GUI.GaugeFrontCSS:set("background-color", fillColor)
     GUI[globalName].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
     GUI[globalName]:setValue(math.random(100), 100)
 end
 
 -- Setup icons and gauges
 createIconLabel("BoxHealth", "050-better-health.png", "Health", 0)
-createGauge("HitPoints", "5%", "red")
+createGauge("HitPoints", "5%", "#e74c3c", "#4a1a15")
 
 createIconLabel("BoxMana", "052-potion.png", "Mana", "25%")
-createGauge("SpellPoints", "30%", "blue")
+createGauge("SpellPoints", "30%", "#3498db", "#1a3a4d")
 
 createIconLabel("BoxFatigue", "051-stamina.png", "Endurance", "50%")
-createGauge("FatiguePoints", "55%", "yellow")
+createGauge("FatiguePoints", "55%", "#f39c12", "#4d3205")
 
 createIconLabel("Target", "049-target.png", "Target", "75%")
-createGauge("EnemyHealth", "80%", "purple")
+createGauge("EnemyHealth", "80%", "#9b59b6", "#3d2347")
+
+-- CSS for pill-style footer labels
+GUI.FooterLabelCSS = CSSMan.new([[
+  background-color: rgba(0,0,0,100);
+  qproperty-wordWrap: true;
+]])
+
+GUI.FooterPillCSS = [[
+  background-color: #252528;
+  border: 1px solid #3a3a3f;
+  border-radius: 12px;
+  padding: 4px 12px;
+  margin: 4px 8px;
+]]
 
 -- Footer bottom labels for Room, Area, and Exits
 local function createFooterLabel(globalName, icon, text)
     GUI[globalName] = Geyser.Label:new({name = "GUI." .. globalName}, GUI.FooterBottom)
-    GUI[globalName]:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-    GUI[globalName]:echo(string.format("<center><font size=\"4\">%s</font> <b><font size=\"3\">%s</font></b></center>", icon, text))
+    GUI[globalName]:setStyleSheet(GUI.FooterLabelCSS:getCSS())
+    GUI[globalName]:echo(string.format(
+        [[<center><span style="%s">&nbsp;<font size="3" color="#888">%s</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]],
+        GUI.FooterPillCSS, icon, text
+    ))
 end
 
 createFooterLabel("BoxRoom", "📍", "Room")

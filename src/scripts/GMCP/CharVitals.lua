@@ -11,7 +11,7 @@ function InitializeVitals()
 		GUI.SpellPoints:setValue(0, 100, "<center><b>Spell Points</b></center>")
 	end
 	if GUI.FatiguePoints then
-		GUI.FatiguePoints:setValue(0, 100, "<span style='color: black'><center><b>Fatigue Points</b></center></span>")
+		GUI.FatiguePoints:setValue(0, 100, "<center><b>Fatigue</b></center>")
 	end
 	if GUI.EnemyHealth then
 		GUI.EnemyHealth:setValue(0, 100, "<center><b>Enemy Health</b></center>")
@@ -54,7 +54,7 @@ function CharVitals()
 	if string.cut(percent_fp, 1) == "-" then percent_fp = "0%" end
 	if current_fp > max_fp then current_fp = max_fp end
 
-	GUI.FatiguePoints:setValue(current_fp, max_fp, ("<span style = 'color: black'><center><b>" ..current_fp.. "/" ..max_fp.. " Fatigue (" ..percent_fp.. ")</b></center></span>"))	
+	GUI.FatiguePoints:setValue(current_fp, max_fp, ("<center><b>" ..current_fp.. "/" ..max_fp.. " Fatigue (" ..percent_fp.. ")</b></center>"))	
 
 	-- Handle enemy health (moved from CharStatus - updates every heartbeat during combat)
 	local enemy = gmcp.Char.Vitals.enemy or "None"

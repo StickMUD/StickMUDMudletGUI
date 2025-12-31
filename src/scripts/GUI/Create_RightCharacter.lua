@@ -14,19 +14,43 @@ local character_data = {
   { section = "BoxFrog", icon = "037-amazon-river.png", tooltip = "Frogged", stretch = 1 }
 }
 
--- Main container for character status icons
-GUI.LabelCharacter = Geyser.Label:new({
-  name = "GUI.LabelCharacter",
-  x = 0, y = "93%", width = "100%", height = "7%"
+-- CSS for character status icons
+GUI.BoxCharacterCSS = CSSMan.new([[
+  background-color: rgba(0,0,0,0);
+]])
+
+GUI.BoxCharacterHoverCSS = CSSMan.new([[
+  background-color: rgba(255,255,255,15);
+]])
+
+-- Hover effect handlers for character status icons
+function CharacterIconEnter(label, enterMessage)
+    label:setStyleSheet(GUI.BoxCharacterHoverCSS:getCSS())
+    enable_tooltip(label, enterMessage)
+end
+
+function CharacterIconLeave(label, leaveMessage)
+    -- Restore the stored background or default to transparent
+    local storedCSS = GUI.IconBackgrounds[label.name] or GUI.BoxCharacterCSS:getCSS()
+    label:setStyleSheet(storedCSS)
+    disable_tooltip(label, leaveMessage)
+end
+
+-- Card container for character status icons
+GUI.CharacterCard = Geyser.Label:new({
+  name = "GUI.CharacterCard",
+  x = "2px", y = "93%", width = "-4px", height = "7%"
 }, GUI.Right)
-GUI.LabelCharacter:setStyleSheet([[
-  QLabel { background-color: rgba(0,0,0,255); }
+GUI.CharacterCard:setStyleSheet([[
+  background-color: #222230;
+  border: 1px solid #32323f;
+  border-radius: 6px;
 ]])
 
 GUI.HBoxCharacter = Geyser.HBox:new({
   name = "GUI.HBoxCharacter",
-  x = 0, y = "93%", width = "100%", height = "7%"
-}, GUI.Right)
+  x = 0, y = 0, width = "100%", height = "100%"
+}, GUI.CharacterCard)
 
 -- Function to initialize character status boxes
 local function createCharacterBox(data)
@@ -37,11 +61,15 @@ local function createCharacterBox(data)
       message = string.format("<center><img src=\"%s\">", iconPath)
   }, GUI.HBoxCharacter)
 
-  GUI[data.section]:setStyleSheet(GUI.BoxRightCSS:getCSS())
-  GUI[data.section]:setOnEnter("enable_tooltip", GUI[data.section], string.format(
-      "<center><img src=\"%s\"><br>%s", iconPath, data.tooltip))
-  GUI[data.section]:setOnLeave("disable_tooltip", GUI[data.section], string.format(
-      "<center><img src=\"%s\">", iconPath))
+  GUI[data.section]:setStyleSheet(GUI.BoxCharacterCSS:getCSS())
+  -- Store initial background for hover restoration
+  GUI.IconBackgrounds["GUI." .. data.section] = GUI.BoxCharacterCSS:getCSS()
+  
+  local enterMessage = string.format("<center><img src=\"%s\"><br>%s", iconPath, data.tooltip)
+  local leaveMessage = string.format("<center><img src=\"%s\">", iconPath)
+  
+  GUI[data.section]:setOnEnter("CharacterIconEnter", GUI[data.section], enterMessage)
+  GUI[data.section]:setOnLeave("CharacterIconLeave", GUI[data.section], leaveMessage)
 end
 
 -- Initialize all character boxes

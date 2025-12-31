@@ -27,9 +27,35 @@ end
 -- CSS for chat buttons
 GUI.BoxChatButtonCSS = CSSMan.new([[
   background-color: rgba(0,0,0,0);
-  border-style: solid;
-  border-color: #31363b;
-  border-width: 1px;
+  border: none;
+]])
+
+GUI.BoxChatButtonHoverCSS = CSSMan.new([[
+  background-color: rgba(255,255,255,15);
+  border: none;
+]])
+
+-- Hover effect handlers for chat icons
+function ChatIconEnter(label, enterMessage)
+    label:setStyleSheet(GUI.BoxChatButtonHoverCSS:getCSS())
+    enable_tooltip(label, enterMessage)
+end
+
+function ChatIconLeave(label, leaveMessage)
+    label:setStyleSheet(GUI.BoxChatButtonCSS:getCSS())
+    disable_tooltip(label, leaveMessage)
+end
+
+-- Card container for chat buttons
+GUI.ChatCard = Geyser.Label:new({
+    name = "GUI.ChatCard",
+    x = 0, y = 0,
+    width = "50%", height = "7%"
+}, GUI.Right)
+GUI.ChatCard:setStyleSheet([[
+  background-color: #1a1c22;
+  border: 1px solid #2a2c30;
+  border-radius: 6px;
 ]])
 
 -- Main container for chat buttons
@@ -37,9 +63,9 @@ GUI.HBoxChat = Geyser.HBox:new({
     name = "GUI.HBoxChat",
     x = 0,
     y = 0,
-    width = "50%",
-    height = "7%"
-}, GUI.Right)
+    width = "100%",
+    height = "100%"
+}, GUI.ChatCard)
 
 -- Function to create a chat label with icon and tooltip
 local function createChatLabel(item)
@@ -51,8 +77,8 @@ local function createChatLabel(item)
 
     GUI[item.section]:setStyleSheet(GUI.BoxChatButtonCSS:getCSS())
     GUI[item.section]:setClickCallback("on_chat_box_press", item.section)
-    GUI[item.section]:setOnEnter("enable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
-    GUI[item.section]:setOnLeave("disable_tooltip", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
+    GUI[item.section]:setOnEnter("ChatIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnLeave("ChatIconLeave", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 
 -- Create labels for each chat item
