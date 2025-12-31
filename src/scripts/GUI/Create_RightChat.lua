@@ -49,12 +49,12 @@ end
 -- Card container for chat buttons
 GUI.ChatCard = Geyser.Label:new({
     name = "GUI.ChatCard",
-    x = "2px", y = "2px",
+    x = 0, y = 0,
     width = "50%", height = "7%"
 }, GUI.Right)
-GUI.ChatCard:setStyleSheet(GUI.IconCardCSS or [[
-  background-color: #1a1a1e;
-  border: 1px solid #2a2a30;
+GUI.ChatCard:setStyleSheet([[
+  background-color: #252528;
+  border: 1px solid #3a3a3f;
   border-radius: 6px;
 ]])
 

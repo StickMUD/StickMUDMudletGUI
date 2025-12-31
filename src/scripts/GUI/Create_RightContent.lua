@@ -57,12 +57,12 @@ end
 -- Card container for content buttons
 GUI.ContentCard = Geyser.Label:new({
     name = "GUI.ContentCard",
-    x = "2px", y = "45%",
+    x = 0, y = "45%",
     width = "50%", height = "7%"
 }, GUI.Right)
-GUI.ContentCard:setStyleSheet(GUI.IconCardCSS or [[
-  background-color: #1a1a1e;
-  border: 1px solid #2a2a30;
+GUI.ContentCard:setStyleSheet([[
+  background-color: #252528;
+  border: 1px solid #3a3a3f;
   border-radius: 6px;
 ]])
 
