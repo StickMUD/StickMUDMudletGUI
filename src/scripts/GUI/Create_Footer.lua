@@ -4,19 +4,6 @@ GUI.BoxFooterCSS = CSSMan.new([[
   qproperty-wordWrap: true;
 ]])
 
-GUI.GaugeBackCSS = CSSMan.new([[
-  background-color: #1a1a1a;
-  border: 1px solid #333;
-  border-radius: 4px;
-  margin: 5px;
-]])
-
-GUI.GaugeFrontCSS = CSSMan.new([[
-  border: none;
-  border-radius: 4px;
-  margin: 5px;
-]])
-
 -- Footer container
 GUI.Footer = Geyser.VBox:new({
     name = "GUI.Footer",
@@ -44,11 +31,23 @@ local function createGauge(globalName, xPos, fillColor, backColor, clickCommand)
         name = "GUI." .. globalName,
         x = xPos, y = 0, width = "20%", height = "100%"
     }, GUI.FooterTop)
-    GUI.GaugeBackCSS:set("background-color", backColor)
-    GUI.GaugeBackCSS:set("border", "1px solid " .. backColor)
-    GUI[globalName].back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-    GUI.GaugeFrontCSS:set("background-color", fillColor)
-    GUI[globalName].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
+    
+    -- Create fresh CSS for each gauge to avoid shared reference issues
+    local gaugeBackCSS = CSSMan.new([[
+        background-color: ]] .. backColor .. [[;
+        border: 1px solid ]] .. backColor .. [[;
+        border-radius: 4px;
+        margin: 5px;
+    ]])
+    local gaugeFrontCSS = CSSMan.new([[
+        background-color: ]] .. fillColor .. [[;
+        border: none;
+        border-radius: 4px;
+        margin: 5px;
+    ]])
+    
+    GUI[globalName].back:setStyleSheet(gaugeBackCSS:getCSS())
+    GUI[globalName].front:setStyleSheet(gaugeFrontCSS:getCSS())
     GUI[globalName]:setValue(math.random(100), 100)
     if clickCommand then
         GUI[globalName]:setClickCallback(function() send(clickCommand) end)
