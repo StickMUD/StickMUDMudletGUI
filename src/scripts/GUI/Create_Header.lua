@@ -17,10 +17,30 @@ local header_tooltips = {
 }
 local header_stretch = {1.5, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1}
 
+-- Shared card style for icon containers
+GUI.IconCardCSS = [[
+  background-color: #1a1a1e;
+  border: 1px solid #2a2a30;
+  border-radius: 6px;
+]]
+
 GUI.BoxHeaderCSS = CSSMan.new([[
-  background-color: rgba(0,0,0,100);
+  background-color: transparent;
   qproperty-wordWrap: true;
 ]])
+
+GUI.BoxHeaderHoverCSS = CSSMan.new([[
+  background-color: rgba(255,255,255,15);
+  qproperty-wordWrap: true;
+]])
+
+-- Card container for header
+GUI.HeaderCard = Geyser.Label:new({
+    name = "GUI.HeaderCard",
+    x = "2px", y = "2px",
+    width = "-4px", height = "-4px"
+}, GUI.Top)
+GUI.HeaderCard:setStyleSheet(GUI.IconCardCSS)
 
 -- The icons will be contained here
 GUI.HBoxEquipment = Geyser.HBox:new({
@@ -29,7 +49,18 @@ GUI.HBoxEquipment = Geyser.HBox:new({
     y = 0,
     width = "100%",
     height = "100%"
-}, GUI.Top)
+}, GUI.HeaderCard)
+
+-- Hover effect handlers for header icons
+function HeaderIconEnter(label, enterMessage)
+    label:setStyleSheet(GUI.BoxHeaderHoverCSS:getCSS())
+    enable_tooltip(label, enterMessage)
+end
+
+function HeaderIconLeave(label, leaveMessage)
+    label:setStyleSheet(GUI.BoxHeaderCSS:getCSS())
+    disable_tooltip(label, leaveMessage)
+end
 
 -- Helper function to create a section label
 local function createSectionLabel(name, icon, tooltip, stretch, isText)
@@ -52,8 +83,9 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     
     local leaveMessage = message
     
-    sectionLabel:setOnEnter("enable_tooltip", sectionLabel, enterMessage)
-    sectionLabel:setOnLeave("disable_tooltip", sectionLabel, leaveMessage)
+    -- Use custom hover handlers with visual effect
+    sectionLabel:setOnEnter("HeaderIconEnter", sectionLabel, enterMessage)
+    sectionLabel:setOnLeave("HeaderIconLeave", sectionLabel, leaveMessage)
 
     if icon == "STICKMUD" then
         sectionLabel:setClickCallback(function()

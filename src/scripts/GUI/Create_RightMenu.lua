@@ -43,11 +43,25 @@ end
 
 -- CSS for menu buttons
 GUI.BoxMenuButtonCSS = CSSMan.new([[
-  background-color: rgba(0,0,0,0);
-  border-style: solid;
-  border-color: #31363b;
-  border-width: 1px;
+  background-color: transparent;
+  border: none;
 ]])
+
+GUI.BoxMenuButtonHoverCSS = CSSMan.new([[
+  background-color: rgba(255,255,255,15);
+  border: none;
+]])
+
+-- Hover effect handlers for menu icons
+function MenuIconEnter(label, enterMessage)
+    label:setStyleSheet(GUI.BoxMenuButtonHoverCSS:getCSS())
+    enable_tooltip(label, enterMessage)
+end
+
+function MenuIconLeave(label, leaveMessage)
+    label:setStyleSheet(GUI.BoxMenuButtonCSS:getCSS())
+    disable_tooltip(label, leaveMessage)
+end
 
 -- Function to create menu label with icon and tooltip
 local function createMenuLabel(item)
@@ -59,8 +73,8 @@ local function createMenuLabel(item)
 
     GUI[item.name]:setStyleSheet(GUI.BoxMenuButtonCSS:getCSS())
     GUI[item.name]:setClickCallback("on_menu_box_press", item.name)
-    GUI[item.name]:setOnEnter("enable_tooltip", GUI[item.name], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
-    GUI[item.name]:setOnLeave("disable_tooltip", GUI[item.name], "<center><img src=\"" .. icon_path .. "\">")
+    GUI[item.name]:setOnEnter("MenuIconEnter", GUI[item.name], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.name]:setOnLeave("MenuIconLeave", GUI[item.name], "<center><img src=\"" .. icon_path .. "\">")
 end
 
 -- Function to initialize consoles
@@ -95,14 +109,26 @@ local function initializeConsole(item)
     GUI[item.console]:hide()
 end
 
+-- Card container for menu buttons
+GUI.MenuCard = Geyser.Label:new({
+    name = "GUI.MenuCard",
+    x = "50%", y = "2px",
+    width = "-2px", height = "7%"
+}, GUI.Right)
+GUI.MenuCard:setStyleSheet(GUI.IconCardCSS or [[
+  background-color: #1a1a1e;
+  border: 1px solid #2a2a30;
+  border-radius: 6px;
+]])
+
 -- Create main container for menu buttons
 GUI.HBoxMenu = Geyser.HBox:new({
     name = "GUI.HBoxMenu",
-    x = "50%",
+    x = 0,
     y = 0,
-    width = "50%",
-    height = "7%"
-}, GUI.Right)
+    width = "100%",
+    height = "100%"
+}, GUI.MenuCard)
 
 -- Initialize menu labels and consoles
 for _, item in ipairs(menu_items) do
