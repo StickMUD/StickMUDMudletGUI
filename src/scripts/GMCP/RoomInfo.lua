@@ -1,13 +1,14 @@
 -- Initialize room display to default/empty state
 function InitializeRoomInfo()
+    local pillCSS = GUI.FooterPillCSS or "background-color: #252528; border: 1px solid #3a3a3f; border-radius: 12px; padding: 4px 12px; margin: 4px 8px;"
     if GUI.BoxRoom then
-        GUI.BoxRoom:echo("<center><font size=\"4\">📍</font> <b><font size=\"3\">-</font></b></center>")
+        GUI.BoxRoom:echo(string.format([[<center><span style="%s"><font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
     end
     if GUI.BoxArea then
-        GUI.BoxArea:echo("<center><font size=\"4\">🏰</font> <b><font size=\"3\">-</font></b></center>")
+        GUI.BoxArea:echo(string.format([[<center><span style="%s"><font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
     end
     if GUI.BoxExits then
-        GUI.BoxExits:echo("<center><font size=\"4\">🚪</font> <b><font size=\"3\">-</font></b></center>")
+        GUI.BoxExits:echo(string.format([[<center><span style="%s"><font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
     end
 end
 
@@ -22,11 +23,12 @@ function RoomInfo()
     local area = gmcp.Room.Info.area or "Area"
     local exits = gmcp.Room.Info.exits or {}
 
+    local pillCSS = GUI.FooterPillCSS or "background-color: #252528; border: 1px solid #3a3a3f; border-radius: 12px; padding: 4px 12px; margin: 4px 8px;"
     GUI.BoxRoom:echo(
-        string.format("<center><font size=\"4\">📍</font> <b><font size=\"3\">%s</font></b></center>", name)
+        string.format([[<center><span style="%s"><font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, name)
     )
     GUI.BoxArea:echo(
-        string.format("<center><font size=\"4\">🏰</font> <b><font size=\"3\">%s</font></b></center>", area)
+        string.format([[<center><span style="%s"><font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, area)
     )
 
     local exitAbbreviations = {
@@ -40,8 +42,8 @@ function RoomInfo()
         table.insert(directions, exitAbbreviations[dir] or dir)
     end
 
-    local directionsText = #directions > 0 and table.concat(directions, ", ") or "No obvious exits"
+    local directionsText = #directions > 0 and table.concat(directions, ", ") or "none"
     GUI.BoxExits:echo(
-        string.format("<center><font size=\"4\">🚪</font> <b><font size=\"3\">%s</font></b></center>", directionsText)
+        string.format([[<center><span style="%s"><font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, directionsText)
     )
 end
