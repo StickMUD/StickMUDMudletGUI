@@ -39,7 +39,7 @@ local function createIconLabel(globalName, img, tooltip, xPos)
 end
 
 -- Helper function to create globally accessible gauges
-local function createGauge(globalName, xPos, fillColor, backColor)
+local function createGauge(globalName, xPos, fillColor, backColor, clickCommand)
     GUI[globalName] = Geyser.Gauge:new({
         name = "GUI." .. globalName,
         x = xPos, y = 0, width = "20%", height = "100%"
@@ -50,20 +50,23 @@ local function createGauge(globalName, xPos, fillColor, backColor)
     GUI.GaugeFrontCSS:set("background-color", fillColor)
     GUI[globalName].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
     GUI[globalName]:setValue(math.random(100), 100)
+    if clickCommand then
+        GUI[globalName]:setClickCallback(function() send(clickCommand) end)
+    end
 end
 
 -- Setup icons and gauges
 createIconLabel("BoxHealth", "050-better-health.png", "Health", 0)
-createGauge("HitPoints", "5%", "#e74c3c", "#4a1a15")
+createGauge("HitPoints", "5%", "#e74c3c", "#4a1a15", "hp")
 
 createIconLabel("BoxMana", "052-potion.png", "Mana", "25%")
-createGauge("SpellPoints", "30%", "#3498db", "#1a3a4d")
+createGauge("SpellPoints", "30%", "#3498db", "#1a3a4d", "sp")
 
 createIconLabel("BoxFatigue", "051-stamina.png", "Endurance", "50%")
-createGauge("FatiguePoints", "55%", "#f39c12", "#4d3205")
+createGauge("FatiguePoints", "55%", "#f39c12", "#4d3205", "fp")
 
 createIconLabel("Target", "049-target.png", "Target", "75%")
-createGauge("EnemyHealth", "80%", "#9b59b6", "#3d2347")
+createGauge("EnemyHealth", "80%", "#9b59b6", "#3d2347", "consider")
 
 -- CSS for pill-style footer labels
 GUI.FooterLabelCSS = CSSMan.new([[
@@ -80,15 +83,18 @@ GUI.FooterPillCSS = [[
 ]]
 
 -- Footer bottom labels for Room, Area, and Exits
-local function createFooterLabel(globalName, icon, text)
+local function createFooterLabel(globalName, icon, text, clickCommand)
     GUI[globalName] = Geyser.Label:new({name = "GUI." .. globalName}, GUI.FooterBottom)
     GUI[globalName]:setStyleSheet(GUI.FooterLabelCSS:getCSS())
     GUI[globalName]:echo(string.format(
         [[<center><span style="%s">&nbsp;<font size="3" color="#888">%s</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]],
         GUI.FooterPillCSS, icon, text
     ))
+    if clickCommand then
+        GUI[globalName]:setClickCallback(function() send(clickCommand) end)
+    end
 end
 
-createFooterLabel("BoxRoom", "📍", "Room")
-createFooterLabel("BoxArea", "🏰", "Area")
-createFooterLabel("BoxExits", "🚪", "Exits")
+createFooterLabel("BoxRoom", "📍", "Room", "room")
+createFooterLabel("BoxArea", "🏰", "Area", "area")
+createFooterLabel("BoxExits", "🚪", "Exits", "scan")
