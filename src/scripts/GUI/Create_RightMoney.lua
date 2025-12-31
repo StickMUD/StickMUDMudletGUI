@@ -4,13 +4,21 @@ GUI.HBoxMoney = Geyser.HBox:new({
   x = 0, y = "89%", width = "50%", height = "5%"
 }, GUI.Right)
 
+-- Pill style CSS for money boxes
+GUI.MoneyPillCSS = [[
+  background-color: #222230;
+  border: 1px solid #32323f;
+  border-radius: 10px;
+  margin: 2px 4px;
+]]
+
 -- Helper function to create money boxes
 local function createMoneyBox(name, icon, callback, parent)
   GUI[name] = Geyser.Label:new({
       name = "GUI." .. name,
-      message = string.format("<center><b><font size=\"6\">%s</font></b> <b><font size=\"5\">?</font></b></center>", icon)
+      message = string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">%s</font>&nbsp;<font size="3" color="white"><b>?</b></font>&nbsp;</span></center>]], GUI.MoneyPillCSS, icon)
   }, parent)
-  GUI[name]:setStyleSheet(GUI.BoxRightCSS:getCSS())
+  GUI[name]:setStyleSheet([[background-color: rgba(0,0,0,0);]])
   GUI[name]:setClickCallback(callback)
 end
 

@@ -1,10 +1,11 @@
 -- Initialize status display to default/empty state
 function InitializeStatus()
+    local pillCSS = GUI.MoneyPillCSS or "background-color: #222230; border: 1px solid #32323f; border-radius: 10px; margin: 2px 4px;"
     if GUI.BoxGold then
-        GUI.BoxGold:echo("<center><font size=\"3\">💰</font> <b><font size=\"4\">-</font></b></center>")
+        GUI.BoxGold:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">💰</font>&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
     if GUI.BoxBank then
-        GUI.BoxBank:echo("<center><font size=\"3\">🏦</font> <b><font size=\"4\">-</font></b></center>")
+        GUI.BoxBank:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏦</font>&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
 end
 
@@ -17,13 +18,12 @@ function CharStatus()
 
     local gold = gmcp.Char.Status.gold or "?"
     local bank = gmcp.Char.Status.bank or "?"
+    local pillCSS = GUI.MoneyPillCSS or "background-color: #222230; border: 1px solid #32323f; border-radius: 10px; margin: 2px 4px;"
 
     GUI.BoxGold:echo(
-        "<center><font size=\"3\">💰</font> <b><font size=\"4\">" .. gold ..
-            "</font></b></center>")
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">💰</font>&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, gold))
     GUI.BoxBank:echo(
-        "<center><font size=\"3\">🏦</font> <b><font size=\"4\">" .. bank ..
-            "</font></b></center>")
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏦</font>&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, bank))
 
     -- Enemy health now handled in CharVitals (updates every heartbeat)
 
