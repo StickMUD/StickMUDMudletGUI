@@ -343,20 +343,17 @@ local function generatePlayerRowContent(player)
     if player.afk ~= nil then
         if player.afk == 0 then
             -- Active - sun emoji on dark blue circle
-            afkIndicator = [[<span style="background-color: #1a237e; border: 1px solid #0d1440; border-radius: 5px; font-size: 8px;">☀️</span>]]
+            afkIndicator = [[<span style="background-color: #1a237e; border: 1px solid #0d1440; border-radius: 5px; font-size: 12px;">☀️</span>]]
         elseif player.afk == 1 then
             -- Away - moon on dark blue circle
-            afkIndicator = [[<span style="background-color: #1a237e; border: 1px solid #0d1440; border-radius: 5px; font-size: 8px;">🌙</span>]]
+            afkIndicator = [[<span style="background-color: #1a237e; border: 1px solid #0d1440; border-radius: 5px; font-size: 12px;">🌙</span>]]
         end
     end
     
-    -- Build OPK tag for after name (clickable)
+    -- Build OPK tag for after name (not clickable here - click row to see popup with clickable OPK)
     local opkTag = ""
     if player.opt_in_pk == 1 then
-        opkTag = string.format(
-            [[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="send:pkinfo %s"><span style="background-color: #cc0000; color: white; padding: 1px 4px; font-weight: bold; border-radius: 2px; font-size: 10px;">OPK</span></a>]],
-            player.name:lower()
-        )
+        opkTag = [[&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color: #cc0000; color: white; padding: 0px 4px; font-weight: bold; border-radius: 2px; font-size: 10px; vertical-align: middle; line-height: 14px;">OPK</span>]]
     end
     
     -- Build avatar cell with AFK indicator in lower-right corner using nested table

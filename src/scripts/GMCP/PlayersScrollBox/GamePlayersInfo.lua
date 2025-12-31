@@ -315,6 +315,7 @@ function GamePlayersInfo()
             background-color: #cc0000;
             border: 1px solid #880000;
             border-radius: 3px;
+            qproperty-alignment: 'AlignCenter';
         ]])
         
         GUI.PlayerDetailPopupOPK:echo(string.format(
