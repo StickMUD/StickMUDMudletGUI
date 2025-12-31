@@ -255,12 +255,14 @@ function GamePlayersInfo()
         
         -- Set style and content based on AFK status
         if info.afk == 0 then
-            -- Active - green filled circle with shadow for depth
+            -- Active - sun emoji on dark blue circle
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
-                background-color: #00ff00;
-                border: 2px solid #006600;
+                background-color: #1a237e;
+                border: 2px solid #0d1440;
                 border-radius: 8px;
+                font-size: 10px;
             ]])
+            GUI.PlayerDetailPopupAFKStatus:echo([[<center>☀️</center>]])
         elseif info.afk == 1 then
             -- Away - dark blue circle with moon emoji
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
@@ -313,6 +315,7 @@ function GamePlayersInfo()
             background-color: #cc0000;
             border: 1px solid #880000;
             border-radius: 3px;
+            qproperty-alignment: 'AlignCenter';
         ]])
         
         GUI.PlayerDetailPopupOPK:echo(string.format(
