@@ -316,7 +316,7 @@ function GamePlayersInfo()
         ]])
         
         GUI.PlayerDetailPopupOPK:echo(string.format(
-            [[<center><a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a></center>]],
+            [[<center> <a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a> </center>]],
             info.name:lower()
         ))
         
