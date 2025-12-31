@@ -84,7 +84,7 @@ local function createFooterLabel(globalName, icon, text)
     GUI[globalName] = Geyser.Label:new({name = "GUI." .. globalName}, GUI.FooterBottom)
     GUI[globalName]:setStyleSheet(GUI.FooterLabelCSS:getCSS())
     GUI[globalName]:echo(string.format(
-        [[<center><span style="%s"><font size="3" color="#888">%s</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]],
+        [[<center><span style="%s">&nbsp;<font size="3" color="#888">%s</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]],
         GUI.FooterPillCSS, icon, text
     ))
 end

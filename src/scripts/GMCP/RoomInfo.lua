@@ -2,13 +2,13 @@
 function InitializeRoomInfo()
     local pillCSS = GUI.FooterPillCSS or "background-color: #252528; border: 1px solid #3a3a3f; border-radius: 12px; padding: 4px 12px; margin: 4px 8px;"
     if GUI.BoxRoom then
-        GUI.BoxRoom:echo(string.format([[<center><span style="%s"><font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
+        GUI.BoxRoom:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
     if GUI.BoxArea then
-        GUI.BoxArea:echo(string.format([[<center><span style="%s"><font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
+        GUI.BoxArea:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
     if GUI.BoxExits then
-        GUI.BoxExits:echo(string.format([[<center><span style="%s"><font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font></span></center>]], pillCSS))
+        GUI.BoxExits:echo(string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>-</b></font>&nbsp;</span></center>]], pillCSS))
     end
 end
 
@@ -25,10 +25,10 @@ function RoomInfo()
 
     local pillCSS = GUI.FooterPillCSS or "background-color: #252528; border: 1px solid #3a3a3f; border-radius: 12px; padding: 4px 12px; margin: 4px 8px;"
     GUI.BoxRoom:echo(
-        string.format([[<center><span style="%s"><font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, name)
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">📍</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, name)
     )
     GUI.BoxArea:echo(
-        string.format([[<center><span style="%s"><font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, area)
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🏰</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, area)
     )
 
     local exitAbbreviations = {
@@ -44,6 +44,6 @@ function RoomInfo()
 
     local directionsText = #directions > 0 and table.concat(directions, ", ") or "none"
     GUI.BoxExits:echo(
-        string.format([[<center><span style="%s"><font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font></span></center>]], pillCSS, directionsText)
+        string.format([[<center><span style="%s">&nbsp;<font size="3" color="#888">🚪</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]], pillCSS, directionsText)
     )
 end
