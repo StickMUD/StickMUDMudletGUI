@@ -240,13 +240,13 @@ function GamePlayersInfo()
     if info.afk ~= nil then
         local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
         
-        -- Calculate position (lower-right, outside avatar)
+        -- Calculate position (bottom-right corner of avatar)
         local popupWidth = GUI.PlayerDetailPopup:get_width()
         local avatarHalfWidth = 32  -- 64px / 2
         local avatarSize = 64
-        local statusSize = 20
-        local statusX = (popupWidth / 2) + avatarHalfWidth - 4  -- Slightly to the right of avatar
-        local statusY = padding + avatarSize - 8  -- Slightly below avatar bottom
+        local statusSize = 16  -- Smaller size for less intrusion
+        local statusX = (popupWidth / 2) + avatarHalfWidth - statusSize - 2  -- Inside avatar right edge
+        local statusY = padding + avatarSize - statusSize - 2  -- Inside avatar bottom edge
         
         -- Always recreate the label to ensure it displays properly
         if GUI.PlayerDetailPopupAFKStatus then
@@ -264,18 +264,18 @@ function GamePlayersInfo()
         
         -- Set style and content based on AFK status
         if info.afk == 0 then
-            -- Active - green filled circle
+            -- Active - green filled circle with shadow for depth
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
                 background-color: #00ff00;
-                border: 2px solid #333;
-                border-radius: 10px;
+                border: 2px solid #006600;
+                border-radius: 8px;
             ]])
         elseif info.afk == 1 then
             -- Away - crescent moon emoji
             GUI.PlayerDetailPopupAFKStatus:setStyleSheet([[
                 background-color: transparent;
                 border: none;
-                font-size: 16px;
+                font-size: 14px;
             ]])
             GUI.PlayerDetailPopupAFKStatus:echo([[<center>🌙</center>]])
         end
