@@ -33,18 +33,8 @@ local function createGauge(globalName, xPos, fillColor, backColor, clickCommand)
     }, GUI.FooterTop)
     
     -- Create fresh CSS for each gauge to avoid shared reference issues
-    local gaugeBackCSS = CSSMan.new([[
-        background-color: ]] .. backColor .. [[;
-        border: 1px solid ]] .. backColor .. [[;
-        border-radius: 4px;
-        margin: 5px;
-    ]])
-    local gaugeFrontCSS = CSSMan.new([[
-        background-color: ]] .. fillColor .. [[;
-        border: none;
-        border-radius: 4px;
-        margin: 5px;
-    ]])
+    local gaugeBackCSS = CSSMan.new("background-color: " .. backColor .. "; border: 1px solid " .. backColor .. "; border-radius: 4px; margin: 5px;")
+    local gaugeFrontCSS = CSSMan.new("background-color: " .. fillColor .. "; border: none; border-radius: 4px; margin: 5px;")
     
     GUI[globalName].back:setStyleSheet(gaugeBackCSS:getCSS())
     GUI[globalName].front:setStyleSheet(gaugeFrontCSS:getCSS())
