@@ -206,36 +206,50 @@ function RefreshAbilitiesDisplay()
             gauge:show()
         else
             echo("[RefreshDisplay] Creating NEW gauge\n")
-            -- Create new gauge
-            local gauge = Geyser.Gauge:new({
-                name = "GUI.AbilityGauge" .. i,
-                x = 0, y = yPos .. "px",
-                width = "100%", height = rowHeight .. "px"
-            }, GUI.AbilitiesListContainer)
-            
-            -- Apply styles
-            GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
-            GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
-            gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
-            GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
-            gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
-            
-            gauge:setValue(gaugeValue, 100, labelText)
-            
-            -- Store the ability name for the click callback
-            local abilityName = name
-            gauge:setClickCallback(function()
-                send(abilityName)
+            -- Create new gauge with error handling
+            local success, err = pcall(function()
+                local gauge = Geyser.Gauge:new({
+                    name = "GUI.AbilityGauge" .. i,
+                    x = 0, y = yPos .. "px",
+                    width = "100%", height = rowHeight .. "px"
+                }, GUI.AbilitiesListContainer)
+                
+                echo("[RefreshDisplay] Gauge object created\n")
+                
+                -- Apply styles
+                GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
+                GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
+                gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
+                GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
+                gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
+                
+                echo("[RefreshDisplay] Styles applied\n")
+                
+                gauge:setValue(gaugeValue, 100, labelText)
+                
+                echo("[RefreshDisplay] Value set\n")
+                
+                -- Store the ability name for the click callback
+                local abilityName = name
+                gauge:setClickCallback(function()
+                    send(abilityName)
+                end)
+                
+                gauge:show()
+                
+                echo("[RefreshDisplay] About to store in AbilityRows\n")
+                
+                GUI.AbilityRows[i] = {
+                    gauge = gauge,
+                    id = abilityInfo.id,
+                    name = name
+                }
+                echo("[RefreshDisplay] Created gauge at index " .. i .. ", AbilityRows count now: " .. #GUI.AbilityRows .. "\n")
             end)
             
-            gauge:show()
-            
-            GUI.AbilityRows[i] = {
-                gauge = gauge,
-                id = abilityInfo.id,
-                name = name
-            }
-            echo("[RefreshDisplay] Created gauge at index " .. i .. ", AbilityRows count now: " .. #GUI.AbilityRows .. "\n")
+            if not success then
+                echo("[RefreshDisplay] ERROR creating gauge: " .. tostring(err) .. "\n")
+            end
         end
         
         yPos = yPos + rowHeight
