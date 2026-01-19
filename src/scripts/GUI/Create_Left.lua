@@ -393,6 +393,7 @@ function ClearAllAbilities()
             end
         end
     end
+    GUI.AbilityRows = {}
     
     -- Fallback: search Geyser.windowList for any ability gauges we may have lost track of
     if Geyser and Geyser.windowList then
