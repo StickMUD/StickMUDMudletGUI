@@ -229,6 +229,7 @@ function RefreshAbilitiesDisplay()
                 id = abilityInfo.id,
                 name = name
             }
+            echo("[RefreshDisplay] Created gauge at index " .. i .. ", AbilityRows count now: " .. #GUI.AbilityRows .. "\n")
         end
         
         yPos = yPos + rowHeight
@@ -329,11 +330,17 @@ function RemoveAbility(name, monitorId)
     GUI.ActiveAbilities[monitorId] = nil
     
     -- Hide all existing gauges first (they'll be recreated/shown in RefreshAbilitiesDisplay)
-    for i, row in ipairs(GUI.AbilityRows) do
+    -- Use pairs instead of ipairs in case # operator isn't working correctly
+    echo("[RemoveAbility] Hiding gauges, AbilityRows has " .. #GUI.AbilityRows .. " entries (using #)\n")
+    local hideCount = 0
+    for i, row in pairs(GUI.AbilityRows) do
         if row and row.gauge then
+            echo("[RemoveAbility] Hiding gauge at index " .. tostring(i) .. "\n")
             row.gauge:hide()
+            hideCount = hideCount + 1
         end
     end
+    echo("[RemoveAbility] Hid " .. hideCount .. " gauges\n")
     
     echo("[RemoveAbility] Calling RefreshAbilitiesDisplay\n")
     RefreshAbilitiesDisplay()
