@@ -10,7 +10,7 @@ GUI.AbilitiesTitle = Geyser.Label:new({
     x = 0, y = 0,
     width = "100%",
     height = "24px"
-}, GUI.Left)
+}, GUI.Middle)
 
 GUI.AbilitiesTitle:setStyleSheet([[
     background-color: rgba(30,30,35,255);
@@ -24,7 +24,7 @@ GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
     x = 0, y = "24px",
     width = "100%",
     height = "-24px"
-}, GUI.Left)
+}, GUI.Middle)
 
 -- Create background container inside scrollbox (following GamePlayersList pattern)
 GUI.AbilitiesListContainer = Geyser.Label:new({

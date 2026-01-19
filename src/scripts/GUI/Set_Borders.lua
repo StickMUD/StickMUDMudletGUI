@@ -25,7 +25,7 @@ function updateBorders()
     
     -- Reposition main GUI containers and all children to adapt to new window size
     if GUI then
-        repositionRecursive(GUI.Left)
+        repositionRecursive(GUI.Middle)
         repositionRecursive(GUI.Right)
         repositionRecursive(GUI.Top)
         repositionRecursive(GUI.Bottom)
