@@ -158,6 +158,7 @@ function RefreshAbilitiesDisplay()
     -- Create or update rows for each ability
     local yPos = 0
     for i, abilityInfo in ipairs(sortedAbilities) do
+        echo("[RefreshDisplay] Processing ability " .. i .. ": " .. abilityInfo.name .. "\n")
         local ability = abilityInfo.data
         local name = abilityInfo.name
         local colors = getAbilityColor(ability.remaining, ability.warn, name)
@@ -174,9 +175,13 @@ function RefreshAbilitiesDisplay()
             firstToUpper(name)
         )
         
-        if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
+        local existingRow = GUI.AbilityRows[i]
+        echo("[RefreshDisplay] Checking existing row: " .. tostring(existingRow ~= nil) .. ", gauge: " .. tostring(existingRow and existingRow.gauge ~= nil) .. "\n")
+        
+        if existingRow and existingRow.gauge then
+            echo("[RefreshDisplay] Updating existing gauge\n")
             -- Update existing gauge
-            local gauge = GUI.AbilityRows[i].gauge
+            local gauge = existingRow.gauge
             gauge:move(0, yPos .. "px")
             gauge:resize("100%", rowHeight .. "px")
             gauge:setValue(gaugeValue, 100, labelText)
@@ -200,6 +205,7 @@ function RefreshAbilitiesDisplay()
             
             gauge:show()
         else
+            echo("[RefreshDisplay] Creating NEW gauge\n")
             -- Create new gauge
             local gauge = Geyser.Gauge:new({
                 name = "GUI.AbilityGauge" .. i,
