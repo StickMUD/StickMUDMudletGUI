@@ -375,8 +375,10 @@ end
 -- Function to clear all abilities (called on disconnect)
 function ClearAllAbilities()
     -- Kill all timers
-    for id, timerId in pairs(GUI.AbilityTimers) do
-        killTimer(timerId)
+    if GUI.AbilityTimers then
+        for id, timerId in pairs(GUI.AbilityTimers) do
+            killTimer(timerId)
+        end
     end
     GUI.AbilityTimers = {}
     
@@ -384,9 +386,22 @@ function ClearAllAbilities()
     GUI.ActiveAbilities = {}
     
     -- Hide all gauges
-    for i, row in pairs(GUI.AbilityRows) do
-        if row and row.gauge then
-            row.gauge:hide()
+    if GUI.AbilityRows then
+        for i, row in pairs(GUI.AbilityRows) do
+            if row and row.gauge then
+                row.gauge:hide()
+            end
+        end
+    end
+    
+    -- Also try to hide gauges by name pattern in case references were lost
+    for i = 1, 20 do
+        local gaugeName = "GUI.AbilityGauge" .. i
+        if Geyser.windowList and Geyser.windowList[gaugeName .. "Container"] then
+            local gauge = Geyser.windowList[gaugeName .. "Container"]
+            if gauge and gauge.hide then
+                gauge:hide()
+            end
         end
     end
 end
