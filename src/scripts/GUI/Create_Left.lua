@@ -36,27 +36,26 @@ GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
 -- Storage for active abilities and their UI elements
 -- Keyed by monitor ID for proper tracking of multiple abilities with same name
+-- Use "or {}" pattern to preserve existing references across script reloads
+GUI.ActiveAbilities = GUI.ActiveAbilities or {}
+GUI.AbilityRows = GUI.AbilityRows or {}
+GUI.AbilityTimers = GUI.AbilityTimers or {}
 
--- Clean up existing gauges before resetting (important on script reload)
-if GUI.AbilityRows then
-    for i, row in ipairs(GUI.AbilityRows) do
-        if row and row.gauge then
-            row.gauge:hide()
-        end
+-- On script reload, hide all existing gauges (they'll be shown again if ability is still active)
+for i, row in ipairs(GUI.AbilityRows) do
+    if row and row.gauge then
+        row.gauge:hide()
     end
 end
 
--- Kill any existing timers before resetting
-if GUI.AbilityTimers then
-    for id, timerId in pairs(GUI.AbilityTimers) do
-        killTimer(timerId)
-    end
+-- Kill any existing timers (will be recreated if needed)
+for id, timerId in pairs(GUI.AbilityTimers) do
+    killTimer(timerId)
 end
+GUI.AbilityTimers = {}
 
--- Reset storage tables
-GUI.ActiveAbilities = {}  -- keyed by monitor ID
-GUI.AbilityRows = {}
-GUI.AbilityTimers = {}  -- keyed by monitor ID
+-- Clear active abilities on reload (server will resend if still active)
+GUI.ActiveAbilities = {}
 
 -- CSS styles for ability gauges (inspired by footer)
 GUI.AbilityGaugeBackCSS = CSSMan.new([[
