@@ -86,57 +86,63 @@ function IsGMCPConnected()
 end
 
 -- Function to check and refresh Char.Vitals
+-- Returns true if data exists or max retries reached (should stop checking)
 function CheckVitalsAndRefresh()
     -- Check if Vitals data exists
     if gmcp and gmcp.Char and gmcp.Char.Vitals and gmcp.Char.Vitals.hp then
         ResetGMCPRetryState("Vitals")
-        return
+        return true  -- Data received, stop checking
     end
     
-    if not IsGMCPConnected() then return end
+    if not IsGMCPConnected() then return false end  -- Keep trying
     
     local state = GUI.GMCPRetryState.Vitals
-    if state.count >= GUI.GMCPMaxRetries then return end
+    if state.count >= GUI.GMCPMaxRetries then return true end  -- Max retries, stop
     
     state.count = state.count + 1
     sendGMCP("Char.Vitals")
     state.interval = math.min(state.interval * 2, 300)
+    return false  -- Keep trying
 end
 
 -- Function to check and refresh Char.Status
+-- Returns true if data exists or max retries reached (should stop checking)
 function CheckStatusAndRefresh()
     -- Check if Status data exists
     if gmcp and gmcp.Char and gmcp.Char.Status and gmcp.Char.Status.gold then
         ResetGMCPRetryState("Status")
-        return
+        return true  -- Data received, stop checking
     end
     
-    if not IsGMCPConnected() then return end
+    if not IsGMCPConnected() then return false end  -- Keep trying
     
     local state = GUI.GMCPRetryState.Status
-    if state.count >= GUI.GMCPMaxRetries then return end
+    if state.count >= GUI.GMCPMaxRetries then return true end  -- Max retries, stop
     
     state.count = state.count + 1
     sendGMCP("Char.Status")
     state.interval = math.min(state.interval * 2, 300)
+    return false  -- Keep trying
 end
 
 -- Function to check and refresh Game.Players.List
+-- Returns true if data exists or max retries reached (should stop checking)
 function CheckPlayersAndRefresh()
     -- Check if Players data exists (List is a table)
     if gmcp and gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.List and next(gmcp.Game.Players.List) ~= nil then
         ResetGMCPRetryState("Players")
-        return
+        return true  -- Data received, stop checking
     end
     
-    if not IsGMCPConnected() then return end
+    if not IsGMCPConnected() then return false end  -- Keep trying
     
     local state = GUI.GMCPRetryState.Players
-    if state.count >= GUI.GMCPMaxRetries then return end
+    if state.count >= GUI.GMCPMaxRetries then return true end  -- Max retries, stop
     
     state.count = state.count + 1
     sendGMCP("Game.Players.List")
     state.interval = math.min(state.interval * 2, 300)
+    return false  -- Keep trying
 end
 
 -- Kill existing timers
@@ -146,14 +152,24 @@ end
 GUI.GMCPTimers = {}
 
 -- Schedule functions for each GMCP type
+-- Stops rescheduling when checkFunc returns true (data received or max retries)
 function ScheduleGMCPCheck(gmcpType, checkFunc)
     local timerName = "GMCP" .. gmcpType
     if GUI.GMCPTimers[timerName] then
         killTimer(GUI.GMCPTimers[timerName])
     end
     GUI.GMCPTimers[timerName] = tempTimer(GUI.GMCPRetryState[gmcpType].interval, function()
-        checkFunc()
-        ScheduleGMCPCheck(gmcpType, checkFunc)
+        local shouldStop = checkFunc()
+        if shouldStop then
+            -- Data received or max retries reached, stop the timer
+            if GUI.GMCPTimers[timerName] then
+                killTimer(GUI.GMCPTimers[timerName])
+                GUI.GMCPTimers[timerName] = nil
+            end
+        else
+            -- Keep checking
+            ScheduleGMCPCheck(gmcpType, checkFunc)
+        end
     end)
 end
 
