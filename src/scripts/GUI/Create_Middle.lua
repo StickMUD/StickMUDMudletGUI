@@ -78,26 +78,28 @@ GUI.AbilityColors = {
     expiring = {front = "#e74c3c", back = "#4a1a15"}    -- Red for expiring soon
 }
 
--- Hover effect CSS for ability gauges (lighter background on hover)
-GUI.AbilityGaugeHoverCSS = CSSMan.new([[
-    background-color: rgba(255,255,255,0.1);
-    border: 1px solid #444;
+-- Hover effect CSS for ability gauges (lighter front color on hover)
+GUI.AbilityGaugeHoverFrontCSS = CSSMan.new([[
+    border: none;
     border-radius: 4px;
     margin: 2px 4px;
 ]])
 
 -- Hover effect handlers for ability gauges
-function AbilityGaugeEnter(gauge, colors)
-    if gauge and gauge.back then
-        gauge.back:setStyleSheet(GUI.AbilityGaugeHoverCSS:getCSS())
+-- Uses string function names as required by Mudlet's setOnEnter/setOnLeave
+function AbilityGaugeEnter(gauge, frontColor)
+    if gauge and gauge.front then
+        -- Lighten the front color on hover
+        GUI.AbilityGaugeHoverFrontCSS:set("background-color", frontColor)
+        GUI.AbilityGaugeHoverFrontCSS:set("border", "2px solid white")
+        gauge.front:setStyleSheet(GUI.AbilityGaugeHoverFrontCSS:getCSS())
     end
 end
 
-function AbilityGaugeLeave(gauge, colors)
-    if gauge and gauge.back then
-        GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
-        GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
-        gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
+function AbilityGaugeLeave(gauge, frontColor)
+    if gauge and gauge.front then
+        GUI.AbilityGaugeFrontCSS:set("background-color", frontColor)
+        gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
     end
 end
 
@@ -228,10 +230,9 @@ function RefreshAbilitiesDisplay()
                 send(abilityName)
             end)
             
-            -- Set hover callbacks for visual feedback
-            local gaugeColors = colors
-            gauge.front:setOnEnter(function() AbilityGaugeEnter(gauge, gaugeColors) end)
-            gauge.front:setOnLeave(function() AbilityGaugeLeave(gauge, gaugeColors) end)
+            -- Set hover callbacks for visual feedback (using string function names)
+            gauge.front:setOnEnter("AbilityGaugeEnter", gauge, colors.front)
+            gauge.front:setOnLeave("AbilityGaugeLeave", gauge, colors.front)
             
             gauge:show()
         else
@@ -266,10 +267,9 @@ function RefreshAbilitiesDisplay()
                     send(abilityName)
                 end)
                 
-                -- Set hover callbacks for visual feedback
-                local gaugeColors = colors
-                gauge.front:setOnEnter(function() AbilityGaugeEnter(gauge, gaugeColors) end)
-                gauge.front:setOnLeave(function() AbilityGaugeLeave(gauge, gaugeColors) end)
+                -- Set hover callbacks for visual feedback (using string function names)
+                gauge.front:setOnEnter("AbilityGaugeEnter", gauge, colors.front)
+                gauge.front:setOnLeave("AbilityGaugeLeave", gauge, colors.front)
                 
                 gauge:show()
                 
