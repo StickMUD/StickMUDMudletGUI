@@ -81,17 +81,17 @@ end
 -- Helper function to format time remaining
 function formatTimeRemaining(seconds)
     if not seconds or seconds <= 0 then
-        return "∞"
+        return ""
     elseif seconds >= 3600 then
         local hours = math.floor(seconds / 3600)
         local mins = math.floor((seconds % 3600) / 60)
-        return string.format("%dh%dm", hours, mins)
+        return string.format("%d:%02d:00", hours, mins)
     elseif seconds >= 60 then
         local mins = math.floor(seconds / 60)
         local secs = seconds % 60
-        return string.format("%dm%ds", mins, secs)
+        return string.format("%d:%02d", mins, secs)
     else
-        return string.format("%ds", seconds)
+        return string.format("0:%02d", seconds)
     end
 end
 
@@ -129,11 +129,19 @@ function RefreshAbilitiesDisplay()
         
         -- Format the label text
         local timeText = formatTimeRemaining(ability.remaining)
-        local labelText = string.format(
-            [[<center><b>%s</b><br><font size="2" color="#888">%s</font></center>]],
-            firstToUpper(name),
-            timeText
-        )
+        local labelText
+        if timeText ~= "" then
+            labelText = string.format(
+                [[<center><font size="4" color="white"><b>%s</b></font><br><font size="3" color="#ccc">%s</font></center>]],
+                firstToUpper(name),
+                timeText
+            )
+        else
+            labelText = string.format(
+                [[<center><font size="4" color="white"><b>%s</b></font></center>]],
+                firstToUpper(name)
+            )
+        end
         
         if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
             -- Update existing gauge
