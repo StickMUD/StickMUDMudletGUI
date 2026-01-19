@@ -130,13 +130,17 @@ function RefreshAbilitiesDisplay()
     end
     table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
     
+    echo("[RefreshDisplay] Active abilities count: " .. #sortedAbilities .. ", GUI.AbilityRows count: " .. #GUI.AbilityRows .. "\n")
+    
     -- Calculate row height
     local rowHeight = 36
     local totalHeight = #sortedAbilities * rowHeight
     
     -- Hide any extra rows from previous render
+    echo("[RefreshDisplay] Hiding rows from " .. (#sortedAbilities + 1) .. " to " .. #GUI.AbilityRows .. "\n")
     for i = #sortedAbilities + 1, #GUI.AbilityRows do
         if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
+            echo("[RefreshDisplay] Hiding gauge " .. i .. "\n")
             GUI.AbilityRows[i].gauge:hide()
         end
     end
