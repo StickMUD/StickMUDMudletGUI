@@ -198,8 +198,9 @@ function RefreshAbilitiesDisplay()
             GUI.AbilityRows[i].name = name
             
             -- Update click callback with current ability name
+            -- Note: Gauge doesn't have setClickCallback, use the front label
             local abilityName = name
-            gauge:setClickCallback(function()
+            gauge.front:setClickCallback(function()
                 send(abilityName)
             end)
             
@@ -230,8 +231,9 @@ function RefreshAbilitiesDisplay()
                 echo("[RefreshDisplay] Value set\n")
                 
                 -- Store the ability name for the click callback
+                -- Note: Gauge doesn't have setClickCallback, use the front label
                 local abilityName = name
-                gauge:setClickCallback(function()
+                gauge.front:setClickCallback(function()
                     send(abilityName)
                 end)
                 
