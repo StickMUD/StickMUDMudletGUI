@@ -4,10 +4,19 @@ GUI.BoxLeftCSS = CSSMan.new([[
     qproperty-wordWrap: true;
 ]])
 
--- Title label for Abilities (pillbox style like header)
+-- Container for abilities list (simple Label, no scrolling) - at top
+GUI.AbilitiesListContainer = Geyser.Label:new({
+    name = "GUI.AbilitiesListContainer",
+    x = 0, y = 0,
+    width = "100%",
+    height = "-28px"
+}, GUI.Middle)
+GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+
+-- Title label for Abilities (pillbox style like header) - at bottom
 GUI.AbilitiesTitle = Geyser.Label:new({
     name = "GUI.AbilitiesTitle",
-    x = "2px", y = "2px",
+    x = "2px", y = "-26px",
     width = "-4px",
     height = "24px"
 }, GUI.Middle)
@@ -18,15 +27,6 @@ GUI.AbilitiesTitle:setStyleSheet([[
     border-radius: 6px;
 ]])
 GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
-
--- Container for abilities list (simple Label, no scrolling)
-GUI.AbilitiesListContainer = Geyser.Label:new({
-    name = "GUI.AbilitiesListContainer",
-    x = 0, y = "28px",
-    width = "100%",
-    height = "-28px"
-}, GUI.Middle)
-GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
 -- Storage for active abilities and their UI elements
 -- Keyed by monitor ID for proper tracking of multiple abilities with same name
