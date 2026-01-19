@@ -155,6 +155,21 @@ function GamePlayersInfo()
         end
     end
     
+    -- Top sailing rows (one per route)
+    if info.top_sailing and next(info.top_sailing) then
+        for route, rank in pairs(info.top_sailing) do
+            local rankColor = rank == 1 and "gold" or "silver"
+            table.insert(rows, {
+                height = smallLineHeight,
+                content = string.format(
+                    [[<center><a href="send:shiptop player %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
+                    info.name:lower(), rankColor, rank, route
+                ),
+                linkStyle = {rankColor, rankColor, false}
+            })
+        end
+    end
+    
     -- Calculate total height
     local totalHeight = padding
     for _, row in ipairs(rows) do
