@@ -127,21 +127,11 @@ function RefreshAbilitiesDisplay()
             gaugeValue = math.max(0, math.min(100, (ability.remaining / ability.expires) * 100))
         end
         
-        -- Format the label text
-        local timeText = formatTimeRemaining(ability.remaining)
-        local labelText
-        if timeText ~= "" then
-            labelText = string.format(
-                [[<center><font size="4" color="white"><b>%s</b></font><br><font size="3" color="#ccc">%s</font></center>]],
-                firstToUpper(name),
-                timeText
-            )
-        else
-            labelText = string.format(
-                [[<center><font size="4" color="white"><b>%s</b></font></center>]],
-                firstToUpper(name)
-            )
-        end
+        -- Format the label text (just the ability name, time shown via gauge fill)
+        local labelText = string.format(
+            [[<center><font size="4" color="white"><b>%s</b></font></center>]],
+            firstToUpper(name)
+        )
         
         if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
             -- Update existing gauge
@@ -264,6 +254,13 @@ function RemoveAbility(name, monitorId)
     
     -- Remove from active abilities
     GUI.ActiveAbilities[name] = nil
+    
+    -- Hide all existing gauges first (they'll be recreated/shown in RefreshAbilitiesDisplay)
+    for i, row in ipairs(GUI.AbilityRows) do
+        if row and row.gauge then
+            row.gauge:hide()
+        end
+    end
     
     RefreshAbilitiesDisplay()
 end
