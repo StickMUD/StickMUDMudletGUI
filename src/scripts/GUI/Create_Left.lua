@@ -287,15 +287,23 @@ end
 
 -- Function to remove an ability (by monitor ID)
 function RemoveAbility(name, monitorId)
+    echo("\n[RemoveAbility] Called with name=" .. tostring(name) .. ", id=" .. tostring(monitorId) .. "\n")
+    
     if not monitorId then
-        -- No monitor ID provided, cannot identify which ability to remove
+        echo("[RemoveAbility] No monitor ID provided\n")
         return
     end
     
     -- Check if ability exists
     if not GUI.ActiveAbilities[monitorId] then
-        return  -- Ability not found, nothing to remove
+        echo("[RemoveAbility] Ability not found in GUI.ActiveAbilities\n")
+        local keys = {}
+        for k, _ in pairs(GUI.ActiveAbilities) do table.insert(keys, k) end
+        echo("[RemoveAbility] Active abilities: " .. table.concat(keys, ", ") .. "\n")
+        return
     end
+    
+    echo("[RemoveAbility] Found ability, removing...\n")
     
     -- Kill timer if exists
     if GUI.AbilityTimers[monitorId] then
@@ -313,6 +321,7 @@ function RemoveAbility(name, monitorId)
         end
     end
     
+    echo("[RemoveAbility] Calling RefreshAbilitiesDisplay\n")
     RefreshAbilitiesDisplay()
 end
 
