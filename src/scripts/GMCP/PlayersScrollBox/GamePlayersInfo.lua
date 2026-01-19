@@ -159,11 +159,13 @@ function GamePlayersInfo()
     if info.top_sailing and next(info.top_sailing) then
         for route, rank in pairs(info.top_sailing) do
             local rankColor = rank == 1 and "gold" or "silver"
+            -- Extract port names from route (e.g., "Tristeza • Asahi" -> "Tristeza", "Asahi")
+            local port1, port2 = route:match("^%s*(.-)%s*•%s*(.-)%s*$")
             table.insert(rows, {
                 height = smallLineHeight,
                 content = string.format(
-                    [[<center><a href="send:shiptop player %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
-                    info.name:lower(), rankColor, rank, route
+                    [[<center><a href="send:shiptop route %s %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
+                    port1, port2, rankColor, rank, route
                 ),
                 linkStyle = {rankColor, rankColor, false}
             })
