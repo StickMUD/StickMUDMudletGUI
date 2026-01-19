@@ -18,10 +18,10 @@ end
 -- Function to update borders based on current window size
 function updateBorders()
     local w, h = getMainWindowSize()
-    setBorderLeft(w*0.10)
+    setBorderLeft(0)
     setBorderTop(h/20)
     setBorderBottom(h/10)
-    setBorderRight(w*0.42)
+    setBorderRight(w*0.52)
     
     -- Reposition main GUI containers and all children to adapt to new window size
     if GUI then
