@@ -9,11 +9,10 @@ function CharAbilitiesMonitorRemove()
         return
     end
     
-    -- Remove ability from the UI
-    if data.name then
-        local monitorId = data.monitor and data.monitor.id or nil
+    -- Remove ability from the UI by monitor ID
+    if data.name and data.monitor and data.monitor.id then
         if RemoveAbility then
-            RemoveAbility(data.name, monitorId)
+            RemoveAbility(data.name, data.monitor.id)
         end
     end
 end

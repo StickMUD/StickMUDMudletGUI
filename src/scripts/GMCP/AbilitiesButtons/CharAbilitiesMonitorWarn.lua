@@ -6,9 +6,10 @@ function CharAbilitiesMonitorWarn()
     
     local data = gmcp.Char.Abilities.Update
     
-    -- Update ability warning state in the UI
-    if data.name and data.monitor and UpdateAbilityWarning then
+    -- Update ability warning state in the UI (by monitor ID)
+    if data.name and data.monitor and data.monitor.id and UpdateAbilityWarning then
+        local monitorId = data.monitor.id
         local warn = data.monitor.warn or 0
-        UpdateAbilityWarning(data.name, warn)
+        UpdateAbilityWarning(data.name, monitorId, warn)
     end
 end

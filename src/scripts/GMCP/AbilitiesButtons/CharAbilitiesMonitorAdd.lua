@@ -8,7 +8,6 @@ function CharAbilitiesMonitorAdd()
     
     -- Add ability to the UI
     if data.name then
-        -- Check if AddAbility function exists
         if AddAbility then
             AddAbility(data.name, data.monitor)
         end

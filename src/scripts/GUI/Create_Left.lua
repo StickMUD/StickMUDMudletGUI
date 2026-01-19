@@ -35,16 +35,17 @@ GUI.AbilitiesListContainer = Geyser.Label:new({
 GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
 -- Storage for active abilities and their UI elements
+-- Keyed by monitor ID for proper tracking of multiple abilities with same name
 -- Reset on script load to ensure clean state with new GUI elements
-GUI.ActiveAbilities = {}
+GUI.ActiveAbilities = {}  -- keyed by monitor ID
 GUI.AbilityRows = {}
 -- Kill any existing timers before resetting
 if GUI.AbilityTimers then
-    for name, timerId in pairs(GUI.AbilityTimers) do
+    for id, timerId in pairs(GUI.AbilityTimers) do
         killTimer(timerId)
     end
 end
-GUI.AbilityTimers = {}
+GUI.AbilityTimers = {}  -- keyed by monitor ID
 
 -- CSS styles for ability gauges (inspired by footer)
 GUI.AbilityGaugeBackCSS = CSSMan.new([[
@@ -62,19 +63,44 @@ GUI.AbilityGaugeFrontCSS = CSSMan.new([[
 
 -- Color schemes for different ability states
 GUI.AbilityColors = {
-    active = {front = "#27ae60", back = "#0d3d1a"},      -- Green for active
     warning = {front = "#f39c12", back = "#4d3205"},    -- Orange for warning
     expiring = {front = "#e74c3c", back = "#4a1a15"}    -- Red for expiring soon
 }
 
--- Helper function to get ability color based on remaining time
-function getAbilityColor(expires, warn)
+-- Color palette for active abilities (good contrast with white text)
+-- Each color has a front (gauge fill) and back (background) variant
+GUI.AbilityColorPalette = {
+    {front = "#2980b9", back = "#164666"},  -- Blue
+    {front = "#8e44ad", back = "#4a2359"},  -- Purple
+    {front = "#16a085", back = "#0d5c4c"},  -- Teal
+    {front = "#27ae60", back = "#0d3d1a"},  -- Green
+    {front = "#2c3e50", back = "#1a252f"},  -- Dark Blue Grey
+    {front = "#d35400", back = "#6b2a00"},  -- Burnt Orange
+    {front = "#1abc9c", back = "#0d5c4c"},  -- Turquoise
+    {front = "#9b59b6", back = "#4d2c5b"},  -- Amethyst
+    {front = "#3498db", back = "#1a4d6e"},  -- Light Blue
+    {front = "#e91e63", back = "#730f31"},  -- Pink
+}
+
+-- Simple hash function to get consistent color index from ability name
+function getAbilityColorIndex(name)
+    local hash = 0
+    for i = 1, #name do
+        hash = hash + string.byte(name, i)
+    end
+    return (hash % #GUI.AbilityColorPalette) + 1
+end
+
+-- Helper function to get ability color based on state and name
+function getAbilityColor(remaining, warn, name)
     if warn == 1 then
         return GUI.AbilityColors.warning
-    elseif expires and expires > 0 and expires <= 30 then
+    elseif remaining and remaining > 0 and remaining <= 30 then
         return GUI.AbilityColors.expiring
     else
-        return GUI.AbilityColors.active
+        -- Use name-based color for active abilities
+        local colorIndex = getAbilityColorIndex(name or "default")
+        return GUI.AbilityColorPalette[colorIndex]
     end
 end
 
@@ -97,19 +123,19 @@ end
 
 -- Function to refresh the abilities display
 function RefreshAbilitiesDisplay()
-    -- Get sorted list of ability names
-    local sortedNames = {}
-    for name, _ in pairs(GUI.ActiveAbilities) do
-        table.insert(sortedNames, name)
+    -- Get sorted list of abilities (sort by name for consistent display)
+    local sortedAbilities = {}
+    for id, ability in pairs(GUI.ActiveAbilities) do
+        table.insert(sortedAbilities, {id = id, name = ability.name, data = ability})
     end
-    table.sort(sortedNames)
+    table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
     
     -- Calculate row height
     local rowHeight = 36
-    local totalHeight = #sortedNames * rowHeight
+    local totalHeight = #sortedAbilities * rowHeight
     
     -- Hide any extra rows from previous render
-    for i = #sortedNames + 1, #GUI.AbilityRows do
+    for i = #sortedAbilities + 1, #GUI.AbilityRows do
         if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
             GUI.AbilityRows[i].gauge:hide()
         end
@@ -117,9 +143,10 @@ function RefreshAbilitiesDisplay()
     
     -- Create or update rows for each ability
     local yPos = 0
-    for i, name in ipairs(sortedNames) do
-        local ability = GUI.ActiveAbilities[name]
-        local colors = getAbilityColor(ability.remaining, ability.warn)
+    for i, abilityInfo in ipairs(sortedAbilities) do
+        local ability = abilityInfo.data
+        local name = abilityInfo.name
+        local colors = getAbilityColor(ability.remaining, ability.warn, name)
         
         -- Calculate gauge value (100% if no expiry, percentage if expiring)
         local gaugeValue = 100
@@ -147,8 +174,16 @@ function RefreshAbilitiesDisplay()
             GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
             gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
             
-            -- Update stored name in case order changed
+            -- Update stored info in case order changed
+            GUI.AbilityRows[i].id = abilityInfo.id
             GUI.AbilityRows[i].name = name
+            
+            -- Update click callback with current ability name
+            local abilityName = name
+            gauge:setClickCallback(function()
+                send(abilityName)
+            end)
+            
             gauge:show()
         else
             -- Create new gauge
@@ -177,6 +212,7 @@ function RefreshAbilitiesDisplay()
             
             GUI.AbilityRows[i] = {
                 gauge = gauge,
+                id = abilityInfo.id,
                 name = name
             }
         end
@@ -185,48 +221,53 @@ function RefreshAbilitiesDisplay()
     end
 end
 
--- Function to add an ability
+-- Function to add an ability (keyed by monitor ID)
 function AddAbility(name, monitorData)
-    local expires = monitorData and monitorData.expires or 0
-    local warn = monitorData and monitorData.warn or 0
     local id = monitorData and monitorData.id or nil
+    if not id then
+        -- No monitor ID provided, cannot track this ability
+        return
+    end
     
-    GUI.ActiveAbilities[name] = {
-        id = id,
+    local expires = monitorData.expires or 0
+    local warn = monitorData.warn or 0
+    
+    GUI.ActiveAbilities[id] = {
+        name = name,
         expires = expires,
         remaining = expires,
         warn = warn,
         startTime = os.time()
     }
     
-    -- Kill any existing timer for this ability
-    if GUI.AbilityTimers[name] then
-        killTimer(GUI.AbilityTimers[name])
-        GUI.AbilityTimers[name] = nil
+    -- Kill any existing timer for this monitor ID
+    if GUI.AbilityTimers[id] then
+        killTimer(GUI.AbilityTimers[id])
+        GUI.AbilityTimers[id] = nil
     end
     
     -- Start countdown timer if ability has an expiry
     if expires and expires > 0 then
-        GUI.AbilityTimers[name] = tempTimer(1, function()
-            UpdateAbilityTimer(name)
+        GUI.AbilityTimers[id] = tempTimer(1, function()
+            UpdateAbilityTimer(id)
         end, true)  -- repeating timer
     end
     
     RefreshAbilitiesDisplay()
 end
 
--- Function to update ability timer countdown
-function UpdateAbilityTimer(name)
-    if not GUI.ActiveAbilities[name] then
+-- Function to update ability timer countdown (by monitor ID)
+function UpdateAbilityTimer(monitorId)
+    if not GUI.ActiveAbilities[monitorId] then
         -- Ability was removed, kill timer
-        if GUI.AbilityTimers[name] then
-            killTimer(GUI.AbilityTimers[name])
-            GUI.AbilityTimers[name] = nil
+        if GUI.AbilityTimers[monitorId] then
+            killTimer(GUI.AbilityTimers[monitorId])
+            GUI.AbilityTimers[monitorId] = nil
         end
         return
     end
     
-    local ability = GUI.ActiveAbilities[name]
+    local ability = GUI.ActiveAbilities[monitorId]
     
     -- Decrement remaining time
     if ability.remaining and ability.remaining > 0 then
@@ -237,23 +278,33 @@ function UpdateAbilityTimer(name)
     -- If time expired, the server should send a Remove message
     -- but we can also handle it here as a fallback
     if ability.remaining and ability.remaining <= 0 then
-        if GUI.AbilityTimers[name] then
-            killTimer(GUI.AbilityTimers[name])
-            GUI.AbilityTimers[name] = nil
+        if GUI.AbilityTimers[monitorId] then
+            killTimer(GUI.AbilityTimers[monitorId])
+            GUI.AbilityTimers[monitorId] = nil
         end
     end
 end
 
--- Function to remove an ability
+-- Function to remove an ability (by monitor ID)
 function RemoveAbility(name, monitorId)
+    if not monitorId then
+        -- No monitor ID provided, cannot identify which ability to remove
+        return
+    end
+    
+    -- Check if ability exists
+    if not GUI.ActiveAbilities[monitorId] then
+        return  -- Ability not found, nothing to remove
+    end
+    
     -- Kill timer if exists
-    if GUI.AbilityTimers[name] then
-        killTimer(GUI.AbilityTimers[name])
-        GUI.AbilityTimers[name] = nil
+    if GUI.AbilityTimers[monitorId] then
+        killTimer(GUI.AbilityTimers[monitorId])
+        GUI.AbilityTimers[monitorId] = nil
     end
     
     -- Remove from active abilities
-    GUI.ActiveAbilities[name] = nil
+    GUI.ActiveAbilities[monitorId] = nil
     
     -- Hide all existing gauges first (they'll be recreated/shown in RefreshAbilitiesDisplay)
     for i, row in ipairs(GUI.AbilityRows) do
@@ -265,10 +316,14 @@ function RemoveAbility(name, monitorId)
     RefreshAbilitiesDisplay()
 end
 
--- Function to update ability warning state
-function UpdateAbilityWarning(name, warn)
-    if GUI.ActiveAbilities[name] then
-        GUI.ActiveAbilities[name].warn = warn
+-- Function to update ability warning state (by monitor ID)
+function UpdateAbilityWarning(name, monitorId, warn)
+    if not monitorId then
+        return
+    end
+    
+    if GUI.ActiveAbilities[monitorId] then
+        GUI.ActiveAbilities[monitorId].warn = warn
         RefreshAbilitiesDisplay()
     end
 end
