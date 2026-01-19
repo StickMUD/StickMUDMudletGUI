@@ -4,11 +4,11 @@ function CharAbilitiesMonitorWarn()
         return
     end
     
-    local char_abilities_update = gmcp.Char.Abilities.Update
+    local data = gmcp.Char.Abilities.Update
     
     -- Update ability warning state in the UI
-    if char_abilities_update.name and char_abilities_update.monitor then
-        local warn = char_abilities_update.monitor.warn or 0
-        UpdateAbilityWarning(char_abilities_update.name, warn)
+    if data.name and data.monitor and UpdateAbilityWarning then
+        local warn = data.monitor.warn or 0
+        UpdateAbilityWarning(data.name, warn)
     end
 end

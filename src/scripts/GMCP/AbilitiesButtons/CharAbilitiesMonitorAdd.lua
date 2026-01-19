@@ -4,10 +4,13 @@ function CharAbilitiesMonitorAdd()
         return
     end
     
-    local char_abilities_add = gmcp.Char.Abilities.Add
+    local data = gmcp.Char.Abilities.Add
     
     -- Add ability to the UI
-    if char_abilities_add.name then
-        AddAbility(char_abilities_add.name, char_abilities_add.monitor)
+    if data.name then
+        -- Check if AddAbility function exists
+        if AddAbility then
+            AddAbility(data.name, data.monitor)
+        end
     end
 end

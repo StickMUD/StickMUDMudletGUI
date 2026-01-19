@@ -1,14 +1,3 @@
--- Left panel container for abilities
-if not GUI.Left then
-    GUI.Left = Geyser.Label:new({
-        name = "GUI.Left",
-        x = 0, y = "7%",
-        width = "10%",
-        height = "83%",
-    })
-    GUI.Left:setStyleSheet([[background-color: rgba(0,0,0,255);]])
-end
-
 -- CSS for the left panel
 GUI.BoxLeftCSS = CSSMan.new([[
     background-color: rgba(0,0,0,255);
@@ -16,45 +5,46 @@ GUI.BoxLeftCSS = CSSMan.new([[
 ]])
 
 -- Title label for Abilities
-if not GUI.AbilitiesTitle then
-    GUI.AbilitiesTitle = Geyser.Label:new({
-        name = "GUI.AbilitiesTitle",
-        x = 0, y = 0,
-        width = "100%",
-        height = "24px"
-    }, GUI.Left)
+GUI.AbilitiesTitle = Geyser.Label:new({
+    name = "GUI.AbilitiesTitle",
+    x = 0, y = 0,
+    width = "100%",
+    height = "24px"
+}, GUI.Left)
 
-    GUI.AbilitiesTitle:setStyleSheet([[
-        background-color: rgba(30,30,35,255);
-        border-bottom: 1px solid rgba(80,80,90,255);
-    ]])
-    GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
-end
+GUI.AbilitiesTitle:setStyleSheet([[
+    background-color: rgba(30,30,35,255);
+    border-bottom: 1px solid rgba(80,80,90,255);
+]])
+GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
 
 -- ScrollBox for abilities list
-if not GUI.AbilitiesScrollBox then
-    GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
-        name = "GUI.AbilitiesScrollBox",
-        x = 0, y = "24px",
-        width = "100%",
-        height = "-24px"
-    }, GUI.Left)
-end
+GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
+    name = "GUI.AbilitiesScrollBox",
+    x = 0, y = "24px",
+    width = "100%",
+    height = "-24px"
+}, GUI.Left)
 
 -- Create background container inside scrollbox (following GamePlayersList pattern)
-if not GUI.AbilitiesListContainer then
-    GUI.AbilitiesListContainer = Geyser.Label:new({
-        name = "GUI.AbilitiesListContainer",
-        x = 0, y = 0,
-        width = "100%", height = "100%"
-    }, GUI.AbilitiesScrollBox)
-    GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
-end
+GUI.AbilitiesListContainer = Geyser.Label:new({
+    name = "GUI.AbilitiesListContainer",
+    x = 0, y = 0,
+    width = "100%", height = "100%"
+}, GUI.AbilitiesScrollBox)
+GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
 -- Storage for active abilities and their UI elements
-GUI.ActiveAbilities = GUI.ActiveAbilities or {}
-GUI.AbilityRows = GUI.AbilityRows or {}
-GUI.AbilityTimers = GUI.AbilityTimers or {}
+-- Reset on script load to ensure clean state with new GUI elements
+GUI.ActiveAbilities = {}
+GUI.AbilityRows = {}
+-- Kill any existing timers before resetting
+if GUI.AbilityTimers then
+    for name, timerId in pairs(GUI.AbilityTimers) do
+        killTimer(timerId)
+    end
+end
+GUI.AbilityTimers = {}
 
 -- CSS styles for ability gauges (inspired by footer)
 GUI.AbilityGaugeBackCSS = CSSMan.new([[

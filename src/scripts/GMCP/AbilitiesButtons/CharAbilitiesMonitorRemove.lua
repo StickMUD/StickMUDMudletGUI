@@ -4,11 +4,11 @@ function CharAbilitiesMonitorRemove()
         return
     end
     
-    local char_abilities_remove = gmcp.Char.Abilities.Remove
+    local data = gmcp.Char.Abilities.Remove
     
     -- Remove ability from the UI
-    if char_abilities_remove.name then
-        local monitorId = char_abilities_remove.monitor and char_abilities_remove.monitor.id or nil
-        RemoveAbility(char_abilities_remove.name, monitorId)
+    if data.name and RemoveAbility then
+        local monitorId = data.monitor and data.monitor.id or nil
+        RemoveAbility(data.name, monitorId)
     end
 end
