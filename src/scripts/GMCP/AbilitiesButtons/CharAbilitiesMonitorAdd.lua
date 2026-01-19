@@ -5,20 +5,9 @@ function CharAbilitiesMonitorAdd()
     end
     
     local char_abilities_add = gmcp.Char.Abilities.Add
-  
-    --for index = 19, 2, -1 do
-    --index = 19;
-    --gauge_name = "AbilityGauge" .. index;
-      --GUI[gauge_name]:setValue(100, 100, ("<span style = 'color: black'><center><b>" ..firstToUpper(char_abilities_add.name).. "</b></center></span>"))	
-    --GUI[gauge_name]:show()
-    --end
-  
-    if char_abilities_add.monitor and char_abilities_add.monitor.expires ~= nil and char_abilities_add.monitor.expires > 0 then
-      abilitiesTimers[char_abilities_add.monitor.id] =
-        tempTimer(
-          char_abilities_add.monitor.expires,
-          function()
-          end
-        )
+    
+    -- Add ability to the UI
+    if char_abilities_add.name then
+        AddAbility(char_abilities_add.name, char_abilities_add.monitor)
     end
-  end
+end
