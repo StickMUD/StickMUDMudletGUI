@@ -1,3 +1,13 @@
+-- Abilities panel - positioned between main window and right content panel
+GUI.Middle = Geyser.Label:new({
+  name = "GUI.Middle",
+  x = "-52%", y = "7%",
+  width = "10%",
+  height = "83%",
+})
+setBackgroundColor("GUI.Middle", 0, 0, 0)
+GUI.Middle:raise()
+
 GUI.Right = Geyser.Label:new({
   name = "GUI.Right",
   x = "-42%", y = 0,

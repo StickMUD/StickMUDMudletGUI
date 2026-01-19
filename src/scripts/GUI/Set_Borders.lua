@@ -21,10 +21,11 @@ function updateBorders()
     setBorderLeft(0)
     setBorderTop(h/20)
     setBorderBottom(h/10)
-    setBorderRight(w*0.42)
+    setBorderRight(w*0.52)
     
     -- Reposition main GUI containers and all children to adapt to new window size
     if GUI then
+        repositionRecursive(GUI.Middle)
         repositionRecursive(GUI.Right)
         repositionRecursive(GUI.Top)
         repositionRecursive(GUI.Bottom)

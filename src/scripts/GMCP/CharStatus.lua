@@ -121,4 +121,43 @@ function CharStatus()
         -- Store the current background for hover restoration
         GUI.IconBackgrounds[labelName] = cssValue
     end
+
+    -- Update incentive data if available
+    UpdateIncentiveFromStatus()
+end
+
+-- Function to update incentive display from Char.Status GMCP data
+function UpdateIncentiveFromStatus()
+    if not gmcp or not gmcp.Char or not gmcp.Char.Status then
+        return
+    end
+    
+    local status = gmcp.Char.Status
+    
+    -- Only update if we have incentive data
+    if status.incentive_eligible == nil then
+        return
+    end
+    
+    -- Update GUI.IncentiveData with GMCP values
+    if GUI.IncentiveData then
+        GUI.IncentiveData.active = status.incentive_active or "No"
+        GUI.IncentiveData.eligible = status.incentive_eligible or "No"
+        GUI.IncentiveData.all_complete = status.incentive_all_complete or "No"
+        GUI.IncentiveData.base_complete = status.incentive_base_complete or "No"
+        GUI.IncentiveData.base_progress = tonumber(status.incentive_base_progress) or 0
+        GUI.IncentiveData.m1_complete = status.incentive_m1_complete or "No"
+        GUI.IncentiveData.m1_progress = tonumber(status.incentive_m1_progress) or 0
+        GUI.IncentiveData.m2_complete = status.incentive_m2_complete or "No"
+        GUI.IncentiveData.m2_progress = tonumber(status.incentive_m2_progress) or 0
+        GUI.IncentiveData.m3_complete = status.incentive_m3_complete or "No"
+        GUI.IncentiveData.m3_progress = tonumber(status.incentive_m3_progress) or 0
+        GUI.IncentiveData.next_milestone = tonumber(status.incentive_next_milestone) or 0
+        GUI.IncentiveData.time_remaining = tonumber(status.incentive_time_remaining) or 0
+        
+        -- Refresh the display
+        if RefreshIncentiveDisplay then
+            RefreshIncentiveDisplay()
+        end
+    end
 end

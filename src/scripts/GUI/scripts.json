@@ -20,6 +20,12 @@
        {
               "isActive": "yes",
               "isFolder": "no",
+              "name": "Create Middle",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
               "name": "Create Header",
               "script": ""
        },

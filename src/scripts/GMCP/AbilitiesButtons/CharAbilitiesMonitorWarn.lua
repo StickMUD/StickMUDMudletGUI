@@ -4,18 +4,12 @@ function CharAbilitiesMonitorWarn()
         return
     end
     
-    local char_abilities_update = gmcp.Char.Abilities.Update
-  
-    --for index = 19, 2, -1 do
-    --index = 19;
-    --gauge_name = "AbilityGauge" .. index;
-      --GUI[gauge_name]:setValue(100, 100, ("<span style = 'color: black'><center><b>" ..firstToUpper(char_abilities_update.name).. "</b></center></span>"))	
-    --GUI[gauge_name].back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-    --GUI.GaugeFrontCSS:set("background-color","gray")
-    --GUI[gauge_name].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-    --GUI[gauge_name]:flash()
-    --end
-  
-    if char_abilities_update.monitor and char_abilities_update.monitor.warn ~= nil and char_abilities_update.monitor.warn == 1 then
+    local data = gmcp.Char.Abilities.Update
+    
+    -- Update ability warning state in the UI (by monitor ID)
+    if data.name and data.monitor and data.monitor.id and UpdateAbilityWarning then
+        local monitorId = data.monitor.id
+        local warn = data.monitor.warn or 0
+        UpdateAbilityWarning(data.name, monitorId, warn)
     end
-  end
+end

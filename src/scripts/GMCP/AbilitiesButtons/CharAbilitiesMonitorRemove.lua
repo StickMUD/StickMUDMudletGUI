@@ -1,27 +1,18 @@
 function CharAbilitiesMonitorRemove()
     -- Check if GMCP Char.Abilities.Remove data is available
-    if not gmcp or not gmcp.Char or not gmcp.Char.Abilities or not gmcp.Char.Abilities.Remove then
+    if not gmcp or not gmcp.Char or not gmcp.Char.Abilities then
         return
     end
     
-    local char_abilities_remove = gmcp.Char.Abilities.Remove
-  
-    --for index = 19, 2, -1 do
-    --index = 19;
-    --gauge_name = "AbilityGauge" .. index;
-      --GUI[gauge_name]:setValue(100, 100, ("<span style = 'color: black'><center><b>" ..firstToUpper(char_abilities_remove.name).. "</b></center></span>"))	
-          --GUI[gauge_name].back:setStyleSheet(GUI.GaugeBackCSS:getCSS())
-    --GUI.GaugeFrontCSS:set("background-color","white")
-    --GUI[gauge_name].front:setStyleSheet(GUI.GaugeFrontCSS:getCSS())
-    --GUI[gauge_name]:hide()
-    --end
-  
-    if
-      char_abilities_remove.monitor and
-      char_abilities_remove.monitor.id ~= nil and
-      abilitiesTimers[char_abilities_remove.monitor.id] ~= nil
-    then
-      killTimer(abilitiesTimers[char_abilities_remove.monitor.id])
-      abilitiesTimers[char_abilities_remove.monitor.id] = nil;
+    local data = gmcp.Char.Abilities.Remove
+    if not data then
+        return
     end
-  end
+    
+    -- Remove ability from the UI by monitor ID
+    if data.name and data.monitor and data.monitor.id then
+        if RemoveAbility then
+            RemoveAbility(data.name, data.monitor.id)
+        end
+    end
+end
