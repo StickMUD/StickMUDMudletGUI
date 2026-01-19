@@ -385,22 +385,23 @@ function ClearAllAbilities()
     -- Clear active abilities
     GUI.ActiveAbilities = {}
     
-    -- Hide all gauges
+    -- Hide all gauges from our tracked rows
     if GUI.AbilityRows then
         for i, row in pairs(GUI.AbilityRows) do
-            if row and row.gauge then
+            if row and row.gauge and row.gauge.hide then
                 row.gauge:hide()
             end
         end
     end
     
-    -- Also try to hide gauges by name pattern in case references were lost
-    for i = 1, 20 do
-        local gaugeName = "GUI.AbilityGauge" .. i
-        if Geyser.windowList and Geyser.windowList[gaugeName .. "Container"] then
-            local gauge = Geyser.windowList[gaugeName .. "Container"]
-            if gauge and gauge.hide then
-                gauge:hide()
+    -- Fallback: search Geyser.windowList for any ability gauges we may have lost track of
+    if Geyser and Geyser.windowList then
+        for windowName, windowObj in pairs(Geyser.windowList) do
+            -- Check if this is one of our ability gauges (matches "GUI.AbilityGauge" prefix)
+            if type(windowName) == "string" and windowName:find("^GUI%.AbilityGauge%d+") then
+                if windowObj and windowObj.hide then
+                    windowObj:hide()
+                end
             end
         end
     end
