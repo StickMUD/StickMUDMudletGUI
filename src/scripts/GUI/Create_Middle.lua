@@ -263,6 +263,9 @@ function AddAbility(name, monitorData)
         return
     end
     
+    -- Reset retry state since we received an ability
+    ResetAbilitiesRetryState()
+    
     local expires = monitorData.expires or 0
     local warn = monitorData.warn or 0
     
@@ -405,18 +408,50 @@ function ClearAllAbilities()
     end
 end
 
+-- Retry state for abilities refresh (preserved across reloads)
+GUI.AbilitiesRetryCount = GUI.AbilitiesRetryCount or 0
+GUI.AbilitiesMaxRetries = 5  -- Stop after this many attempts
+GUI.AbilitiesBaseInterval = 10  -- Base interval in seconds
+GUI.AbilitiesCurrentInterval = GUI.AbilitiesCurrentInterval or GUI.AbilitiesBaseInterval
+
+-- Function to reset retry state (call when abilities arrive)
+function ResetAbilitiesRetryState()
+    GUI.AbilitiesRetryCount = 0
+    GUI.AbilitiesCurrentInterval = GUI.AbilitiesBaseInterval
+end
+
 -- Function to check if abilities list is empty and request from server
 function CheckAbilitiesAndRefresh()
-    -- Count active abilities
-    local count = 0
-    for _ in pairs(GUI.ActiveAbilities) do
-        count = count + 1
+    -- Check if abilities list is empty using idiomatic Lua
+    if next(GUI.ActiveAbilities) ~= nil then
+        -- Abilities exist, reset retry state and skip
+        ResetAbilitiesRetryState()
+        return
     end
     
-    -- If no active abilities, request list from server
-    if count == 0 then
-        sendGMCP("Char.Abilities.List")
+    -- Connection guard: only send GMCP if connected
+    -- Check multiple possible connection indicators
+    local isConnected = (GUI and GUI.isConnected) or 
+                        (gmcp and gmcp.Char) or 
+                        (getNetworkLatency and getNetworkLatency() > 0)
+    
+    if not isConnected then
+        -- Not connected, skip this check
+        return
     end
+    
+    -- Check retry limit
+    if GUI.AbilitiesRetryCount >= GUI.AbilitiesMaxRetries then
+        -- Max retries reached, stop trying
+        return
+    end
+    
+    -- Increment retry counter and send request
+    GUI.AbilitiesRetryCount = GUI.AbilitiesRetryCount + 1
+    sendGMCP("Char.Abilities.List")
+    
+    -- Exponential backoff: double the interval after each attempt (cap at 5 minutes)
+    GUI.AbilitiesCurrentInterval = math.min(GUI.AbilitiesCurrentInterval * 2, 300)
 end
 
 -- Kill existing abilities check timer if it exists
@@ -425,7 +460,16 @@ if GUI.AbilitiesCheckTimer then
     GUI.AbilitiesCheckTimer = nil
 end
 
--- Start periodic check for empty abilities (every 10 seconds)
-GUI.AbilitiesCheckTimer = tempTimer(10, function()
-    CheckAbilitiesAndRefresh()
-end, true)  -- repeating timer
+-- Function to schedule next abilities check with current interval
+function ScheduleAbilitiesCheck()
+    if GUI.AbilitiesCheckTimer then
+        killTimer(GUI.AbilitiesCheckTimer)
+    end
+    GUI.AbilitiesCheckTimer = tempTimer(GUI.AbilitiesCurrentInterval, function()
+        CheckAbilitiesAndRefresh()
+        ScheduleAbilitiesCheck()  -- Schedule next check
+    end)
+end
+
+-- Start the periodic check
+ScheduleAbilitiesCheck()
