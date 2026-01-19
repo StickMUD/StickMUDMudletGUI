@@ -157,12 +157,17 @@ function RefreshAbilitiesDisplay()
     end
     
     -- Create or update rows for each ability
-    local yPos = 0
+    -- Position from bottom of scrollbox (using negative y values)
+    local numAbilities = #sortedAbilities
     for i, abilityInfo in ipairs(sortedAbilities) do
         -- Debug: echo("[RefreshDisplay] Processing ability " .. i .. ": " .. abilityInfo.name .. "\n")
         local ability = abilityInfo.data
         local name = abilityInfo.name
         local colors = getAbilityColor(ability.remaining, ability.warn, name)
+        
+        -- Calculate y position from bottom
+        -- First ability (i=1) at top of stack, last ability at very bottom
+        local yPos = "-" .. ((numAbilities - i + 1) * rowHeight) .. "px"
         
         -- Calculate gauge value (100% if no expiry, percentage if expiring)
         local gaugeValue = 100
@@ -183,7 +188,7 @@ function RefreshAbilitiesDisplay()
             -- Debug: echo("[RefreshDisplay] Updating existing gauge\n")
             -- Update existing gauge
             local gauge = existingRow.gauge
-            gauge:move(0, yPos .. "px")
+            gauge:move(0, yPos)
             gauge:resize("100%", rowHeight .. "px")
             gauge:setValue(gaugeValue, 100, labelText)
             
@@ -212,7 +217,7 @@ function RefreshAbilitiesDisplay()
             local success, err = pcall(function()
                 local gauge = Geyser.Gauge:new({
                     name = "GUI.AbilityGauge" .. i,
-                    x = 0, y = yPos .. "px",
+                    x = 0, y = yPos,
                     width = "100%", height = rowHeight .. "px"
                 }, GUI.AbilitiesListContainer)
                 
@@ -254,8 +259,6 @@ function RefreshAbilitiesDisplay()
                 -- Debug: echo("[RefreshDisplay] ERROR creating gauge: " .. tostring(err) .. "\n")
             end
         end
-        
-        yPos = yPos + rowHeight
     end
 end
 
