@@ -127,12 +127,20 @@ end
 
 -- Function to refresh the abilities display
 function RefreshAbilitiesDisplay()
-    -- Get sorted list of abilities (sort by name for consistent display)
+    -- Get sorted list of abilities (sort by remaining time: longest at top, shortest at bottom)
     local sortedAbilities = {}
     for id, ability in pairs(GUI.ActiveAbilities) do
         table.insert(sortedAbilities, {id = id, name = ability.name, data = ability})
     end
-    table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
+    table.sort(sortedAbilities, function(a, b)
+        -- Get remaining times (treat nil or 0 as infinite/permanent)
+        local aRemaining = a.data.remaining or math.huge
+        local bRemaining = b.data.remaining or math.huge
+        if aRemaining == 0 then aRemaining = math.huge end
+        if bRemaining == 0 then bRemaining = math.huge end
+        -- Sort descending (longest time first/at top)
+        return aRemaining > bRemaining
+    end)
     
     -- Debug: echo("[RefreshDisplay] Active abilities count: " .. #sortedAbilities .. ", GUI.AbilityRows count: " .. #GUI.AbilityRows .. "\n")
     
