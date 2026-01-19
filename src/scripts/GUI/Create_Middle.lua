@@ -9,14 +9,14 @@ GUI.AbilitiesListContainer = Geyser.Label:new({
     name = "GUI.AbilitiesListContainer",
     x = 0, y = 0,
     width = "100%",
-    height = "-28px"
+    height = "-40px"
 }, GUI.Middle)
 GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
--- Title label for Abilities (pillbox style like header) - at bottom
+-- Title label for Abilities (pillbox style like header) - at bottom with 12px buffer
 GUI.AbilitiesTitle = Geyser.Label:new({
     name = "GUI.AbilitiesTitle",
-    x = "2px", y = "-26px",
+    x = "2px", y = "-38px",
     width = "-4px",
     height = "24px"
 }, GUI.Middle)
