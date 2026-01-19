@@ -1,51 +1,55 @@
 -- Left panel container for abilities
-GUI.Left = Geyser.Label:new({
-    name = "GUI.Left",
-    x = 0, y = "7%",
-    width = "10%",
-    height = "-10%",
-})
-setBackgroundColor("GUI.Left", 0, 0, 0)
+if not GUI.Left then
+    GUI.Left = Geyser.Label:new({
+        name = "GUI.Left",
+        x = 0, y = "7%",
+        width = "10%",
+        height = "83%",
+    })
+    GUI.Left:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+end
 
 -- CSS for the left panel
 GUI.BoxLeftCSS = CSSMan.new([[
-    background-color: rgba(0,0,0,100);
+    background-color: rgba(0,0,0,255);
     qproperty-wordWrap: true;
 ]])
 
 -- Title label for Abilities
-GUI.AbilitiesTitle = Geyser.Label:new({
-    name = "GUI.AbilitiesTitle",
-    x = 0, y = 0,
-    width = "100%",
-    height = "24px"
-}, GUI.Left)
+if not GUI.AbilitiesTitle then
+    GUI.AbilitiesTitle = Geyser.Label:new({
+        name = "GUI.AbilitiesTitle",
+        x = 0, y = 0,
+        width = "100%",
+        height = "24px"
+    }, GUI.Left)
 
-GUI.AbilitiesTitle:setStyleSheet([[
-    background-color: rgba(30,30,35,255);
-    border-bottom: 1px solid rgba(80,80,90,255);
-]])
-GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
+    GUI.AbilitiesTitle:setStyleSheet([[
+        background-color: rgba(30,30,35,255);
+        border-bottom: 1px solid rgba(80,80,90,255);
+    ]])
+    GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
+end
 
 -- ScrollBox for abilities list
-GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
-    name = "GUI.AbilitiesScrollBox",
-    x = 0, y = "24px",
-    width = "100%",
-    height = "-24px"
-}, GUI.Left)
+if not GUI.AbilitiesScrollBox then
+    GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
+        name = "GUI.AbilitiesScrollBox",
+        x = 0, y = "24px",
+        width = "100%",
+        height = "-24px"
+    }, GUI.Left)
+end
 
-GUI.AbilitiesScrollBox:setStyleSheet([[
-    background-color: rgba(0,0,0,255);
-]])
-
--- Container inside scrollbox for ability rows
-GUI.AbilitiesContainer = Geyser.Label:new({
-    name = "GUI.AbilitiesContainer",
-    x = 0, y = 0,
-    width = "100%", height = "100%"
-}, GUI.AbilitiesScrollBox)
-GUI.AbilitiesContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+-- Create background container inside scrollbox (following GamePlayersList pattern)
+if not GUI.AbilitiesListContainer then
+    GUI.AbilitiesListContainer = Geyser.Label:new({
+        name = "GUI.AbilitiesListContainer",
+        x = 0, y = 0,
+        width = "100%", height = "100%"
+    }, GUI.AbilitiesScrollBox)
+    GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+end
 
 -- Storage for active abilities and their UI elements
 GUI.ActiveAbilities = GUI.ActiveAbilities or {}
@@ -114,21 +118,17 @@ function RefreshAbilitiesDisplay()
     local rowHeight = 36
     local totalHeight = #sortedNames * rowHeight
     
-    -- Resize container to fit all rows
-    GUI.AbilitiesContainer:resize(nil, math.max(totalHeight, GUI.AbilitiesScrollBox:get_height()))
-    
     -- Hide any extra rows from previous render
     for i = #sortedNames + 1, #GUI.AbilityRows do
-        if GUI.AbilityRows[i] then
+        if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
             GUI.AbilityRows[i].gauge:hide()
-            GUI.AbilityRows[i] = nil
         end
     end
     
     -- Create or update rows for each ability
+    local yPos = 0
     for i, name in ipairs(sortedNames) do
         local ability = GUI.ActiveAbilities[name]
-        local yPos = (i - 1) * rowHeight
         local colors = getAbilityColor(ability.remaining, ability.warn)
         
         -- Calculate gauge value (100% if no expiry, percentage if expiring)
@@ -145,10 +145,11 @@ function RefreshAbilitiesDisplay()
             timeText
         )
         
-        if GUI.AbilityRows[i] then
+        if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
             -- Update existing gauge
             local gauge = GUI.AbilityRows[i].gauge
-            gauge:move(0, yPos)
+            gauge:move(0, yPos .. "px")
+            gauge:resize("100%", rowHeight .. "px")
             gauge:setValue(gaugeValue, 100, labelText)
             
             -- Update colors
@@ -158,14 +159,16 @@ function RefreshAbilitiesDisplay()
             GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
             gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
             
+            -- Update stored name in case order changed
+            GUI.AbilityRows[i].name = name
             gauge:show()
         else
             -- Create new gauge
             local gauge = Geyser.Gauge:new({
                 name = "GUI.AbilityGauge" .. i,
-                x = 0, y = yPos,
-                width = "100%", height = rowHeight
-            }, GUI.AbilitiesContainer)
+                x = 0, y = yPos .. "px",
+                width = "100%", height = rowHeight .. "px"
+            }, GUI.AbilitiesListContainer)
             
             -- Apply styles
             GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
@@ -176,16 +179,21 @@ function RefreshAbilitiesDisplay()
             
             gauge:setValue(gaugeValue, 100, labelText)
             
-            -- Make gauge clickable to toggle ability
+            -- Store the ability name for the click callback
+            local abilityName = name
             gauge:setClickCallback(function()
-                send(name)
+                send(abilityName)
             end)
+            
+            gauge:show()
             
             GUI.AbilityRows[i] = {
                 gauge = gauge,
                 name = name
             }
         end
+        
+        yPos = yPos + rowHeight
     end
 end
 
