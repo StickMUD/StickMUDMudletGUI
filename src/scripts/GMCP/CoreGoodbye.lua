@@ -27,9 +27,6 @@ function CoreGoodbye()
   
   -- Clean up abilities panel
   if ClearAllAbilities then
-    echo("\n[CoreGoodbye] Calling ClearAllAbilities\n")
     ClearAllAbilities()
-  else
-    echo("\n[CoreGoodbye] ClearAllAbilities function not found!\n")
   end
 end

@@ -374,16 +374,11 @@ function UpdateAbilityWarning(name, monitorId, warn)
 end
 -- Function to clear all abilities (called on disconnect)
 function ClearAllAbilities()
-    echo("\n[ClearAllAbilities] Starting cleanup\n")
-    
     -- Kill all timers
     if GUI.AbilityTimers then
-        local timerCount = 0
         for id, timerId in pairs(GUI.AbilityTimers) do
             killTimer(timerId)
-            timerCount = timerCount + 1
         end
-        echo("[ClearAllAbilities] Killed " .. timerCount .. " timers\n")
     end
     GUI.AbilityTimers = {}
     
@@ -391,30 +386,24 @@ function ClearAllAbilities()
     GUI.ActiveAbilities = {}
     
     -- Hide all gauges from our tracked rows
-    local rowCount = 0
     if GUI.AbilityRows then
         for i, row in pairs(GUI.AbilityRows) do
             if row and row.gauge and row.gauge.hide then
                 row.gauge:hide()
-                rowCount = rowCount + 1
             end
         end
     end
-    echo("[ClearAllAbilities] Hid " .. rowCount .. " tracked rows\n")
     GUI.AbilityRows = {}
     
     -- Fallback: search Geyser.windowList for any ability gauges we may have lost track of
-    local fallbackCount = 0
     if Geyser and Geyser.windowList then
         for windowName, windowObj in pairs(Geyser.windowList) do
             -- Check if this is one of our ability gauges (matches "GUI.AbilityGauge" prefix)
             if type(windowName) == "string" and windowName:find("^GUI%.AbilityGauge%d+") then
                 if windowObj and windowObj.hide then
                     windowObj:hide()
-                    fallbackCount = fallbackCount + 1
                 end
             end
         end
     end
-    echo("[ClearAllAbilities] Hid " .. fallbackCount .. " gauges via fallback\n")
 end
