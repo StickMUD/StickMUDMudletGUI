@@ -19,20 +19,13 @@ GUI.AbilitiesTitle:setStyleSheet([[
 ]])
 GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
 
--- ScrollBox for abilities list
-GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
-    name = "GUI.AbilitiesScrollBox",
+-- Container for abilities list (simple Label, no scrolling)
+GUI.AbilitiesListContainer = Geyser.Label:new({
+    name = "GUI.AbilitiesListContainer",
     x = 0, y = "28px",
     width = "100%",
     height = "-28px"
 }, GUI.Middle)
-
--- Create background container inside scrollbox (following GamePlayersList pattern)
-GUI.AbilitiesListContainer = Geyser.Label:new({
-    name = "GUI.AbilitiesListContainer",
-    x = 0, y = 0,
-    width = "100%", height = "100%"
-}, GUI.AbilitiesScrollBox)
 GUI.AbilitiesListContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
 
 -- Storage for active abilities and their UI elements
