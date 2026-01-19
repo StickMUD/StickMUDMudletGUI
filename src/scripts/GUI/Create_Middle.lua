@@ -4,10 +4,202 @@ GUI.BoxLeftCSS = CSSMan.new([[
     qproperty-wordWrap: true;
 ]])
 
--- Container for abilities list (simple Label, no scrolling) - at top
+-- ============================================
+-- INCENTIVE SECTION (top portion)
+-- ============================================
+
+-- Title label for Incentive (pillbox style like header) - at top
+GUI.IncentiveTitle = GUI.IncentiveTitle or Geyser.Label:new({
+    name = "GUI.IncentiveTitle",
+    x = "2px", y = "2px",
+    width = "-4px",
+    height = "24px"
+}, GUI.Middle)
+
+GUI.IncentiveTitle:setStyleSheet([[
+    background-color: #222230;
+    border: 1px solid #32323f;
+    border-radius: 6px;
+]])
+GUI.IncentiveTitle:echo([[<center><font size="3" color="#888">🎯 Daily Incentive</font></center>]])
+
+-- Container for incentive gauges - below title
+GUI.IncentiveContainer = GUI.IncentiveContainer or Geyser.Label:new({
+    name = "GUI.IncentiveContainer",
+    x = 0, y = "28px",
+    width = "100%",
+    height = "140px"
+}, GUI.Middle)
+GUI.IncentiveContainer:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+
+-- Storage for incentive state
+GUI.IncentiveData = GUI.IncentiveData or {
+    active = "No",
+    eligible = "No",
+    all_complete = "No",
+    base_complete = "No",
+    base_progress = 0,
+    m1_complete = "No",
+    m1_progress = 0,
+    m2_complete = "No",
+    m2_progress = 0,
+    m3_complete = "No",
+    m3_progress = 0,
+    next_milestone = 0,
+    time_remaining = 0
+}
+
+-- CSS styles for incentive gauges
+GUI.IncentiveGaugeBackCSS = CSSMan.new([[
+    background-color: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    margin: 2px 4px;
+]])
+
+GUI.IncentiveGaugeFrontCSS = CSSMan.new([[
+    border: none;
+    border-radius: 4px;
+    margin: 2px 4px;
+]])
+
+-- Colors for incentive gauges
+GUI.IncentiveColors = {
+    inactive = {front = "#444", back = "#222"},      -- Grey for inactive/ineligible
+    incomplete = {front = "#2980b9", back = "#164666"},  -- Blue for in progress
+    complete = {front = "#27ae60", back = "#0d3d1a"},    -- Green for complete
+    base = {front = "#f39c12", back = "#4d3205"}         -- Orange for base goal
+}
+
+-- Helper function to format time remaining
+function formatIncentiveTime(seconds)
+    if not seconds or seconds <= 0 then
+        return "Cycle Complete"
+    end
+    local hours = math.floor(seconds / 3600)
+    local mins = math.floor((seconds % 3600) / 60)
+    return string.format("%dh %dm remaining", hours, mins)
+end
+
+-- Create incentive gauges
+GUI.IncentiveGauges = GUI.IncentiveGauges or {}
+
+-- Hide existing gauges on reload
+for name, gauge in pairs(GUI.IncentiveGauges) do
+    if gauge and gauge.hide then gauge:hide() end
+end
+
+-- Create the four gauges: Base, M1, M2, M3
+local incentiveLabels = {
+    {key = "base", label = "Base (50M)", y = 0},
+    {key = "m1", label = "M1 (150M)", y = 26},
+    {key = "m2", label = "M2 (450M)", y = 52},
+    {key = "m3", label = "M3 (900M)", y = 78}
+}
+
+for _, info in ipairs(incentiveLabels) do
+    local gauge = Geyser.Gauge:new({
+        name = "GUI.IncentiveGauge_" .. info.key,
+        x = 0, y = info.y .. "px",
+        width = "100%", height = "24px"
+    }, GUI.IncentiveContainer)
+    
+    GUI.IncentiveGaugeBackCSS:set("background-color", GUI.IncentiveColors.inactive.back)
+    gauge.back:setStyleSheet(GUI.IncentiveGaugeBackCSS:getCSS())
+    GUI.IncentiveGaugeFrontCSS:set("background-color", GUI.IncentiveColors.inactive.front)
+    gauge.front:setStyleSheet(GUI.IncentiveGaugeFrontCSS:getCSS())
+    
+    gauge:setValue(0, 100, string.format([[<center><font size="3" color="#666">%s</font></center>]], info.label))
+    gauge:show()
+    
+    GUI.IncentiveGauges[info.key] = gauge
+end
+
+-- Time remaining label
+GUI.IncentiveTimeLabel = GUI.IncentiveTimeLabel or Geyser.Label:new({
+    name = "GUI.IncentiveTimeLabel",
+    x = 0, y = "104px",
+    width = "100%", height = "20px"
+}, GUI.IncentiveContainer)
+GUI.IncentiveTimeLabel:setStyleSheet([[background-color: rgba(0,0,0,255);]])
+GUI.IncentiveTimeLabel:echo([[<center><font size="2" color="#666">Not Active</font></center>]])
+
+-- Function to update incentive display
+function RefreshIncentiveDisplay()
+    local data = GUI.IncentiveData
+    
+    -- Check if eligible and active
+    local isActive = data.eligible == "Yes" and data.active == "Yes"
+    
+    -- Update each gauge
+    local gaugeInfo = {
+        {key = "base", progress = data.base_progress, complete = data.base_complete, label = "Base (50M)", colors = GUI.IncentiveColors.base},
+        {key = "m1", progress = data.m1_progress, complete = data.m1_complete, label = "M1 (150M)", colors = GUI.IncentiveColors.incomplete},
+        {key = "m2", progress = data.m2_progress, complete = data.m2_complete, label = "M2 (450M)", colors = GUI.IncentiveColors.incomplete},
+        {key = "m3", progress = data.m3_progress, complete = data.m3_complete, label = "M3 (900M)", colors = GUI.IncentiveColors.incomplete}
+    }
+    
+    for _, info in ipairs(gaugeInfo) do
+        local gauge = GUI.IncentiveGauges[info.key]
+        if gauge then
+            local progress = tonumber(info.progress) or 0
+            local isComplete = info.complete == "Yes"
+            local colors
+            local textColor
+            
+            if not isActive then
+                colors = GUI.IncentiveColors.inactive
+                textColor = "#666"
+                progress = 0
+            elseif isComplete then
+                colors = GUI.IncentiveColors.complete
+                textColor = "white"
+                progress = 100
+            else
+                colors = info.colors
+                textColor = "white"
+            end
+            
+            GUI.IncentiveGaugeBackCSS:set("background-color", colors.back)
+            gauge.back:setStyleSheet(GUI.IncentiveGaugeBackCSS:getCSS())
+            GUI.IncentiveGaugeFrontCSS:set("background-color", colors.front)
+            gauge.front:setStyleSheet(GUI.IncentiveGaugeFrontCSS:getCSS())
+            
+            local statusText = isComplete and "✓" or string.format("%d%%", progress)
+            local labelText = string.format([[<center><font size="3" color="%s"><b>%s</b> %s</font></center>]], 
+                textColor, info.label, isActive and statusText or "")
+            gauge:setValue(progress, 100, labelText)
+        end
+    end
+    
+    -- Update time remaining
+    if GUI.IncentiveTimeLabel then
+        local timeText
+        if data.eligible ~= "Yes" then
+            timeText = [[<center><font size="2" color="#666">Lords Only</font></center>]]
+        elseif data.active ~= "Yes" then
+            timeText = [[<center><font size="2" color="#666">Not Active</font></center>]]
+        elseif data.all_complete == "Yes" then
+            timeText = [[<center><font size="2" color="#27ae60">All Milestones Complete! ✓</font></center>]]
+        else
+            local timeStr = formatIncentiveTime(tonumber(data.time_remaining) or 0)
+            timeText = string.format([[<center><font size="2" color="#888">⏱ %s</font></center>]], timeStr)
+        end
+        GUI.IncentiveTimeLabel:echo(timeText)
+    end
+end
+
+-- Initialize display
+RefreshIncentiveDisplay()
+
+-- ============================================
+-- ABILITIES SECTION (bottom portion)
+-- ============================================
+
+-- Container for abilities list (simple Label, no scrolling) - below incentive
 GUI.AbilitiesListContainer = Geyser.Label:new({
     name = "GUI.AbilitiesListContainer",
-    x = 0, y = 0,
+    x = 0, y = "170px",
     width = "100%",
     height = "-40px"
 }, GUI.Middle)
