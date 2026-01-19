@@ -59,7 +59,6 @@ GUI.AbilityTimers = {}
 GUI.ActiveAbilities = {}
 
 -- CSS styles for ability gauges (inspired by footer)
--- Using Qt stylesheet :hover pseudo-class for hover effect
 GUI.AbilityGaugeBackCSS = CSSMan.new([[
     background-color: #1a1a1a;
     border: 1px solid #333;
@@ -78,22 +77,6 @@ GUI.AbilityColors = {
     warning = {front = "#f39c12", back = "#4d3205"},    -- Orange for warning
     expiring = {front = "#e74c3c", back = "#4a1a15"}    -- Red for expiring soon
 }
-
--- Helper function to generate front CSS with hover effect
-function getAbilityFrontCSS(frontColor)
-    return string.format([[
-        background-color: %s;
-        border: none;
-        border-radius: 4px;
-        margin: 2px 4px;
-    }
-    QLabel:hover {
-        background-color: %s;
-        border: 2px solid white;
-        border-radius: 4px;
-        margin: 0px 2px;
-    ]], frontColor, frontColor)
-end
 
 -- Color palette for active abilities (good contrast with white text)
 -- Each color has a front (gauge fill) and back (background) variant
@@ -208,7 +191,8 @@ function RefreshAbilitiesDisplay()
             GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
             GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
             gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
-            gauge.front:setStyleSheet(getAbilityFrontCSS(colors.front))
+            GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
+            gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
             
             -- Update stored info in case order changed
             GUI.AbilityRows[i].id = abilityInfo.id
@@ -238,7 +222,8 @@ function RefreshAbilitiesDisplay()
                 GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
                 GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
                 gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
-                gauge.front:setStyleSheet(getAbilityFrontCSS(colors.front))
+                GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
+                gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
                 
                 -- Debug: echo("[RefreshDisplay] Styles applied\n")
                 
