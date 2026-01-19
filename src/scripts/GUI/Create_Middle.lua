@@ -4,26 +4,27 @@ GUI.BoxLeftCSS = CSSMan.new([[
     qproperty-wordWrap: true;
 ]])
 
--- Title label for Abilities
+-- Title label for Abilities (pillbox style like header)
 GUI.AbilitiesTitle = Geyser.Label:new({
     name = "GUI.AbilitiesTitle",
-    x = 0, y = 0,
-    width = "100%",
+    x = "2px", y = "2px",
+    width = "-4px",
     height = "24px"
 }, GUI.Middle)
 
 GUI.AbilitiesTitle:setStyleSheet([[
-    background-color: rgba(30,30,35,255);
-    border-bottom: 1px solid rgba(80,80,90,255);
+    background-color: #222230;
+    border: 1px solid #32323f;
+    border-radius: 6px;
 ]])
 GUI.AbilitiesTitle:echo([[<center><font size="3" color="#888">⚡ Abilities</font></center>]])
 
 -- ScrollBox for abilities list
 GUI.AbilitiesScrollBox = Geyser.ScrollBox:new({
     name = "GUI.AbilitiesScrollBox",
-    x = 0, y = "24px",
+    x = 0, y = "28px",
     width = "100%",
-    height = "-24px"
+    height = "-28px"
 }, GUI.Middle)
 
 -- Create background container inside scrollbox (following GamePlayersList pattern)
