@@ -140,17 +140,17 @@ function RefreshAbilitiesDisplay()
     end
     table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
     
-    echo("[RefreshDisplay] Active abilities count: " .. #sortedAbilities .. ", GUI.AbilityRows count: " .. #GUI.AbilityRows .. "\n")
+    -- Debug: echo("[RefreshDisplay] Active abilities count: " .. #sortedAbilities .. ", GUI.AbilityRows count: " .. #GUI.AbilityRows .. "\n")
     
     -- Calculate row height
     local rowHeight = 36
     local totalHeight = #sortedAbilities * rowHeight
     
     -- Hide any extra rows from previous render
-    echo("[RefreshDisplay] Hiding rows from " .. (#sortedAbilities + 1) .. " to " .. #GUI.AbilityRows .. "\n")
+    -- Debug: echo("[RefreshDisplay] Hiding rows from " .. (#sortedAbilities + 1) .. " to " .. #GUI.AbilityRows .. "\n")
     for i = #sortedAbilities + 1, #GUI.AbilityRows do
         if GUI.AbilityRows[i] and GUI.AbilityRows[i].gauge then
-            echo("[RefreshDisplay] Hiding gauge " .. i .. "\n")
+            -- Debug: echo("[RefreshDisplay] Hiding gauge " .. i .. "\n")
             GUI.AbilityRows[i].gauge:hide()
         end
     end
@@ -158,7 +158,7 @@ function RefreshAbilitiesDisplay()
     -- Create or update rows for each ability
     local yPos = 0
     for i, abilityInfo in ipairs(sortedAbilities) do
-        echo("[RefreshDisplay] Processing ability " .. i .. ": " .. abilityInfo.name .. "\n")
+        -- Debug: echo("[RefreshDisplay] Processing ability " .. i .. ": " .. abilityInfo.name .. "\n")
         local ability = abilityInfo.data
         local name = abilityInfo.name
         local colors = getAbilityColor(ability.remaining, ability.warn, name)
@@ -176,10 +176,10 @@ function RefreshAbilitiesDisplay()
         )
         
         local existingRow = GUI.AbilityRows[i]
-        echo("[RefreshDisplay] Checking existing row: " .. tostring(existingRow ~= nil) .. ", gauge: " .. tostring(existingRow and existingRow.gauge ~= nil) .. "\n")
+        -- Debug: echo("[RefreshDisplay] Checking existing row: " .. tostring(existingRow ~= nil) .. ", gauge: " .. tostring(existingRow and existingRow.gauge ~= nil) .. "\n")
         
         if existingRow and existingRow.gauge then
-            echo("[RefreshDisplay] Updating existing gauge\n")
+            -- Debug: echo("[RefreshDisplay] Updating existing gauge\n")
             -- Update existing gauge
             local gauge = existingRow.gauge
             gauge:move(0, yPos .. "px")
@@ -206,7 +206,7 @@ function RefreshAbilitiesDisplay()
             
             gauge:show()
         else
-            echo("[RefreshDisplay] Creating NEW gauge\n")
+            -- Debug: echo("[RefreshDisplay] Creating NEW gauge\n")
             -- Create new gauge with error handling
             local success, err = pcall(function()
                 local gauge = Geyser.Gauge:new({
@@ -215,7 +215,7 @@ function RefreshAbilitiesDisplay()
                     width = "100%", height = rowHeight .. "px"
                 }, GUI.AbilitiesListContainer)
                 
-                echo("[RefreshDisplay] Gauge object created\n")
+                -- Debug: echo("[RefreshDisplay] Gauge object created\n")
                 
                 -- Apply styles
                 GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
@@ -224,11 +224,11 @@ function RefreshAbilitiesDisplay()
                 GUI.AbilityGaugeFrontCSS:set("background-color", colors.front)
                 gauge.front:setStyleSheet(GUI.AbilityGaugeFrontCSS:getCSS())
                 
-                echo("[RefreshDisplay] Styles applied\n")
+                -- Debug: echo("[RefreshDisplay] Styles applied\n")
                 
                 gauge:setValue(gaugeValue, 100, labelText)
                 
-                echo("[RefreshDisplay] Value set\n")
+                -- Debug: echo("[RefreshDisplay] Value set\n")
                 
                 -- Store the ability name for the click callback
                 -- Note: Gauge doesn't have setClickCallback, use the front label
@@ -239,18 +239,18 @@ function RefreshAbilitiesDisplay()
                 
                 gauge:show()
                 
-                echo("[RefreshDisplay] About to store in AbilityRows\n")
+                -- Debug: echo("[RefreshDisplay] About to store in AbilityRows\n")
                 
                 GUI.AbilityRows[i] = {
                     gauge = gauge,
                     id = abilityInfo.id,
                     name = name
                 }
-                echo("[RefreshDisplay] Created gauge at index " .. i .. ", AbilityRows count now: " .. #GUI.AbilityRows .. "\n")
+                -- Debug: echo("[RefreshDisplay] Created gauge at index " .. i .. ", AbilityRows count now: " .. #GUI.AbilityRows .. "\n")
             end)
             
             if not success then
-                echo("[RefreshDisplay] ERROR creating gauge: " .. tostring(err) .. "\n")
+                -- Debug: echo("[RefreshDisplay] ERROR creating gauge: " .. tostring(err) .. "\n")
             end
         end
         
@@ -324,23 +324,23 @@ end
 
 -- Function to remove an ability (by monitor ID)
 function RemoveAbility(name, monitorId)
-    echo("\n[RemoveAbility] Called with name=" .. tostring(name) .. ", id=" .. tostring(monitorId) .. "\n")
+    -- Debug: echo("\n[RemoveAbility] Called with name=" .. tostring(name) .. ", id=" .. tostring(monitorId) .. "\n")
     
     if not monitorId then
-        echo("[RemoveAbility] No monitor ID provided\n")
+        -- Debug: echo("[RemoveAbility] No monitor ID provided\n")
         return
     end
     
     -- Check if ability exists
     if not GUI.ActiveAbilities[monitorId] then
-        echo("[RemoveAbility] Ability not found in GUI.ActiveAbilities\n")
-        local keys = {}
-        for k, _ in pairs(GUI.ActiveAbilities) do table.insert(keys, k) end
-        echo("[RemoveAbility] Active abilities: " .. table.concat(keys, ", ") .. "\n")
+        -- Debug: echo("[RemoveAbility] Ability not found in GUI.ActiveAbilities\n")
+        -- Debug: local keys = {}
+        -- Debug: for k, _ in pairs(GUI.ActiveAbilities) do table.insert(keys, k) end
+        -- Debug: echo("[RemoveAbility] Active abilities: " .. table.concat(keys, ", ") .. "\n")
         return
     end
     
-    echo("[RemoveAbility] Found ability, removing...\n")
+    -- Debug: echo("[RemoveAbility] Found ability, removing...\n")
     
     -- Kill timer if exists
     if GUI.AbilityTimers[monitorId] then
@@ -352,19 +352,12 @@ function RemoveAbility(name, monitorId)
     GUI.ActiveAbilities[monitorId] = nil
     
     -- Hide all existing gauges first (they'll be recreated/shown in RefreshAbilitiesDisplay)
-    -- Use pairs instead of ipairs in case # operator isn't working correctly
-    echo("[RemoveAbility] Hiding gauges, AbilityRows has " .. #GUI.AbilityRows .. " entries (using #)\n")
-    local hideCount = 0
     for i, row in pairs(GUI.AbilityRows) do
         if row and row.gauge then
-            echo("[RemoveAbility] Hiding gauge at index " .. tostring(i) .. "\n")
             row.gauge:hide()
-            hideCount = hideCount + 1
         end
     end
-    echo("[RemoveAbility] Hid " .. hideCount .. " gauges\n")
     
-    echo("[RemoveAbility] Calling RefreshAbilitiesDisplay\n")
     RefreshAbilitiesDisplay()
 end
 
@@ -377,5 +370,23 @@ function UpdateAbilityWarning(name, monitorId, warn)
     if GUI.ActiveAbilities[monitorId] then
         GUI.ActiveAbilities[monitorId].warn = warn
         RefreshAbilitiesDisplay()
+    end
+end
+-- Function to clear all abilities (called on disconnect)
+function ClearAllAbilities()
+    -- Kill all timers
+    for id, timerId in pairs(GUI.AbilityTimers) do
+        killTimer(timerId)
+    end
+    GUI.AbilityTimers = {}
+    
+    -- Clear active abilities
+    GUI.ActiveAbilities = {}
+    
+    -- Hide all gauges
+    for i, row in pairs(GUI.AbilityRows) do
+        if row and row.gauge then
+            row.gauge:hide()
+        end
     end
 end

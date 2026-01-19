@@ -18,4 +18,9 @@ function CoreGoodbye()
     killTimer(timer_value)
   end
   abilitiesTimers = {}
+  
+  -- Clean up abilities panel
+  if ClearAllAbilities then
+    ClearAllAbilities()
+  end
 end
