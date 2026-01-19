@@ -1,9 +1,9 @@
 -- Left panel container for abilities
 GUI.Left = Geyser.Label:new({
     name = "GUI.Left",
-    x = 0, y = 0,
+    x = 0, y = "7%",
     width = "10%",
-    height = "100%",
+    height = "-10%",
 })
 setBackgroundColor("GUI.Left", 0, 0, 0)
 
