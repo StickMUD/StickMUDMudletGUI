@@ -78,6 +78,29 @@ GUI.AbilityColors = {
     expiring = {front = "#e74c3c", back = "#4a1a15"}    -- Red for expiring soon
 }
 
+-- Hover effect CSS for ability gauges (lighter background on hover)
+GUI.AbilityGaugeHoverCSS = CSSMan.new([[
+    background-color: rgba(255,255,255,0.1);
+    border: 1px solid #444;
+    border-radius: 4px;
+    margin: 2px 4px;
+]])
+
+-- Hover effect handlers for ability gauges
+function AbilityGaugeEnter(gauge, colors)
+    if gauge and gauge.back then
+        gauge.back:setStyleSheet(GUI.AbilityGaugeHoverCSS:getCSS())
+    end
+end
+
+function AbilityGaugeLeave(gauge, colors)
+    if gauge and gauge.back then
+        GUI.AbilityGaugeBackCSS:set("background-color", colors.back)
+        GUI.AbilityGaugeBackCSS:set("border", "1px solid " .. colors.back)
+        gauge.back:setStyleSheet(GUI.AbilityGaugeBackCSS:getCSS())
+    end
+end
+
 -- Color palette for active abilities (good contrast with white text)
 -- Each color has a front (gauge fill) and back (background) variant
 GUI.AbilityColorPalette = {
@@ -144,7 +167,7 @@ function RefreshAbilitiesDisplay()
     -- Debug: echo("[RefreshDisplay] Active abilities count: " .. #sortedAbilities .. ", GUI.AbilityRows count: " .. #GUI.AbilityRows .. "\n")
     
     -- Calculate row height
-    local rowHeight = 36
+    local rowHeight = 30
     local totalHeight = #sortedAbilities * rowHeight
     
     -- Hide any extra rows from previous render
@@ -205,6 +228,11 @@ function RefreshAbilitiesDisplay()
                 send(abilityName)
             end)
             
+            -- Set hover callbacks for visual feedback
+            local gaugeColors = colors
+            gauge.front:setOnEnter(function() AbilityGaugeEnter(gauge, gaugeColors) end)
+            gauge.front:setOnLeave(function() AbilityGaugeLeave(gauge, gaugeColors) end)
+            
             gauge:show()
         else
             -- Debug: echo("[RefreshDisplay] Creating NEW gauge\n")
@@ -237,6 +265,11 @@ function RefreshAbilitiesDisplay()
                 gauge.front:setClickCallback(function()
                     send(abilityName)
                 end)
+                
+                -- Set hover callbacks for visual feedback
+                local gaugeColors = colors
+                gauge.front:setOnEnter(function() AbilityGaugeEnter(gauge, gaugeColors) end)
+                gauge.front:setOnLeave(function() AbilityGaugeLeave(gauge, gaugeColors) end)
                 
                 gauge:show()
                 
