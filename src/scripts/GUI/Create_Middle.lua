@@ -172,7 +172,7 @@ function RefreshAbilitiesDisplay()
         
         -- Format the label text (just the ability name, time shown via gauge fill)
         local labelText = string.format(
-            [[<center><font size="4" color="white"><b>%s</b></font></center>]],
+            [[<center><font size="3" color="white"><b>%s</b></font></center>]],
             firstToUpper(name)
         )
         
