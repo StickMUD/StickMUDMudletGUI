@@ -404,3 +404,28 @@ function ClearAllAbilities()
         end
     end
 end
+
+-- Function to check if abilities list is empty and request from server
+function CheckAbilitiesAndRefresh()
+    -- Count active abilities
+    local count = 0
+    for _ in pairs(GUI.ActiveAbilities) do
+        count = count + 1
+    end
+    
+    -- If no active abilities, request list from server
+    if count == 0 then
+        sendGMCP("Char.Abilities.List")
+    end
+end
+
+-- Kill existing abilities check timer if it exists
+if GUI.AbilitiesCheckTimer then
+    killTimer(GUI.AbilitiesCheckTimer)
+    GUI.AbilitiesCheckTimer = nil
+end
+
+-- Start periodic check for empty abilities (every 10 seconds)
+GUI.AbilitiesCheckTimer = tempTimer(10, function()
+    CheckAbilitiesAndRefresh()
+end, true)  -- repeating timer
