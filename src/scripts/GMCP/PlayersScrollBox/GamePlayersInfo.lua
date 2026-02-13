@@ -161,11 +161,14 @@ function GamePlayersInfo()
             local rankColor = rank == 1 and "gold" or "silver"
             -- Extract port names from route (e.g., "Tristeza • Asahi" -> "Tristeza", "Asahi")
             local port1, port2 = route:match("^%s*(.-)%s*•%s*(.-)%s*$")
+            -- Use last word of each port name (lowercased) for server's sscanf parsing
+            local port1Short = port1:match("(%S+)$"):lower()
+            local port2Short = port2:match("(%S+)$"):lower()
             table.insert(rows, {
                 height = smallLineHeight,
                 content = string.format(
                     [[<center><a href="send:shiptop route %s %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
-                    port1, port2, rankColor, rank, route
+                    port1Short, port2Short, rankColor, rank, route
                 ),
                 linkStyle = {rankColor, rankColor, false}
             })
