@@ -154,3 +154,38 @@ for _, item in ipairs(content_items) do
         initializeConsole(item)
     end
 end
+
+-- Video playback event handlers
+local previousContentBox = nil
+
+function onVideoStarted(event, fileName, filePath, mediaType, key, tag)
+    if mediaType == "video" and key == "GUI.GameVideoLabel" then
+        if nextContentBox ~= "BoxVideo" then
+            previousContentBox = nextContentBox
+            on_content_box_press("BoxVideo")
+        end
+    end
+end
+
+function onVideoFinished(event, fileName, filePath, mediaType, key, tag)
+    if mediaType == "video" and key == "GUI.GameVideoLabel" then
+        if nextContentBox == "BoxVideo" and previousContentBox then
+            on_content_box_press(previousContentBox)
+            previousContentBox = nil
+        end
+    end
+end
+
+
+-- Unregister previous handlers to prevent duplicates on reload
+if sysMediaStartedHandlerId then
+    killAnonymousEventHandler(sysMediaStartedHandlerId)
+end
+
+if sysMediaFinishedHandlerId then
+    killAnonymousEventHandler(sysMediaFinishedHandlerId)
+end
+
+-- Register event handlers and store IDs
+sysMediaStartedHandlerId = registerAnonymousEventHandler("sysMediaStarted", onVideoStarted)
+sysMediaFinishedHandlerId = registerAnonymousEventHandler("sysMediaFinished", onVideoFinished)
