@@ -7,7 +7,8 @@ local content_items = {
     { section = "BoxInventory", icon = "040-school-bag.png", tooltip = "Carry", console = "InventoryConsole" },
     { section = "BoxRoomInv", icon = "041-location.png", tooltip = "Room", console = "RoomConsole" },
     { section = "BoxMap", icon = "042-treasure-map.png", tooltip = "Map", console = "MapperConsole" },
-    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoScrollBox" }
+    { section = "BoxInfo", icon = "043-informative.png", tooltip = "Info", console = "InfoScrollBox" },
+    { section = "BoxVideo", icon = "072-footage.png", tooltip = "Video", console = "VideoScrollBox" }
 }
 
 -- Function to send GMCP for selected sections
@@ -132,12 +133,17 @@ local function initializeConsole(item)
         -- Connect labels to font adjustment functions
         GUI[item.console .. "PlusLabel"]:setClickCallback(increaseFontSize, GUI[item.console])
         GUI[item.console .. "MinusLabel"]:setClickCallback(decreaseFontSize, GUI[item.console])
-    elseif console_type == "ScrollBox" and item.console == "InfoScrollBox" then
-      GUI.GameInfoLabel = Geyser.Label:new({
-          name = "GUI.GameInfoLabel",
-          x = 0, y = 0, width = "100%", height = "100%"
-      }, GUI[item.console])
-      setBackgroundColor("GUI.GameInfoLabel", 0, 0, 0)
+    elseif console_type == "ScrollBox" then
+        -- Derive label name from console name (e.g., "InfoScrollBox" -> "GameInfoLabel")
+        local scrollBoxType = item.console:gsub("ScrollBox", "")
+        local labelKey = "Game" .. scrollBoxType .. "Label"
+        local labelFullName = "GUI." .. labelKey
+        
+        GUI[labelKey] = Geyser.Label:new({
+            name = labelFullName,
+            x = 0, y = 0, width = "100%", height = "100%"
+        }, GUI[item.console])
+        setBackgroundColor(labelFullName, 0, 0, 0)
     end
     GUI[item.console]:hide()
 end
