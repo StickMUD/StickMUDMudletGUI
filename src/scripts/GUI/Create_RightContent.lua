@@ -86,7 +86,7 @@ local function createLabel(item)
     
     GUI[item.section]:setStyleSheet(GUI.BoxContentButtonCSS:getCSS())
     GUI[item.section]:setClickCallback("on_content_box_press", item.section)
-    GUI[item.section]:setOnEnter("ContentIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnEnter("ContentIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\" width=\"24\" height=\"24\"><br>" .. item.tooltip)
     GUI[item.section]:setOnLeave("ContentIconLeave", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 

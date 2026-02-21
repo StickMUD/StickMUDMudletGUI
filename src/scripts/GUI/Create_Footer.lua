@@ -34,7 +34,7 @@ local function createIconLabel(globalName, img, tooltip, xPos)
         x = xPos, y = 0, width = "5%", height = "100%"
     }, GUI.FooterTop)
     GUI[globalName]:setStyleSheet(GUI.BoxFooterCSS:getCSS())
-    GUI[globalName]:setOnEnter("enable_tooltip", GUI[globalName], string.format("<center><img src=\"%s/StickMUD/%s\"><br>%s", getMudletHomeDir(), img, tooltip))
+    GUI[globalName]:setOnEnter("enable_tooltip", GUI[globalName], string.format("<center><img src=\"%s/StickMUD/%s\" width=\"24\" height=\"24\"><br>%s", getMudletHomeDir(), img, tooltip))
     GUI[globalName]:setOnLeave("disable_tooltip", GUI[globalName], string.format("<center><img src=\"%s/StickMUD/%s\">", getMudletHomeDir(), img))
 end
 
