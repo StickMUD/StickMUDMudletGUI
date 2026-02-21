@@ -83,7 +83,7 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     -- Tooltip configurations
     local enterMessage = isText and
         ("<center><b><font size=\"2\">" .. icon .. "</font></b><br>" .. tooltip) or
-        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\" width=\"32\" height=\"32\"><br>" .. tooltip)
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\" width=\"24\" height=\"24\"><br>" .. tooltip)
     
     local leaveMessage = message
     
