@@ -73,7 +73,7 @@ local function createMenuLabel(item)
 
     GUI[item.name]:setStyleSheet(GUI.BoxMenuButtonCSS:getCSS())
     GUI[item.name]:setClickCallback("on_menu_box_press", item.name)
-    GUI[item.name]:setOnEnter("MenuIconEnter", GUI[item.name], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.name]:setOnEnter("MenuIconEnter", GUI[item.name], "<center><img src=\"" .. icon_path .. "\" width=\"24\" height=\"24\"><br>" .. item.tooltip)
     GUI[item.name]:setOnLeave("MenuIconLeave", GUI[item.name], "<center><img src=\"" .. icon_path .. "\">")
 end
 

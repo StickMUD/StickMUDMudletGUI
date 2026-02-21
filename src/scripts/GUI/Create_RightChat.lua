@@ -77,7 +77,7 @@ local function createChatLabel(item)
 
     GUI[item.section]:setStyleSheet(GUI.BoxChatButtonCSS:getCSS())
     GUI[item.section]:setClickCallback("on_chat_box_press", item.section)
-    GUI[item.section]:setOnEnter("ChatIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\"><br>" .. item.tooltip)
+    GUI[item.section]:setOnEnter("ChatIconEnter", GUI[item.section], "<center><img src=\"" .. icon_path .. "\" width=\"24\" height=\"24\"><br>" .. item.tooltip)
     GUI[item.section]:setOnLeave("ChatIconLeave", GUI[item.section], "<center><img src=\"" .. icon_path .. "\">")
 end
 
