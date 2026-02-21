@@ -27,11 +27,15 @@ GUI.IconCardCSS = [[
 GUI.BoxHeaderCSS = CSSMan.new([[
   background-color: rgba(0,0,0,0);
   qproperty-wordWrap: true;
+  qproperty-alignment: 'AlignCenter';
+  padding: 2px;
 ]])
 
 GUI.BoxHeaderHoverCSS = CSSMan.new([[
   background-color: rgba(255,255,255,15);
   qproperty-wordWrap: true;
+  qproperty-alignment: 'AlignCenter';
+  padding: 2px;
 ]])
 
 -- Card container for header
@@ -82,8 +86,8 @@ local function createSectionLabel(name, icon, tooltip, stretch, isText)
     
     -- Tooltip configurations
     local enterMessage = isText and
-        ("<center><b><font size=\"2\">" .. icon .. "</font></b><br>" .. tooltip) or
-        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"><br>" .. tooltip)
+        ("<center><b><font size=\"2\">" .. icon .. "</font></b><br><font size=\"2\">" .. tooltip .. "</font>") or
+        ("<center><img src=\"" .. getMudletHomeDir() .. "/StickMUD/" .. icon .. "\"><br><font size=\"2\">" .. tooltip .. "</font>")
     
     local leaveMessage = message
     
