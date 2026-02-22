@@ -122,11 +122,26 @@ function ShowPlayerDetailPopup(index, player)
     -- Calculate position relative to GUI.Right
     local rightX = GUI.Right:get_x()
     local rightY = GUI.Right:get_y()
+    local rightWidth = GUI.Right:get_width()
     local menuBoxX = GUI.MenuBox:get_x()
     local menuBoxY = GUI.MenuBox:get_y()
     
     -- Position popup to the left of MenuBox, relative to GUI.Right
     local popupX = (menuBoxX - rightX) - popupWidth - 10  -- 10px gap from MenuBox edge
+    
+    -- Ensure popup doesn't extend past the left edge of GUI.Right
+    -- If it would, reduce popup width to fit
+    if popupX < 5 then
+        local availableWidth = (menuBoxX - rightX) - 15  -- 5px left margin + 10px gap from MenuBox
+        if availableWidth < 150 then
+            -- Not enough room on left, position at bottom of GUI.Right instead
+            popupX = 10
+            popupWidth = rightWidth - 20
+        else
+            popupWidth = availableWidth
+            popupX = 5
+        end
+    end
     
     -- Get the row's stored Y position (we store this when creating/updating rows)
     local rowYWithinContainer = GUI.GamePlayersListRowYPos and GUI.GamePlayersListRowYPos[index] or 0
@@ -151,6 +166,9 @@ function ShowPlayerDetailPopup(index, player)
         width = popupWidth,
         height = popupHeight
     }, GUI.Right)
+    
+    -- Store the actual popup width for use by GamePlayersInfo.lua
+    GUI.PlayerDetailPopupWidth = popupWidth
     
     GUI.PlayerDetailPopup:setStyleSheet([[
         background-color: rgba(30,30,35,255);

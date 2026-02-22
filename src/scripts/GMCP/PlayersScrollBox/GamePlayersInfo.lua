@@ -1,6 +1,14 @@
 -- Handle Game.Players.Info GMCP response
 -- Updates the player detail popup with additional information
 
+-- Default popup width (may be overridden by GUI.PlayerDetailPopupWidth from GamePlayersList.lua)
+local DEFAULT_POPUP_WIDTH = 300
+
+-- Helper to get actual popup width
+local function getPopupWidth()
+    return GUI.PlayerDetailPopupWidth or DEFAULT_POPUP_WIDTH
+end
+
 function GamePlayersInfo()
     local info = gmcp.Game and gmcp.Game.Players and gmcp.Game.Players.Info or {}
     
@@ -252,7 +260,7 @@ function GamePlayersInfo()
         local statusLabelName = "GUI.PlayerDetailPopupAFKStatus"
         
         -- Calculate position (bottom-right corner of avatar)
-        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local popupWidth = getPopupWidth()
         local avatarHalfWidth = 32  -- 64px / 2
         local avatarSize = 64
         local statusSize = 16  -- Smaller size for less intrusion
@@ -308,46 +316,54 @@ function GamePlayersInfo()
         local opkLabelName = "GUI.PlayerDetailPopupOPK"
         
         -- Calculate position (right of avatar, halfway to border)
-        local popupWidth = GUI.PlayerDetailPopup:get_width()
+        local popupWidth = getPopupWidth()
         local avatarRightEdge = (popupWidth / 2) + 32  -- Center + half avatar width
         local rightMargin = 10  -- Border padding
         local availableSpace = popupWidth - avatarRightEdge - rightMargin
         local opkWidth = 32
         local opkHeight = 18
-        local opkX = avatarRightEdge + (availableSpace / 2) - (opkWidth / 2)  -- Centered in available space
-        local opkY = padding + 32 - (opkHeight / 2)  -- Vertically centered on avatar
         
-        -- Always recreate the label to ensure it displays properly
-        if GUI.PlayerDetailPopupOPK then
-            GUI.PlayerDetailPopupOPK:hide()
-            GUI.PlayerDetailPopupOPK = nil
+        -- Only show OPK indicator if there's enough space
+        if availableSpace < opkWidth + 10 then
+            if GUI.PlayerDetailPopupOPK then
+                GUI.PlayerDetailPopupOPK:hide()
+            end
+        else
+            local opkX = avatarRightEdge + (availableSpace / 2) - (opkWidth / 2)  -- Centered in available space
+            local opkY = padding + 32 - (opkHeight / 2)  -- Vertically centered on avatar
+            
+            -- Always recreate the label to ensure it displays properly
+            if GUI.PlayerDetailPopupOPK then
+                GUI.PlayerDetailPopupOPK:hide()
+                GUI.PlayerDetailPopupOPK = nil
+            end
+            
+            GUI.PlayerDetailPopupOPK = Geyser.Label:new({
+                name = opkLabelName,
+                x = opkX,
+                y = opkY,
+                width = opkWidth,
+                height = opkHeight,
+            }, GUI.PlayerDetailPopup)
+            
+            GUI.PlayerDetailPopupOPK:setStyleSheet([[
+                background-color: #cc0000;
+                border: 1px solid #880000;
+                border-radius: 3px;
+                qproperty-alignment: 'AlignCenter';
+            ]])
+            
+            GUI.PlayerDetailPopupOPK:echo(string.format(
+                [[<center> <a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a> </center>]],
+                info.name:lower()
+            ))
+            
+            -- Prevent clicks from closing the popup (but allow link clicks)
+            GUI.PlayerDetailPopupOPK:setClickCallback(function() end)
+            
+            GUI.PlayerDetailPopupOPK:show()
+            GUI.PlayerDetailPopupOPK:raise()
         end
-        
-        GUI.PlayerDetailPopupOPK = Geyser.Label:new({
-            name = opkLabelName,
-            x = opkX,
-            y = opkY,
-            width = opkWidth,
-            height = opkHeight,
-        }, GUI.PlayerDetailPopup)
-        
-        GUI.PlayerDetailPopupOPK:setStyleSheet([[
-            background-color: #cc0000;
-            border: 1px solid #880000;
-            border-radius: 3px;
-            qproperty-alignment: 'AlignCenter';
-        ]])
-        
-        GUI.PlayerDetailPopupOPK:echo(string.format(
-            [[<center> <a href="send:pkinfo %s"><font size="2" color="white"><b>OPK</b></font></a> </center>]],
-            info.name:lower()
-        ))
-        
-        -- Prevent clicks from closing the popup (but allow link clicks)
-        GUI.PlayerDetailPopupOPK:setClickCallback(function() end)
-        
-        GUI.PlayerDetailPopupOPK:show()
-        GUI.PlayerDetailPopupOPK:raise()
     elseif GUI.PlayerDetailPopupOPK then
         GUI.PlayerDetailPopupOPK:hide()
     end

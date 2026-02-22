@@ -15,13 +15,16 @@ local function repositionRecursive(element)
     end
 end
 
--- Function to update borders based on current window size
+-- Function to update borders based on current window size and layout preset
 function updateBorders()
     local w, h = getMainWindowSize()
+    local layout = getLayoutValues()
+    local totalRightWidth = layout.rightPanelWidth + layout.middleWidth
+    
     setBorderLeft(0)
     setBorderTop(h/20)
     setBorderBottom(h/10)
-    setBorderRight(w*0.52)
+    setBorderRight(w * totalRightWidth)
     
     -- Reposition main GUI containers and all children to adapt to new window size
     if GUI then

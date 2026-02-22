@@ -2,7 +2,7 @@
        "package": "StickMUD",
        "title": "StickMUDMudletGUI",
        "description": "The official graphical user interface for Mudlet (https://mudlet.org) for StickMUD.",
-       "version": "118",
+       "version": "119",
        "author": "Tamarindo@StickMUD",
        "icon": "https://www.stickmud.com/wp-content/uploads/2020/12/stick-siteicon.png",
        "outputFile": true

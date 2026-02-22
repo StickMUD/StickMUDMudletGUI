@@ -95,3 +95,24 @@ end
 createFooterLabel("BoxRoom", "📍", "Room", "room")
 createFooterLabel("BoxArea", "🏰", "Area", "area")
 createFooterLabel("BoxExits", "🚪", "Exits", "scan")
+-- Layout preset selector
+function updateLayoutLabel()
+    local preset = layout_settings.preset or "Normal"
+    GUI.BoxLayout:echo(string.format(
+        [[<center><span style="%s">&nbsp;<font size="3" color="#888">📐</font>&nbsp;&nbsp;<font size="3" color="white"><b>%s</b></font>&nbsp;</span></center>]],
+        GUI.FooterPillCSS, preset
+    ))
+end
+
+GUI.BoxLayout = Geyser.Label:new({name = "GUI.BoxLayout"}, GUI.FooterBottom)
+GUI.BoxLayout:setStyleSheet(GUI.FooterLabelCSS:getCSS())
+GUI.BoxLayout:setClickCallback(cycleLayoutPreset)
+GUI.BoxLayout:setToolTip("Click to change layout (Compact/Normal/Wide)", "10")
+updateLayoutLabel()
+
+-- Wrap updateLayoutPanels to also update the label
+local originalUpdateLayoutPanels = updateLayoutPanels
+function updateLayoutPanels()
+    originalUpdateLayoutPanels()
+    updateLayoutLabel()
+end
