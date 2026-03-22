@@ -13,7 +13,7 @@
               "highlightBG": "#ffff00",
               "patterns": [
                      {
-                            "pattern": "(?:^|\\x1b[^m]*m|\\x1b\\]8;[^\\x07\\x1b]*(?:\\x07|\\x1b\\\\))More(?:\\x1b\\]8;;(?:\\x07|\\x1b\\\\))? \\((?:\\d+%|Line \\d+/\\d+|\\d+/\\?)\\) Enter=next q=quit \\?=help",
+                            "pattern": "\\(\\d+%\\) Enter=next q=quit \\?=help",
                             "type": "perl regex"
                      }
               ],
