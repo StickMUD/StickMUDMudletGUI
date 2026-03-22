@@ -2,6 +2,11 @@
     {
            "isActive": "yes",
            "isFolder": "yes",
+           "name": "More"
+    },
+    {
+           "isActive": "yes",
+           "isFolder": "yes",
            "name": "MSP"
     }
 ]
