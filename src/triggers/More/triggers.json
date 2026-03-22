@@ -13,7 +13,7 @@
               "highlightBG": "#ffff00",
               "patterns": [
                      {
-                            "pattern": "^(?:\\e\\]8;[^\\e]*\\e\\\\)?More(?:\\e\\]8;;\\e\\\\)? \\((?:\\d+%|Line \\d+/\\d+|\\d+/\\?)\\) Enter=next q=quit \\?=help$",
+                            "pattern": "^More \\((?:\\d+%|Line \\d+/\\d+|\\d+/\\?)\\) Enter=next q=quit \\?=help",
                             "type": "perl regex"
                      }
               ],
