@@ -13,8 +13,8 @@
               "highlightBG": "#ffff00",
               "patterns": [
                      {
-                            "pattern": "\\(\\d+%\\) Enter=next q=quit \\?=help",
-                            "type": "perl regex"
+                            "pattern": "^More \\(\\d+%\\) Enter=next q=quit \\?=help",
+                            "type": "regex"
                      }
               ],
               "script": ""
