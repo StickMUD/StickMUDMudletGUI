@@ -13,7 +13,7 @@
               "highlightBG": "#ffff00",
               "patterns": [
                      {
-                            "pattern": "^--More-- \\[",
+                            "pattern": "^More \\(\\d+%\\) Enter=next q=quit \\?=help",
                             "type": "regex"
                      }
               ],
