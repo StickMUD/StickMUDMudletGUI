@@ -342,6 +342,7 @@ function getGuildImagePath(guild, gender)
     local basePath = getMudletHomeDir() .. "/StickMUD/"
     local images = {
         bard = gender == "female" and "066-musician.png" or "056-bard.png",
+        druid = gender == "female" and "druid-f.png" or "druid-m.png",
         fighter = gender == "female" and "070-girl.png" or "057-knight-2.png",
         healer = gender == "female" and "069-hippie-1.png" or "067-hippie.png",
         mage = gender == "female" and "068-magician.png" or "065-wizard.png",
