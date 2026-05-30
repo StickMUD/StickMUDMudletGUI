@@ -29,4 +29,9 @@ function CoreGoodbye()
   if ClearAllAbilities then
     ClearAllAbilities()
   end
+
+  -- Clean up cooldowns (kills all cooldown tempTimers and clears state)
+  if ClearAllCooldowns then
+    ClearAllCooldowns()
+  end
 end

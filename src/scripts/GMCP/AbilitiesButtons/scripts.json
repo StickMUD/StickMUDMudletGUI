@@ -25,5 +25,14 @@
                      "gmcp.Char.Abilities.Remove"
               ],
               "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharCooldownsAdd",
+              "eventHandlerList": [
+                     "gmcp.Char.Cooldowns.Add"
+              ],
+              "script": ""
        }
 ]

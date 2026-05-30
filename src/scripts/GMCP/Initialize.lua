@@ -37,6 +37,7 @@ local packages = {
     "Char.Status 1",          -- CharStatus.lua
     "Char.Items 1",           -- Inventory and Room item handlers
     "Char.Abilities 1",       -- AbilitiesButtons handlers
+    "Char.Cooldowns 1",       -- AbilitiesButtons/CharCooldownsAdd.lua
     "Char.Help 1",            -- HelpContainer/CharHelpList.lua
     "Char.Guild.Help 1",      -- AbilitiesConsole/CharGuildHelpList.lua
     "Char.Training 1",        -- TrainingScrollBox handlers
@@ -177,6 +178,9 @@ end
 sendGMCP("Char.Vitals")
 sendGMCP("Char.Status")
 sendGMCP("Game.Players.List")
+
+-- Repopulate in-progress ability cooldowns after a reconnect/reload
+sendGMCP("Char.Cooldowns.List")
 
 -- Start periodic checks with backoff
 ScheduleGMCPCheck("Vitals", CheckVitalsAndRefresh)
