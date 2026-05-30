@@ -243,6 +243,22 @@ GUI.AbilityTimers = {}
 -- Clear active abilities on reload (server will resend if still active)
 GUI.ActiveAbilities = {}
 
+-- Storage for active cooldowns (recharge/reusage timers)
+-- Rendered into the same GUI.AbilitiesListContainer stack as buffs, but kept in
+-- parallel state so an active buff and its cooldown never clobber each other.
+-- Keyed by cooldown id (a stable numeric hash from the server).
+GUI.ActiveCooldowns = GUI.ActiveCooldowns or {}
+GUI.CooldownTimers = GUI.CooldownTimers or {}
+
+-- Kill any existing cooldown timers on reload (will be recreated via List)
+for id, timerId in pairs(GUI.CooldownTimers) do
+    killTimer(timerId)
+end
+GUI.CooldownTimers = {}
+
+-- Clear active cooldowns on reload (server will resend via Char.Cooldowns.List)
+GUI.ActiveCooldowns = {}
+
 -- CSS styles for ability gauges (inspired by footer)
 GUI.AbilityGaugeBackCSS = CSSMan.new([[
     background-color: #1a1a1a;
@@ -260,7 +276,8 @@ GUI.AbilityGaugeFrontCSS = CSSMan.new([[
 -- Color schemes for different ability states
 GUI.AbilityColors = {
     warning = {front = "#f39c12", back = "#4d3205"},    -- Orange for warning
-    expiring = {front = "#e74c3c", back = "#4a1a15"}    -- Red for expiring soon
+    expiring = {front = "#e74c3c", back = "#4a1a15"},   -- Red for expiring soon
+    cooldown = {front = "#5a7a99", back = "#1e2b36"}    -- Muted steel-blue for recharging cooldowns
 }
 
 -- Color palette for active abilities (good contrast with white text)
@@ -322,7 +339,11 @@ function RefreshAbilitiesDisplay()
     -- Get sorted list of abilities (sort by remaining time: longest at top, shortest at bottom)
     local sortedAbilities = {}
     for id, ability in pairs(GUI.ActiveAbilities) do
-        table.insert(sortedAbilities, {id = id, name = ability.name, data = ability})
+        table.insert(sortedAbilities, {id = id, name = ability.name, data = ability, kind = "buff"})
+    end
+    -- Cooldowns render in the same stack as buffs but are tracked separately
+    for id, cooldown in pairs(GUI.ActiveCooldowns) do
+        table.insert(sortedAbilities, {id = id, name = cooldown.name, data = cooldown, kind = "cooldown"})
     end
     table.sort(sortedAbilities, function(a, b)
         -- Get remaining times (treat nil or 0 as infinite/permanent)
@@ -356,23 +377,44 @@ function RefreshAbilitiesDisplay()
         -- Debug: echo("[RefreshDisplay] Processing ability " .. i .. ": " .. abilityInfo.name .. "\n")
         local ability = abilityInfo.data
         local name = abilityInfo.name
-        local colors = getAbilityColor(ability.remaining, ability.warn, name)
         
         -- Calculate y position from bottom
         -- First ability (i=1) at top of stack, last ability at very bottom
         local yPos = "-" .. ((numAbilities - i + 1) * rowHeight) .. "px"
         
-        -- Calculate gauge value (100% if no expiry, percentage if expiring)
-        local gaugeValue = 100
-        if ability.expires and ability.expires > 0 and ability.remaining then
-            gaugeValue = math.max(0, math.min(100, (ability.remaining / ability.expires) * 100))
-        end
+        local colors
+        local gaugeValue
+        local labelText
         
-        -- Format the label text (just the ability name, time shown via gauge fill)
-        local labelText = string.format(
-            [[<center><font size="3" color="white"><b>%s</b></font></center>]],
-            firstToUpper(name)
-        )
+        if abilityInfo.kind == "cooldown" then
+            -- Cooldowns use a distinct color and fill LEFT-TO-RIGHT as they elapse:
+            -- the gauge value is the ELAPSED fraction, not the remaining fraction.
+            colors = GUI.AbilityColors.cooldown
+            local duration = ability.duration or 0
+            local remaining = ability.remaining or 0
+            if duration > 0 then
+                gaugeValue = math.max(0, math.min(100, ((duration - remaining) / duration) * 100))
+            else
+                gaugeValue = 100
+            end
+            -- Show the ability name plus the countdown to recharge completion
+            labelText = string.format(
+                [[<center><font size="3" color="white"><b>%s</b> %s</font></center>]],
+                firstToUpper(name), formatTimeRemaining(remaining)
+            )
+        else
+            -- Buffs keep the existing depleting behavior (fill = remaining fraction)
+            colors = getAbilityColor(ability.remaining, ability.warn, name)
+            gaugeValue = 100
+            if ability.expires and ability.expires > 0 and ability.remaining then
+                gaugeValue = math.max(0, math.min(100, (ability.remaining / ability.expires) * 100))
+            end
+            -- Format the label text (just the ability name, time shown via gauge fill)
+            labelText = string.format(
+                [[<center><font size="3" color="white"><b>%s</b></font></center>]],
+                firstToUpper(name)
+            )
+        end
         
         local existingRow = GUI.AbilityRows[i]
         -- Debug: echo("[RefreshDisplay] Checking existing row: " .. tostring(existingRow ~= nil) .. ", gauge: " .. tostring(existingRow and existingRow.gauge ~= nil) .. "\n")
@@ -398,6 +440,7 @@ function RefreshAbilitiesDisplay()
             
             -- Update click callback with current ability name
             -- Note: Gauge doesn't have setClickCallback, use the front label
+            -- Cooldown rows stay click-to-send too, so the player can queue the recast.
             local abilityName = name
             gauge.front:setClickCallback(function()
                 send(abilityName)
@@ -606,6 +649,115 @@ function ClearAllAbilities()
             end
         end
     end
+end
+
+-- ============================================
+-- COOLDOWNS (reusage / recharge timers)
+-- ============================================
+-- Cooldowns are distinct from buff monitors: they represent the recharge period
+-- before an ability can be used again. They share the abilities panel/stack but
+-- use a distinct color, fill left-to-right as they elapse, and self-remove when
+-- the local countdown reaches 0 (the server sends no Remove message).
+
+-- Function to add/refresh a cooldown (keyed by cooldown id)
+function AddCooldown(name, cooldownData)
+    local id = cooldownData and cooldownData.id or nil
+    if not id then
+        -- No cooldown id provided, cannot track this cooldown
+        return
+    end
+    
+    local duration = tonumber(cooldownData.duration) or 0
+    local remaining = tonumber(cooldownData.remaining) or duration
+    
+    -- A re-cast/update with the same id replaces the existing entry
+    GUI.ActiveCooldowns[id] = {
+        name = name,
+        duration = duration,
+        remaining = remaining,
+        kind = "cooldown",
+        startTime = os.time()
+    }
+    
+    -- (Re)start the countdown timer for this cooldown id
+    if GUI.CooldownTimers[id] then
+        killTimer(GUI.CooldownTimers[id])
+        GUI.CooldownTimers[id] = nil
+    end
+    
+    if remaining and remaining > 0 then
+        GUI.CooldownTimers[id] = tempTimer(1, function()
+            UpdateCooldownTimer(id)
+        end, true)  -- repeating timer
+    else
+        -- Already complete, nothing to show
+        GUI.ActiveCooldowns[id] = nil
+    end
+    
+    RefreshAbilitiesDisplay()
+end
+
+-- Function to tick a cooldown countdown (by cooldown id)
+-- Self-removes the cooldown when it reaches 0 since there is no server Remove.
+function UpdateCooldownTimer(cooldownId)
+    local cooldown = GUI.ActiveCooldowns[cooldownId]
+    if not cooldown then
+        -- Cooldown was cleared, kill timer
+        if GUI.CooldownTimers[cooldownId] then
+            killTimer(GUI.CooldownTimers[cooldownId])
+            GUI.CooldownTimers[cooldownId] = nil
+        end
+        return
+    end
+    
+    if cooldown.remaining and cooldown.remaining > 0 then
+        cooldown.remaining = cooldown.remaining - 1
+    end
+    
+    if cooldown.remaining and cooldown.remaining <= 0 then
+        -- Cooldown complete: kill timer, remove entry, and refresh so the row disappears
+        if GUI.CooldownTimers[cooldownId] then
+            killTimer(GUI.CooldownTimers[cooldownId])
+            GUI.CooldownTimers[cooldownId] = nil
+        end
+        GUI.ActiveCooldowns[cooldownId] = nil
+        -- Hide all gauges first; RefreshAbilitiesDisplay re-shows the remaining rows
+        for i, row in pairs(GUI.AbilityRows) do
+            if row and row.gauge then
+                row.gauge:hide()
+            end
+        end
+    end
+    
+    RefreshAbilitiesDisplay()
+end
+
+-- Function to clear all cooldowns (reset signal / disconnect cleanup)
+-- Modeled on ClearAllAbilities, but only touches cooldown state. Buff rows are
+-- redrawn by the final RefreshAbilitiesDisplay call.
+function ClearAllCooldowns()
+    -- Kill all cooldown timers
+    if GUI.CooldownTimers then
+        for id, timerId in pairs(GUI.CooldownTimers) do
+            killTimer(timerId)
+        end
+    end
+    GUI.CooldownTimers = {}
+    
+    -- Clear cooldown state
+    GUI.ActiveCooldowns = {}
+    
+    -- Hide all gauges in the shared row pool; RefreshAbilitiesDisplay re-shows
+    -- any remaining buff rows.
+    if GUI.AbilityRows then
+        for i, row in pairs(GUI.AbilityRows) do
+            if row and row.gauge and row.gauge.hide then
+                row.gauge:hide()
+            end
+        end
+    end
+    
+    RefreshAbilitiesDisplay()
 end
 
 -- Retry state for abilities refresh (preserved across reloads)

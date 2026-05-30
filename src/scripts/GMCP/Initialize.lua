@@ -37,6 +37,7 @@ local packages = {
     "Char.Status 1",          -- CharStatus.lua
     "Char.Items 1",           -- Inventory and Room item handlers
     "Char.Abilities 1",       -- AbilitiesButtons handlers
+    "Char.Cooldowns 1",       -- AbilitiesButtons/CharCooldownsAdd.lua
     "Char.Help 1",            -- HelpContainer/CharHelpList.lua
     "Char.Guild.Help 1",      -- AbilitiesConsole/CharGuildHelpList.lua
     "Char.Training 1",        -- TrainingScrollBox handlers
@@ -64,7 +65,8 @@ sendGMCP("Core.Supports.Add " .. yajl.to_string(packages))
 GUI.GMCPRetryState = GUI.GMCPRetryState or {
     Vitals = { count = 0, interval = 10 },
     Status = { count = 0, interval = 10 },
-    Players = { count = 0, interval = 10 }
+    Players = { count = 0, interval = 10 },
+    Cooldowns = { count = 0, interval = 10 }
 }
 GUI.GMCPMaxRetries = 5  -- Stop after this many attempts
 GUI.GMCPBaseInterval = 10  -- Base interval in seconds
@@ -145,6 +147,29 @@ function CheckPlayersAndRefresh()
     return false  -- Keep trying
 end
 
+-- Function to check and refresh Char.Cooldowns.List
+-- Returns true if cooldowns are tracked or max retries reached (should stop checking)
+-- Note: an empty cooldown list is a valid steady state (player may have no active
+-- cooldowns), so we rely on the capped retry count to stop polling rather than
+-- treating "empty" as a permanent failure.
+function CheckCooldownsAndRefresh()
+    -- Check if any cooldowns are being tracked
+    if GUI and GUI.ActiveCooldowns and next(GUI.ActiveCooldowns) ~= nil then
+        ResetGMCPRetryState("Cooldowns")
+        return true  -- Data received, stop checking
+    end
+    
+    if not IsGMCPConnected() then return false end  -- Keep trying
+    
+    local state = GUI.GMCPRetryState.Cooldowns
+    if state.count >= GUI.GMCPMaxRetries then return true end  -- Max retries, stop
+    
+    state.count = state.count + 1
+    sendGMCP("Char.Cooldowns.List")
+    state.interval = math.min(state.interval * 2, 300)
+    return false  -- Keep trying
+end
+
 -- Kill existing timers
 for name, timerId in pairs(GUI.GMCPTimers) do
     if timerId then killTimer(timerId) end
@@ -178,7 +203,11 @@ sendGMCP("Char.Vitals")
 sendGMCP("Char.Status")
 sendGMCP("Game.Players.List")
 
+-- Repopulate in-progress ability cooldowns after a reconnect/reload
+sendGMCP("Char.Cooldowns.List")
+
 -- Start periodic checks with backoff
 ScheduleGMCPCheck("Vitals", CheckVitalsAndRefresh)
 ScheduleGMCPCheck("Status", CheckStatusAndRefresh)
 ScheduleGMCPCheck("Players", CheckPlayersAndRefresh)
+ScheduleGMCPCheck("Cooldowns", CheckCooldownsAndRefresh)
