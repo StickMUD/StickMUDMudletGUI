@@ -16,8 +16,14 @@ function GameEventsEnd(event, gmcp_data)
     end
     
     -- Clear session data for this event
-    if eventsSessionData and eventsSessionData.event_id == data.id then
-        eventsSessionData = {}
+    -- eventsSessionData is an array of session objects, so iterate and remove
+    -- the one whose event_id matches the ended event
+    if eventsSessionData and type(eventsSessionData) == "table" then
+        for i = #eventsSessionData, 1, -1 do
+            if eventsSessionData[i].event_id == data.id then
+                table.remove(eventsSessionData, i)
+            end
+        end
     end
     
     -- Only rebuild the display if EventsScrollBox is currently selected
