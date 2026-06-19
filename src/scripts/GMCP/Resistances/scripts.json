@@ -1,0 +1,29 @@
+[
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharResistancesList",
+              "eventHandlerList": [
+                     "gmcp.Char.Resistances.List"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharResistancesAdd",
+              "eventHandlerList": [
+                     "gmcp.Char.Resistances.Add"
+              ],
+              "script": ""
+       },
+       {
+              "isActive": "yes",
+              "isFolder": "no",
+              "name": "CharResistancesRemove",
+              "eventHandlerList": [
+                     "gmcp.Char.Resistances.Remove"
+              ],
+              "script": ""
+       }
+]

@@ -106,6 +106,12 @@
        },
        {
               "isActive": "yes",
+              "isFolder": "yes",
+              "name": "Resistances",
+              "script": ""
+       },
+       {
+              "isActive": "yes",
               "isFolder": "no",
               "name": "Initialize",
               "script": ""

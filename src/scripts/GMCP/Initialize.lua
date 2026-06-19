@@ -42,6 +42,7 @@ local packages = {
     "Char.Guild.Help 1",      -- AbilitiesConsole/CharGuildHelpList.lua
     "Char.Training 1",        -- TrainingScrollBox handlers
     "Char.Events 1",          -- EventsScrollBox/CharEventsList.lua
+    "Char.Resistances 1",     -- Resistances handlers
 
     -- Room
     "Room 1",                 -- RoomInfo.lua, Room.Players handlers
