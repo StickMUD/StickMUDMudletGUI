@@ -349,6 +349,7 @@ function getGuildImagePath(guild, gender)
         necromancer = gender == "female" and "071-skeleton.png" or "059-necromancer.png",
         ninja = gender == "female" and "062-ninja-1.png" or "058-ninja.png",
         priest = gender == "female" and "061-cross.png" or "060-priest.png",
+        psionicist = gender == "female" and "psionicist-f.png" or "psionicist-m.png",
         thief = gender == "female" and "063-people.png" or "064-man.png",
         default = "029-dazed.png"
     }
