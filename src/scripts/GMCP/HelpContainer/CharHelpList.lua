@@ -47,6 +47,10 @@ function on_helplabel_press(category)
     CharHelpList()
 end
 
+function on_helptopic_press(topic)
+    send("help " .. topic)
+end
+
 -- Helper to clean up old elements
 local function cleanupHelpElements()
     -- Hide and remove old topic labels
@@ -199,11 +203,12 @@ function CharHelpList()
                         GUI.HelpTopicLabels[labelKey]:setStyleSheet(helpTopicCSS)
                         GUI.HelpTopicLabels[labelKey]:echo(
                             string.format(
-                                [[<a href="send:help %s" style="text-decoration:none;"><span style="font-size:14px;color:cyan;">%s</span></a>]],
-                                topic, topic
+                                [[<span style="font-size:14px;color:cyan;">%s</span>]],
+                                topic
                             )
                         )
-                        
+                        GUI.HelpTopicLabels[labelKey]:setClickCallback("on_helptopic_press", topic)
+
                         topic_index = topic_index + 1
                     else
                         -- Empty placeholder for alignment
