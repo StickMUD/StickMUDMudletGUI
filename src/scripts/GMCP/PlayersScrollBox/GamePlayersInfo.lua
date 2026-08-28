@@ -170,14 +170,26 @@ function GamePlayersInfo()
             -- Extract port names from route (e.g., "Tristeza • Asahi" -> "Tristeza", "Asahi")
             local port1, port2 = route:match("^%s*(.-)%s*•%s*(.-)%s*$")
             -- Use last word of each port name (lowercased) for server's sscanf parsing
-            local port1Short = port1:match("(%S+)$"):lower()
-            local port2Short = port2:match("(%S+)$"):lower()
-            table.insert(rows, {
-                height = smallLineHeight,
+            local port1Short = port1 and port1:match("(%S+)$")
+            local port2Short = port2 and port2:match("(%S+)$")
+            -- Fall back to plain text when the route name is not in the
+            -- expected "Port A • Port B" form, so one bad entry cannot
+            -- abort the whole popup render
+            local content
+            if port1Short and port2Short then
                 content = string.format(
                     [[<center><a href="send:shiptop route %s %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
-                    port1Short, port2Short, rankColor, rank, route
-                ),
+                    port1Short:lower(), port2Short:lower(), rankColor, rank, route
+                )
+            else
+                content = string.format(
+                    [[<center><font size="2" color="%s">#%d ⛵ %s</font></center>]],
+                    rankColor, rank, route
+                )
+            end
+            table.insert(rows, {
+                height = smallLineHeight,
+                content = content,
                 linkStyle = {rankColor, rankColor, false}
             })
         end
