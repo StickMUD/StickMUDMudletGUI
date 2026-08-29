@@ -165,19 +165,52 @@ function GamePlayersInfo()
     
     -- Top sailing rows (one per route)
     if info.top_sailing and next(info.top_sailing) then
-        for route, rank in pairs(info.top_sailing) do
-            local rankColor = rank == 1 and "gold" or "silver"
-            -- Extract port names from route (e.g., "Tristeza • Asahi" -> "Tristeza", "Asahi")
-            local port1, port2 = route:match("^%s*(.-)%s*•%s*(.-)%s*$")
-            -- Use last word of each port name (lowercased) for server's sscanf parsing
-            local port1Short = port1:match("(%S+)$"):lower()
-            local port2Short = port2:match("(%S+)$"):lower()
+        -- The server sends an array of {route, rank, num} entries, where num is
+        -- the route number "shiptop <n>" takes. The display name is rendered and
+        -- never parsed, so a separator that arrives mis-decoded costs at most a
+        -- funny-looking label instead of the whole popup.
+        --
+        -- Older servers sent {[display name] = rank} instead. That shape is still
+        -- read, but its link has to be recovered from the name, which is exactly
+        -- the fragile path the array replaces.
+        local entries = {}
+
+        if info.top_sailing[1] then
+            entries = info.top_sailing
+        else
+            for route, rank in pairs(info.top_sailing) do
+                entries[#entries + 1] = {route = route, rank = rank}
+            end
+        end
+
+        for _, entry in ipairs(entries) do
+            local rankColor = entry.rank == 1 and "gold" or "silver"
+            local target = entry.num and ("shiptop " .. entry.num)
+
+            if not target then
+                -- Legacy shape only. Split "Tristeza • Asahi" into port fragments
+                -- for the fuzzy "shiptop route" lookup. Guarded: a match failure
+                -- leaves the row as plain text rather than erroring on a nil.
+                local port1, port2 = entry.route:match("^%s*(.-)%s*•%s*(.-)%s*$")
+                local port1Short = port1 and port1:match("(%S+)$")
+                local port2Short = port2 and port2:match("(%S+)$")
+
+                if port1Short and port2Short then
+                    target = string.format("shiptop route %s %s",
+                        port1Short:lower(), port2Short:lower())
+                end
+            end
+
+            local label = string.format(
+                [[<font size="2" color="%s">#%d ⛵ %s</font>]],
+                rankColor, entry.rank, entry.route
+            )
+
             table.insert(rows, {
                 height = smallLineHeight,
-                content = string.format(
-                    [[<center><a href="send:shiptop route %s %s"><font size="2" color="%s">#%d ⛵ %s</font></a></center>]],
-                    port1Short, port2Short, rankColor, rank, route
-                ),
+                content = target
+                    and string.format([[<center><a href="send:%s">%s</a></center>]], target, label)
+                    or string.format([[<center>%s</center>]], label),
                 linkStyle = {rankColor, rankColor, false}
             })
         end
